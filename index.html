@@ -5,38 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING (SAME OP LOOK) --- */
-        :root {
-            --neon-blue: #00f3ff; --neon-red: #ff004c; --neon-green: #00ff6a;
-            --neon-gold: #ffd700; --dark-bg: #050505; --glass: rgba(255, 255, 255, 0.05);
-        }
+        /* --- OP NEON LOOK --- */
+        :root { --neon-blue: #00f3ff; --neon-red: #ff004c; --neon-green: #00ff6a; --neon-gold: #ffd700; --dark-bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
-        body {
-            background-color: var(--dark-bg); color: white; display: flex; justify-content: center;
-            align-items: center; min-height: 100vh;
-            background-image: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
-            background-size: 40px 40px;
-        }
+        body { background-color: var(--dark-bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-image: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%); background-size: 40px 40px; }
         .container { display: none; width: 100%; max-width: 400px; padding: 20px; text-align: center; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         #login-section { display: block; background: var(--glass); padding: 40px; border: 2px solid var(--neon-blue); box-shadow: 0 0 20px var(--neon-blue); border-radius: 15px; }
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .menu-btn { background: rgba(0,0,0,0.6); border: 2px solid var(--neon-blue); color: white; padding: 20px 10px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: bold; font-size: 14px; }
+        .menu-btn { background: rgba(0,0,0,0.6); border: 2px solid var(--neon-blue); color: white; padding: 20px 10px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: bold; font-size: 14px; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
         .menu-btn:hover { background: var(--neon-blue); color: black; box-shadow: 0 0 20px var(--neon-blue); }
-        .menu-btn.vehicle { border-color: var(--neon-red); }
-        .menu-btn.adhar { border-color: var(--neon-gold); }
-        .menu-btn.mail { border-color: var(--neon-green); }
+        .menu-btn.vehicle { border-color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 0, 76, 0.2); }
+        .menu-btn.adhar { border-color: var(--neon-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+        .menu-btn.mail { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 106, 0.2); }
         .profile-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
-        .profile-pic { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--neon-blue); box-shadow: 0 0 25px var(--neon-blue); object-fit: cover; }
-        h1 { background: linear-gradient(to right, var(--neon-blue), var(--neon-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 26px; text-transform: uppercase; font-weight: 800; }
+        .profile-pic { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--neon-blue); box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue); object-fit: cover; }
+        h1 { background: linear-gradient(to right, var(--neon-blue), var(--neon-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 26px; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; font-weight: 800; }
         .subtitle { color: #ccc; font-size: 14px; margin-bottom: 30px; }
-        input { width: 100%; background: black; border: 2px solid var(--neon-green); color: white; padding: 15px; margin-bottom: 15px; text-align: center; font-size: 16px; outline: none; }
-        .btn { width: 100%; padding: 15px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; color: black; margin-bottom: 15px; }
+        input { width: 100%; background: black; border: 2px solid var(--neon-green); color: white; padding: 15px; margin-bottom: 15px; font-size: 16px; outline: none; text-align: center; }
+        input:focus { box-shadow: 0 0 15px var(--neon-green); }
+        .btn { width: 100%; padding: 15px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; text-transform: uppercase; color: black; margin-bottom: 15px; transition: 0.3s; }
         .btn-search { background: linear-gradient(90deg, var(--neon-blue), var(--neon-red)); }
         .btn-copy { background: linear-gradient(90deg, var(--neon-green), var(--neon-gold)); }
         .btn-back { background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); margin-top: 15px; }
+        .btn:active { transform: scale(0.98); }
         .result-area { text-align: left; margin-top: 20px; }
-        .result-card { background: rgba(20, 20, 20, 0.95); border-left: 4px solid var(--neon-gold); padding: 15px; margin-bottom: 15px; font-family: monospace; white-space: pre-wrap; color: var(--neon-green); font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .result-card { background: rgba(20, 20, 20, 0.95); border-left: 4px solid var(--neon-gold); padding: 15px; margin-bottom: 15px; font-family: monospace; white-space: pre-wrap; color: var(--neon-green); font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); overflow-x: hidden; }
     </style>
 </head>
 <body>
@@ -66,7 +60,7 @@
         <h1>NUMBER SEARCH</h1><input type="number" id="phoneInput" placeholder="Enter Number">
         <button class="btn btn-search" onclick="searchNumber()">SEARCH</button>
         <div id="result-area-num" class="result-area"></div>
-        <button class="btn btn-copy" onclick="copyResult('result-area-num')">COPY RESULT</button>
+        <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY FULL</button>
         <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
     </div>
 
@@ -74,7 +68,7 @@
         <h1>VEHICLE INFO</h1><input type="text" id="vehicleInput" placeholder="HR12AQ4000">
         <button class="btn btn-search" onclick="searchVehicle()">GO</button>
         <div id="result-area-rc" class="result-area"></div>
-        <button class="btn btn-copy" onclick="copyResult('result-area-rc')">COPY RESULT</button>
+        <button class="btn btn-copy" onclick="copyResult('result-area-rc')">📋 COPY FULL</button>
         <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
     </div>
 
@@ -82,7 +76,7 @@
         <h1>ADHAR INFO</h1><input type="number" id="adharInput" placeholder="Adhar Number">
         <button class="btn btn-search" onclick="searchAdhar()">GO</button>
         <div id="result-area-adhar" class="result-area"></div>
-        <button class="btn btn-copy" onclick="copyResult('result-area-adhar')">COPY RESULT</button>
+        <button class="btn btn-copy" onclick="copyResult('result-area-adhar')">📋 COPY FULL</button>
         <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
     </div>
 
@@ -90,175 +84,214 @@
         <h1>MAIL INFO</h1><input type="email" id="mailInput" placeholder="Enter Email">
         <button class="btn btn-search" onclick="searchMail()">GO</button>
         <div id="result-area-mail" class="result-area"></div>
-        <button class="btn btn-copy" onclick="copyResult('result-area-mail')">COPY RESULT</button>
+        <button class="btn btn-copy" onclick="copyResult('result-area-mail')">📋 COPY FULL</button>
         <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
     </div>
 
     <script>
+        // CONFIG
         const ACCESS_CONFIG = { validUser: "admin", validPass: "rehan123", expiryDate: "2026-12-30" };
-        function showSection(id) { document.querySelectorAll('.container').forEach(div => div.style.display = 'none'); document.getElementById(id).style.display = 'block'; }
-        function handleLogin() {
-            const u = document.getElementById('username').value; const p = document.getElementById('password').value;
-            if (u === ACCESS_CONFIG.validUser && p === ACCESS_CONFIG.validPass) { localStorage.setItem('isLoggedIn', 'true'); showSection('menu-section'); }
-            else { document.getElementById('login-error').innerText = "INVALID CREDENTIALS"; }
+
+        // NAVIGATION
+        function showSection(id) {
+            document.querySelectorAll('.container').forEach(div => div.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
         }
-        window.onload = () => { if(localStorage.getItem('isLoggedIn')==='true') showSection('menu-section'); };
+
+        // LOGIN
+        function handleLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            const today = new Date(); const expiry = new Date(ACCESS_CONFIG.expiryDate);
+            if (today > expiry) { document.getElementById('login-error').innerText = "ACCESS EXPIRED."; return; }
+            if (u === ACCESS_CONFIG.validUser && p === ACCESS_CONFIG.validPass) {
+                localStorage.setItem('isLoggedIn', 'true');
+                showSection('menu-section');
+            } else { document.getElementById('login-error').innerText = "INVALID CREDENTIALS"; }
+        }
+        window.onload = () => { if (localStorage.getItem('isLoggedIn') === 'true') showSection('menu-section'); else showSection('login-section'); };
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- SAFE VALUE EXTRACTOR ---
-        function getVal(val) { return (val && val !== "null" && val !== "") ? val : "N/A"; }
+        // --- UNIVERSAL GET VALUE ---
+        function getVal(item, keys) {
+            if (!item) return "N/A";
+            if (!Array.isArray(keys)) keys = [keys];
+            for (let k of keys) {
+                if (item[k] && item[k] !== "null" && item[k] !== "") return item[k];
+            }
+            return "N/A";
+        }
 
-        // --- 1. NUMBER SEARCH ---
+        // --- 1. NUMBER (Uses vercel.json /api/number) ---
         async function searchNumber() {
             const val = document.getElementById('phoneInput').value;
             const area = document.getElementById('result-area-num');
-            area.innerHTML = "<p>Connecting...</p>";
+            if(!val) return alert("Enter Number");
+            area.innerHTML = "<p style='color:var(--neon-gold)'>Scanning...</p>";
+
             try {
-                // Using Vercel Rewrite path
+                // Call Vercel Rewrite
                 const res = await fetch(`/api/number?num=${val}&key=bronx-api`);
                 const data = await res.json();
                 area.innerHTML = "";
-                
-                // Handling Array or Object
+
                 let list = Array.isArray(data) ? data : (data.data ? [data.data] : [data]);
-                
+                if(list.length === 0) { area.innerHTML = "<p style='color:red'>No Data Found</p>"; return; }
+
                 list.forEach((itm, i) => {
                     const rec = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm.name || itm.fullname || itm.consumer_name)}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm.mobile || itm.phone || itm.number || val)}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm.fname || itm.father || itm.guardian)}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm.address || itm.city || itm.location)}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${getVal(itm.circle || itm.state || itm.region)}
-├─ 🆔 𝗜𝗗: ${getVal(itm.id || itm.uid || itm.consumer_id)}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm.email || itm.mail)}`;
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, ["name", "fullname", "consumer_name"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, ["mobile", "phone", "number"]) || val}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, ["fname", "father", "guardian", "father_name"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, ["address", "city", "location"])}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${getVal(itm, ["circle", "state", "region"])}
+├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "uid", "consumer_id"])}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, ["email", "mail"])}`;
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.innerText = rec.trim();
                     area.appendChild(div);
                 });
-            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found or Server Error</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>Server Error: Make sure vercel.json is added.</p>`; }
         }
 
-        // --- 2. VEHICLE SEARCH ---
+        // --- 2. VEHICLE (Uses vercel.json /api/vehicle) ---
         async function searchVehicle() {
             const val = document.getElementById('vehicleInput').value;
             const area = document.getElementById('result-area-rc');
-            area.innerHTML = "<p>Scanning...</p>";
+            if(!val) return alert("Enter RC");
+            area.innerHTML = "<p style='color:var(--neon-red)'>Scanning...</p>";
+
             try {
                 const res = await fetch(`/api/vehicle?rc_number=${val}`);
                 const data = await res.json();
-                
-                if(data.status !== "success") throw new Error("Not Found");
+                area.innerHTML = "";
+
+                if(data.status !== "success") { area.innerHTML = "<p style='color:red'>Not Found</p>"; return; }
                 const d = data.details;
-                
+
                 const rec = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
-      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
+      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
 ◢◤◢◤◢◤◢◤◢◤◢◤◢◤
 ╔══════════════════════╗
-  🎯 Target RC: ${val}
+  🎯 Target RC: ${val.toUpperCase()}
 ╚══════════════════════╝
  ⭐ OWNER DETAILS ⭐
-👤 Owner: ${getVal(d["Owner Name"])}
-🧑‍🦳 Father: ${getVal(d["Father's Name"])}
-📱 Phone: ${getVal(d["Phone"])}
-🏠 Address: ${getVal(d["Address"])}
-📍 City: ${getVal(d["City Name"])}
-🔢 Serial: ${getVal(d["Owner Serial No"])}
+👤 Owner: ${d["Owner Name"] || "N/A"}
+🧑‍🦳 Father: ${d["Father's Name"] || "N/A"}
+📱 Phone: ${d["Phone"] || "N/A"}
+🏠 Address: ${d["Address"] || "N/A"}
+📍 City: ${d["City Name"] || "N/A"}
+🔢 Serial: ${d["Owner Serial No"] || "N/A"}
  ⭐ VEHICLE SPECS ⭐
-🚘 Maker: ${getVal(d["Maker Model"])}
-🚜 Class: ${getVal(d["Vehicle Class"])}
-⛽ Fuel: ${getVal(d["Fuel Type"])}
-🗓️ Reg Date: ${getVal(d["Registration Date"])}
-🏛️ RTO: ${getVal(d["Registered RTO"])}
+🚘 Maker: ${d["Maker Model"] || "N/A"}
+🚜 Class: ${d["Vehicle Class"] || "N/A"}
+⛽ Fuel: ${d["Fuel Type"] || "N/A"}
+🗓️ Reg Date: ${d["Registration Date"] || "N/A"}
+🏛️ RTO: ${d["Registered RTO"] || "N/A"}
  ⭐ LEGAL & VALIDITY ⭐
-🏥 Insurer: ${getVal(d["Insurance Company"])}
-📅 Ins. Upto: ${getVal(d["Insurance Upto"])}
-💨 PUC Upto: ${getVal(d["PUC Upto"])}
-🛠️ Fitness: ${getVal(d["Fitness Upto"])}
-💸 Tax Upto: ${getVal(d["Tax Upto"])}
+🏥 Insurer: ${d["Insurance Company"] || "N/A"}
+📅 Ins. Upto: ${d["Insurance Upto"] || "N/A"}
+💨 PUC Upto: ${d["PUC Upto"] || "N/A"}
+🛠️ Fitness: ${d["Fitness Upto"] || "N/A"}
+💸 Tax Upto: ${d["Tax Upto"] || "N/A"}
 ━━━━━━━━━━━━━━━━━━━━`;
-                area.innerHTML = `<div class="result-card" style="border-left:4px solid var(--neon-red);color:var(--neon-gold)">${rec}</div>`;
-            } catch(e) { area.innerHTML = `<p style='color:red'>Vehicle Not Found</p>`; }
+                const div = document.createElement('div');
+                div.className = 'result-card';
+                div.style.borderLeft = "4px solid var(--neon-red)";
+                div.style.color = "var(--neon-gold)";
+                div.innerText = rec.trim();
+                area.appendChild(div);
+            } catch(e) { area.innerHTML = `<p style='color:red'>Server Error</p>`; }
         }
 
-        // --- 3. ADHAR SEARCH (PYTHON API INTEGRATION) ---
+        // --- 3. ADHAR (Uses vercel.json /api/adhar) ---
         async function searchAdhar() {
             const val = document.getElementById('adharInput').value;
             const area = document.getElementById('result-area-adhar');
-            area.innerHTML = "<p>Connecting...</p>";
+            if(!val) return alert("Enter Adhar");
+            area.innerHTML = "<p style='color:var(--neon-gold)'>Scanning...</p>";
+
             try {
-                // Fetching from Vercel Rewrite Path
-                const res = await fetch(`/api/adhar/${val}`);
+                // Calls /api/adhar/aadhar=123 which rewrites to actual API
+                const res = await fetch(`/api/adhar/aadhar=${val}`);
                 const data = await res.json();
                 area.innerHTML = "";
 
-                // Checking for "results" array from your Python code
-                if (data.status === "success" && data.results && data.results.length > 0) {
-                    data.results.forEach(item => {
-                        const rec = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗
-├─ 🆔 𝗜𝗗: ${getVal(item.id)}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item.name)}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item.fname)}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item.mobile)}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item.address)}
-├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item.email)}
-└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(item.alt)}
+                // Handle data.results (Python logic)
+                let list = [];
+                if (data.results && Array.isArray(data.results)) list = data.results;
+                else if (Array.isArray(data)) list = data;
+                else list = [data];
+
+                if(list.length === 0) { area.innerHTML = "<p style='color:red'>No Data Found</p>"; return; }
+
+                list.forEach((itm) => {
+                    const rec = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
+├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "ID"])}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, ["name", "Name"])}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, ["fname", "father"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, ["mobile", "phone"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, ["address", "Address"])}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, ["email", "mail"])}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(itm, ["alt", "alt_mobile"])}
 ━━━━━━━━━━━━━━━━━━━━`;
-                        const div = document.createElement('div');
-                        div.className = 'result-card';
-                        div.style.borderLeft = "4px solid var(--neon-gold)";
-                        div.innerText = rec.trim();
-                        area.appendChild(div);
-                    });
-                } else {
-                    area.innerHTML = "<p style='color:red'>Record Not Found</p>";
-                }
-            } catch(e) { area.innerHTML = `<p style='color:red'>Connection Failed</p>`; }
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.style.borderLeft = "4px solid var(--neon-gold)";
+                    div.innerText = rec.trim();
+                    area.appendChild(div);
+                });
+            } catch(e) { area.innerHTML = `<p style='color:red'>Server Busy or Error</p>`; }
         }
 
-        // --- 4. MAIL SEARCH (PYTHON API INTEGRATION) ---
+        // --- 4. MAIL (Uses vercel.json /api/mail) ---
         async function searchMail() {
             const val = document.getElementById('mailInput').value;
             const area = document.getElementById('result-area-mail');
-            area.innerHTML = "<p>Connecting...</p>";
+            if(!val) return alert("Enter Email");
+            area.innerHTML = "<p style='color:var(--neon-green)'>Scanning...</p>";
+
             try {
-                const res = await fetch(`/api/mail/${val}`);
+                const res = await fetch(`/api/mail/mail=${val}`);
                 const data = await res.json();
                 area.innerHTML = "";
 
-                // Assuming Mail API uses same structure as Adhar (results array)
-                let list = data.results || (Array.isArray(data) ? data : [data]);
+                let list = [];
+                if (data.results && Array.isArray(data.results)) list = data.results;
+                else if (Array.isArray(data)) list = data;
+                else list = [data];
 
-                if (list.length > 0) {
-                    list.forEach(item => {
-                        const rec = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗
-├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item.email)}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item.name)}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item.fname)}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item.mobile)}
-├─ 🆔 𝗜𝗗: ${getVal(item.id)}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item.address)}
-└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(item.alt)}
+                if(list.length === 0) { area.innerHTML = "<p style='color:red'>No Data Found</p>"; return; }
+
+                list.forEach((itm, i) => {
+                    const rec = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, ["email", "mail"]) || val}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, ["name", "Name"])}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, ["fname", "father"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, ["mobile", "phone"])}
+├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "uid"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, ["address", "Address"])}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(itm, ["alt", "alt_mobile"])}
 ━━━━━━━━━━━━━━━━━━━━`;
-                        const div = document.createElement('div');
-                        div.className = 'result-card';
-                        div.style.borderLeft = "4px solid var(--neon-green)";
-                        div.innerText = rec.trim();
-                        area.appendChild(div);
-                    });
-                } else {
-                    area.innerHTML = "<p style='color:red'>Record Not Found</p>";
-                }
-            } catch(e) { area.innerHTML = `<p style='color:red'>Connection Failed</p>`; }
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.style.borderLeft = "4px solid var(--neon-green)";
+                    div.style.color = "var(--neon-green)";
+                    div.innerText = rec.trim();
+                    area.appendChild(div);
+                });
+            } catch(e) { area.innerHTML = `<p style='color:red'>Server Busy or Error</p>`; }
         }
 
         function copyResult(id) {
             const text = document.getElementById(id).innerText;
-            if(text) navigator.clipboard.writeText(text).then(() => alert("Copied!"));
+            if(!text) return alert("Empty!");
+            navigator.clipboard.writeText(text).then(() => alert("Copied!"));
         }
     </script>
 </body>
