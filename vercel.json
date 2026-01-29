@@ -1,9 +1,9 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
+  "rewrites": [
+    { "source": "/api/number", "destination": "https://bronx-api-sable.vercel.app/search" },
+    { "source": "/api/vehicle", "destination": "https://bronx-rc-api.vercel.app/" },
+    { "source": "/api/adhar", "destination": "https://bronx-adhar-api.vercel.app/" },
+    { "source": "/api/mail", "destination": "https://bronx-mail-api.vercel.app/" }
   ]
 }
