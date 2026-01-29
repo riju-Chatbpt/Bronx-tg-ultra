@@ -72,7 +72,7 @@
             background: linear-gradient(to right, var(--neon-blue), var(--neon-red));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 26px; /* Slightly bigger */
+            font-size: 26px; 
             letter-spacing: 2px;
             margin-bottom: 5px;
             text-transform: uppercase;
@@ -242,7 +242,7 @@
             location.reload();
         }
 
-        // --- 3. UNIVERSAL VALUE EXTRACTOR (FROM YOUR BOT) ---
+        // --- 3. HELPER FUNCTION (BOT LOGIC) ---
         function getVal(item, keys) {
             for (let i = 0; i < keys.length; i++) {
                 let k = keys[i];
@@ -253,37 +253,7 @@
             return "N/A"; 
         }
 
-        // --- 4. ADVANCED FETCH SYSTEM (FIXES "FAILED TO FETCH") ---
-        async function fetchWithRedundancy(targetUrl) {
-            // Priority 1: High Performance Proxy (Handles Big Data)
-            const proxy1 = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
-            // Priority 2: Backup Proxy
-            const proxy2 = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
-            
-            try {
-                // Try Proxy 1
-                console.log("Trying Engine 1...");
-                let response = await fetch(proxy1);
-                if (response.ok) return await response.json();
-                throw new Error("Proxy 1 Failed");
-            } catch (err1) {
-                try {
-                    // Try Proxy 2
-                    console.log("Trying Engine 2...");
-                    let response = await fetch(proxy2);
-                    if (response.ok) return await response.json();
-                    throw new Error("Proxy 2 Failed");
-                } catch (err2) {
-                    // Try Direct (Last Resort)
-                    console.log("Trying Direct...");
-                    let response = await fetch(targetUrl);
-                    if (response.ok) return await response.json();
-                    throw new Error("ALL CONNECTIONS FAILED");
-                }
-            }
-        }
-
-        // --- 5. SEARCH LOGIC ---
+        // --- 4. SEARCH LOGIC (VERCEL REWRITE MODE) ---
 
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
@@ -291,13 +261,20 @@
             
             if (!phone) { alert("Please enter a number"); return; }
             
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Satellite Nodes... 📡<br>Scanning Large Database...</p>";
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Secure Server... 📡</p>";
 
-            const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
+            // USE LOCAL VERCEL PROXY (Must add vercel.json for this to work)
+            const internalUrl = `/api/proxy?num=${phone}&key=bronx-api`;
 
             try {
-                // USE THE NEW ROBUST FETCH FUNCTION
-                const data = await fetchWithRedundancy(targetUrl);
+                // Fetch from our own Vercel server (Bypasses CORS instantly)
+                let response = await fetch(internalUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Server Error: ${response.status}`);
+                }
+                
+                let data = await response.json();
 
                 resultArea.innerHTML = ""; 
 
@@ -321,10 +298,10 @@
                      return;
                 }
 
-                // --- RENDER ALL RESULTS (Even if 50+) ---
+                // --- RENDER ALL RESULTS ---
                 let count = 0;
                 resultsArray.forEach((item, index) => {
-                    if(!item) return; // Skip empty
+                    if(!item) return; 
                     count++;
 
                     // MAPPING
@@ -355,7 +332,7 @@
 
             } catch (error) {
                 console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Failed.<br>Server might be busy or blocking request.<br>Try again in 5 seconds.</p>`;
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>Make sure you added 'vercel.json' file.<br>Error: ${error.message}</p>`;
             }
         }
 
