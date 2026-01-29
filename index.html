@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING --- */
+        /* --- CSS STYLING (SAME NEON LOOK) --- */
         :root {
             --neon-blue: #00f3ff;
             --neon-red: #ff004c;
@@ -29,9 +29,8 @@
             background-size: 40px 40px;
         }
 
-        /* --- CONTAINER STYLES --- */
         .container {
-            display: none; /* SAB KUCH HIDDEN RAHEGA */
+            display: none; 
             width: 100%;
             max-width: 380px; 
             padding: 20px;
@@ -41,7 +40,6 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- LOGIN PAGE (Visible by Default) --- */
         #login-section {
             display: block; 
             background: var(--glass);
@@ -51,7 +49,6 @@
             border-radius: 15px;
         }
 
-        /* --- MENU GRID --- */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -81,7 +78,6 @@
         .menu-btn.mail { border-color: var(--neon-green); }
         .menu-btn.mail:hover { background: var(--neon-green); color: black; }
 
-        /* --- PROFILE --- */
         .profile-container {
             position: relative;
             width: 100px; 
@@ -239,7 +235,6 @@
 
             if (user === ACCESS_CONFIG.validUser && pass === ACCESS_CONFIG.validPass) {
                 localStorage.setItem('isLoggedIn', 'true');
-                // HIDE LOGIN, SHOW MENU
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('menu-section').style.display = 'block';
             } else {
@@ -256,42 +251,40 @@
 
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- SUPER SCANNER FUNCTION (FIXES N/A) ---
-        // This checks every possible spelling of a key
-        function getVal(item, keys) {
-            if(!item) return "N/A";
-            for (let i = 0; i < keys.length; i++) {
-                let k = keys[i];
-                // Check exact match, or nested matches if needed
-                if (item[k] && item[k] !== "null" && item[k] !== "") return item[k];
+        // --- FETCH HELPER (THE FIX FOR N/A) ---
+        // This handles "AllOrigins" weird response format
+        async function fetchSmart(url) {
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+            
+            try {
+                // Try Direct First (Works if Vercel Rewrite is active or API has CORS enabled)
+                let response = await fetch(url);
+                if (response.ok) return await response.json();
+                throw new Error("Direct Fail");
+            } catch (e) {
+                // Try Proxy
+                console.log("Using Proxy...");
+                let response = await fetch(proxyUrl);
+                let data = await response.json();
+                // AllOrigins returns data inside "contents" as a string
+                if (data.contents) {
+                    return JSON.parse(data.contents); 
+                }
+                throw new Error("Proxy Fail");
             }
-            return "N/A"; 
         }
 
-        // --- 1. NUMBER SEARCH LOGIC (FIXED) ---
+        // --- 1. NUMBER SEARCH LOGIC (FIXED KEYS) ---
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
             const resultArea = document.getElementById('result-area-num');
             if (!phone) { alert("Enter Number!"); return; }
             
             resultArea.innerHTML = "<p style='color:var(--neon-blue)'>Scanning Database...</p>";
-            
             const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
-            const encodedUrl = encodeURIComponent(targetUrl);
-            const engine1 = `https://corsproxy.io/?${encodedUrl}`;
-            const engine2 = `https://api.allorigins.win/raw?url=${encodedUrl}`;
 
             try {
-                let data;
-                try {
-                    let res = await fetch(engine1);
-                    if(res.ok) data = await res.json();
-                    else throw new Error("Fail");
-                } catch(e) {
-                    let res = await fetch(engine2);
-                    data = await res.json();
-                }
-
+                const data = await fetchSmart(targetUrl);
                 resultArea.innerHTML = ""; 
                 
                 let resultsArray = [];
@@ -306,18 +299,20 @@
                 resultsArray.forEach((item, index) => {
                     if(!item) return; 
                     
-                    // SUPER SCANNER KEYS (ADDED MORE VARIATIONS)
-                    const name = getVal(item, ["name", "Name", "fullname", "full_name", "consumer_name", "user_name"]);
-                    const father = getVal(item, ["father", "Father", "fname", "father_name", "guardian_name"]);
-                    const address = getVal(item, ["address", "Address", "city", "location", "permanent_address"]);
-                    const circle = getVal(item, ["circle", "Circle", "state", "region", "zone"]);
-                    const id = getVal(item, ["id", "ID", "operator", "consumer_id", "uid"]);
-                    const email = getVal(item, ["email", "Email", "mail"]);
+                    // MAPPING WITH EXACT KEYS YOU PROVIDED
+                    // mobile, name, fname, address, alt, circle, id, email
+                    const name = item.name || item.Name || "Unknown";
+                    const mobile = item.mobile || item.Mobile || phone;
+                    const father = item.fname || item.father || "N/A";
+                    const address = item.address || item.Address || "N/A";
+                    const circle = item.circle || item.Circle || "N/A";
+                    const id = item.id || item.ID || "N/A";
+                    const email = item.email || item.Email || "N/A";
 
                     const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "Mobile", "phone", "number"]) || phone}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
 ├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
 ├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
@@ -331,11 +326,12 @@
                 });
 
             } catch (error) {
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`;
+                console.log(error);
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: Server Busy or Invalid Key</p>`;
             }
         }
 
-        // --- 2. VEHICLE SEARCH LOGIC (FIXED N/A) ---
+        // --- 2. VEHICLE SEARCH LOGIC (FIXED JSON PATH) ---
         async function searchVehicle() {
             const rc = document.getElementById('vehicleInput').value.trim();
             const resultArea = document.getElementById('result-area-rc');
@@ -347,18 +343,10 @@
             const targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${rc}`;
             
             try {
-                let data;
-                try {
-                    let res = await fetch(targetUrl); // Try Direct
-                    if(res.ok) data = await res.json();
-                    else throw new Error("Direct Fail");
-                } catch(e) {
-                    let res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
-                    data = await res.json();
-                }
-
+                const data = await fetchSmart(targetUrl);
                 resultArea.innerHTML = "";
 
+                // CHECKING STRUCTURE: data -> details -> keys
                 if (data.status !== "success" || !data.details) {
                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>";
                     return;
@@ -366,20 +354,7 @@
 
                 const d = data.details;
 
-                // SPECIAL FIX: Trying EXACT keys from your JSON example
-                const owner = d["Owner Name"] || d["Owner"] || d["owner_name"] || "N/A";
-                const father = d["Father's Name"] || d["Father Name"] || d["father_name"] || "N/A";
-                const phone = d["Phone"] || d["Mobile"] || d["mobile_no"] || "Masked";
-                const address = d["Address"] || d["Present Address"] || "N/A";
-                const city = d["City Name"] || d["city"] || "N/A";
-                const serial = d["Owner Serial No"] || d["Serial"] || "N/A";
-                
-                const maker = d["Maker Model"] || d["Model"] || "N/A";
-                const vClass = d["Vehicle Class"] || d["Class"] || "N/A";
-                const fuel = d["Fuel Type"] || d["Fuel"] || "N/A";
-                const regDate = d["Registration Date"] || d["Reg Date"] || "N/A";
-                const rto = d["Registered RTO"] || d["RTO"] || "N/A";
-
+                // USING EXACT KEYS FROM YOUR JSON
                 const vipRecord = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
       🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
@@ -389,19 +364,19 @@
 ╚══════════════════════╝
 
  ⭐ OWNER DETAILS ⭐
-👤 Owner: ${owner}
-🧑‍🦳 Father: ${father}
-📱 Phone: ${phone}
-🏠 Address: ${address}
-📍 City: ${city}
-🔢 Serial: ${serial}
+👤 Owner: ${d["Owner Name"] || "N/A"}
+🧑‍🦳 Father: ${d["Father's Name"] || "N/A"}
+📱 Phone: ${d["Phone"] || "N/A"}
+🏠 Address: ${d["Address"] || "N/A"}
+📍 City: ${d["City Name"] || "N/A"}
+🔢 Serial: ${d["Owner Serial No"] || "N/A"}
 
  ⭐ VEHICLE SPECS ⭐
-🚘 Maker: ${maker}
-🚜 Class: ${vClass}
-⛽ Fuel: ${fuel}
-🗓️ Reg Date: ${regDate}
-🏛️ RTO: ${rto}
+🚘 Maker: ${d["Maker Model"] || "N/A"}
+🚜 Class: ${d["Vehicle Class"] || "N/A"}
+⛽ Fuel: ${d["Fuel Type"] || "N/A"}
+🗓️ Reg Date: ${d["Registration Date"] || "N/A"}
+🏛️ RTO: ${d["Registered RTO"] || "N/A"}
 
  ⭐ LEGAL & VALIDITY ⭐
 🏥 Insurer: ${d["Insurance Company"] || "N/A"}
