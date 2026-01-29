@@ -41,16 +41,16 @@
             max-width: 400px;
         }
 
-        /* --- MAIN DASHBOARD (Hidden by default) --- */
+        /* --- MAIN DASHBOARD --- */
         #dashboard-section {
-            display: none; /* Hidden until logged in */
+            display: none; 
             width: 100%;
             max-width: 450px;
             padding: 20px;
             text-align: center;
         }
 
-        /* Profile Image with Glow */
+        /* Profile Image */
         .profile-container {
             position: relative;
             width: 120px;
@@ -67,14 +67,16 @@
             object-fit: cover;
         }
 
+        /* NAME TITLE */
         h1 {
             background: linear-gradient(to right, var(--neon-blue), var(--neon-red));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 24px;
+            font-size: 26px; /* Slightly bigger */
             letter-spacing: 2px;
             margin-bottom: 5px;
             text-transform: uppercase;
+            font-weight: 800;
         }
 
         .subtitle {
@@ -149,7 +151,7 @@
             padding: 15px;
             margin-bottom: 15px;
             font-family: monospace;
-            white-space: pre-wrap; /* Keeps formatting */
+            white-space: pre-wrap; 
             color: var(--neon-green);
             font-size: 13px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
@@ -240,21 +242,48 @@
             location.reload();
         }
 
-        // --- 3. HELPER FUNCTION FROM YOUR BOT (THE FIX!) ---
-        
-        // This function checks ALL possible keys, just like your Bot
+        // --- 3. UNIVERSAL VALUE EXTRACTOR (FROM YOUR BOT) ---
         function getVal(item, keys) {
             for (let i = 0; i < keys.length; i++) {
                 let k = keys[i];
-                // Check if key exists and is not empty or null
                 if (item[k] && item[k] !== "null" && item[k] !== "") {
                     return item[k];
                 }
             }
-            return "N/A"; // Return N/A if nothing found
+            return "N/A"; 
         }
 
-        // --- 4. SEARCH LOGIC ---
+        // --- 4. ADVANCED FETCH SYSTEM (FIXES "FAILED TO FETCH") ---
+        async function fetchWithRedundancy(targetUrl) {
+            // Priority 1: High Performance Proxy (Handles Big Data)
+            const proxy1 = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+            // Priority 2: Backup Proxy
+            const proxy2 = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+            
+            try {
+                // Try Proxy 1
+                console.log("Trying Engine 1...");
+                let response = await fetch(proxy1);
+                if (response.ok) return await response.json();
+                throw new Error("Proxy 1 Failed");
+            } catch (err1) {
+                try {
+                    // Try Proxy 2
+                    console.log("Trying Engine 2...");
+                    let response = await fetch(proxy2);
+                    if (response.ok) return await response.json();
+                    throw new Error("Proxy 2 Failed");
+                } catch (err2) {
+                    // Try Direct (Last Resort)
+                    console.log("Trying Direct...");
+                    let response = await fetch(targetUrl);
+                    if (response.ok) return await response.json();
+                    throw new Error("ALL CONNECTIONS FAILED");
+                }
+            }
+        }
+
+        // --- 5. SEARCH LOGIC ---
 
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
@@ -262,30 +291,17 @@
             
             if (!phone) { alert("Please enter a number"); return; }
             
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Satellite... 📡</p>";
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Satellite Nodes... 📡<br>Scanning Large Database...</p>";
 
-            // URLs
             const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
 
             try {
-                let data;
-                let response;
-
-                // Try Direct then Proxy
-                try {
-                    response = await fetch(targetUrl);
-                    if (!response.ok) throw new Error("Direct Fail");
-                    data = await response.json();
-                } catch (directError) {
-                    response = await fetch(proxyUrl);
-                    data = await response.json();
-                }
+                // USE THE NEW ROBUST FETCH FUNCTION
+                const data = await fetchWithRedundancy(targetUrl);
 
                 resultArea.innerHTML = ""; 
 
-                // --- DATA EXTRACTION ---
-                // Find the array no matter where it is hidden
+                // --- DATA FINDER ---
                 let resultsArray = [];
 
                 if (Array.isArray(data)) {
@@ -297,7 +313,7 @@
                 } else if (data.info && Array.isArray(data.info)) {
                     resultsArray = data.info;
                 } else {
-                    resultsArray = [data]; // Single object
+                    resultsArray = [data]; 
                 }
 
                 if (!resultsArray || resultsArray.length === 0) {
@@ -305,15 +321,14 @@
                      return;
                 }
 
-                // --- GENERATE CARDS (USING YOUR BOT LOGIC) ---
+                // --- RENDER ALL RESULTS (Even if 50+) ---
                 let count = 0;
                 resultsArray.forEach((item, index) => {
-                    if(!item) return;
+                    if(!item) return; // Skip empty
                     count++;
 
-                    // USING getVal EXACTLY LIKE YOUR BOT CODE
+                    // MAPPING
                     const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
-                    // Mobile: if not found in data, use the searched phone number
                     const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
                     const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
                     const address = getVal(item, ["address", "city", "location", "Address"]);
@@ -340,11 +355,10 @@
 
             } catch (error) {
                 console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Error: ${error.message}</p>`;
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Failed.<br>Server might be busy or blocking request.<br>Try again in 5 seconds.</p>`;
             }
         }
 
-        // --- 5. COPY LOGIC ---
         function copyAllResults() {
             const resultText = document.getElementById('result-area').innerText;
             if(!resultText) { alert("Nothing to copy!"); return; }
