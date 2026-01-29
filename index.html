@@ -156,9 +156,6 @@
             overflow-x: hidden;
         }
 
-        /* Error Text */
-        #error-msg { color: var(--neon-red); margin-top: 10px; display: none; }
-
     </style>
 </head>
 <body>
@@ -202,7 +199,6 @@
 
     <script>
         // --- 1. CONFIGURATION ---
-        
         const ACCESS_CONFIG = {
             validUser: "admin",        
             validPass: "rehan123",     
@@ -210,12 +206,10 @@
         };
 
         // --- 2. LOGIN LOGIC ---
-
         function handleLogin() {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
             const errorMsg = document.getElementById('login-error');
-
             const today = new Date();
             const expiry = new Date(ACCESS_CONFIG.expiryDate);
 
@@ -247,7 +241,7 @@
             location.reload();
         }
 
-        // --- 3. SEARCH LOGIC (CORRECTED KEYS) ---
+        // --- 3. SEARCH LOGIC (UNIVERSAL SCANNER) ---
 
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
@@ -257,67 +251,76 @@
             
             resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Satellite... 📡</p>";
 
-            // DIRECT API LINK 
+            // 1. URL CONFIGURATION
             const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
-            
-            // PROXY LINK (Safety)
             const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
 
             try {
                 let data;
                 let response;
 
+                // 2. FETCH DATA (Try Direct -> Then Proxy)
                 try {
-                    // Try 1: Direct
                     response = await fetch(targetUrl);
                     if (!response.ok) throw new Error("Direct Fail");
                     data = await response.json();
                 } catch (directError) {
-                    // Try 2: Proxy
                     response = await fetch(proxyUrl);
                     data = await response.json();
                 }
 
-                resultArea.innerHTML = ""; // Clear loading
+                resultArea.innerHTML = ""; // Clear loading text
 
-                // --- DATA HANDLING ---
+                // 3. UNIVERSAL DATA FINDER (Finds array anywhere)
                 let resultsArray = [];
 
                 if (Array.isArray(data)) {
                     resultsArray = data;
                 } else if (data.data && Array.isArray(data.data)) {
-                    resultsArray = data.data;
-                } else if (data.status === "success" || data.data) {
-                    resultsArray = [data.data || data];
+                    resultsArray = data.data; // API often hides data here
+                } else if (data.results && Array.isArray(data.results)) {
+                    resultsArray = data.results;
+                } else if (data.info && Array.isArray(data.info)) {
+                    resultsArray = data.info;
                 } else {
+                    // If it's a single object, put it in an array
                     resultsArray = [data];
                 }
 
+                // If array is found but empty
                 if (!resultsArray || resultsArray.length === 0) {
                      resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
                      return;
                 }
 
-                // Render Cards with YOUR EXACT KEYS
+                // 4. DISPLAY ALL RESULTS (Loop 10 times if 10 results)
                 let count = 0;
                 resultsArray.forEach((item) => {
+                    // Skip completely empty items
                     if(!item) return;
 
                     count++;
                     
-                    // HERE IS THE FIX: MAPPING CORRECT KEYS
-                    // API: fname -> Code: Father
-                    // API: id    -> Code: ID
+                    // --- MAPPING (Using keys you provided) ---
+                    // Priority: item.fname -> if empty, try item.father -> if empty, show N/A
                     
+                    const nameStr = item.name || item.Name || "Unknown";
+                    const mobileStr = item.mobile || item.Mobile || item.number || phone;
+                    const fatherStr = item.fname || item.father || item.Father || "N/A";
+                    const addressStr = item.address || item.Address || "N/A";
+                    const circleStr = item.circle || item.Circle || item.state || "N/A";
+                    const idStr = item.id || item.operator || item.ID || "N/A";
+                    const emailStr = item.email || item.Email || "N/A";
+
                     const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
-├─ 👤 𝗡𝗮𝗺𝗲: ${item.name || "Unknown"}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${item.mobile || phone}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${item.fname || "N/A"}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${item.address || "N/A"}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${item.circle || "N/A"}
-├─ 🆔 𝗜𝗗: ${item.id || "N/A"}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${item.email || "N/A"}
+├─ 👤 𝗡𝗮𝗺𝗲: ${nameStr}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobileStr}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${fatherStr}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${addressStr}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circleStr}
+├─ 🆔 𝗜𝗗: ${idStr}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${emailStr}
                     `;
 
                     const div = document.createElement('div');
@@ -326,13 +329,9 @@
                     resultArea.appendChild(div);
                 });
 
-                if(count === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No valid data received.</p>";
-                }
-
             } catch (error) {
                 console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Error: ${error.message}</p>`;
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ System Error. Check API Key.</p>`;
             }
         }
 
