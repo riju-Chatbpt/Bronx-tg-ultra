@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bronx Ultra Intelligence</title>
+    <style>
+        /* --- CSS STYLING --- */
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-red: #ff004c;
+            --neon-green: #00ff6a;
+            --neon-gold: #ffd700;
+            --dark-bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: 
+                linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
+            background-size: 40px 40px;
+        }
+
+        /* --- LOGIN PAGE --- */
+        #login-section {
+            text-align: center;
+            background: var(--glass);
+            padding: 40px;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        /* --- MAIN DASHBOARD (Hidden by default) --- */
+        #dashboard-section {
+            display: none; /* Hidden until logged in */
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Profile Image with Glow */
+        .profile-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+        
+        .profile-pic {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            object-fit: cover;
+        }
+
+        h1 {
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: #ccc;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Inputs */
+        input {
+            width: 100%;
+            background: black;
+            border: 2px solid var(--neon-green);
+            color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+        }
+        
+        input:focus { box-shadow: 0 0 15px var(--neon-green); }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            color: black;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+        .btn-search {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-red));
+        }
+
+        .btn-copy {
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-gold));
+        }
+        
+        .btn:active { transform: scale(0.98); }
+
+        /* Info Box */
+        .info-box {
+            border: 2px solid var(--neon-blue);
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 10px var(--neon-blue);
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .info-highlight { color: var(--neon-red); font-weight: bold; }
+        .info-white { color: white; }
+
+        /* Results Area */
+        #result-area {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background: rgba(20, 20, 20, 0.95);
+            border-left: 4px solid var(--neon-gold);
+            padding: 15px;
+            margin-bottom: 15px;
+            font-family: monospace;
+            white-space: pre-wrap; /* Keeps formatting */
+            color: var(--neon-green);
+            font-size: 13px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Error Text */
+        #error-msg { color: var(--neon-red); margin-top: 10px; display: none; }
+
+    </style>
+</head>
+<body>
+
+    <div id="login-section">
+        <h2 style="color:var(--neon-gold); margin-bottom:20px;">ACCESS CONTROL</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button class="btn btn-search" onclick="handleLogin()">Login System</button>
+        <p id="login-error" style="color:var(--neon-red); margin-top:10px;"></p>
+    </div>
+
+    <div id="dashboard-section">
+        
+        <div class="profile-container">
+            <img src="https://i.ibb.co/Jqj5g0z/hacker-avatar.png" alt="Profile" class="profile-pic">
+        </div>
+
+        <h1>REHAN MALIK</h1>
+        <div class="subtitle">Telegram ID<br><span style="color:var(--neon-blue)">@BRONX_ULTRA</span></div>
+
+        <div style="display: flex; gap: 5px;">
+            <input type="number" id="phoneInput" placeholder="Enter Phone Number" style="border-color: var(--neon-green);">
+            <button class="btn btn-search" onclick="searchNumber()" style="width: 40%; margin-bottom: 15px;">SEARCH</button>
+        </div>
+
+        <div class="info-box">
+            🔐 <b>Secure Phone Intelligence System</b><br>
+            <span class="info-white">Get complete phone number details</span><br>
+            Name • Address • Network • <span class="info-highlight">More</span><br>
+            Fast • Reliable • Verified 📡
+        </div>
+
+        <div id="result-area"></div>
+
+        <button class="btn btn-copy" onclick="copyAllResults()">📋 COPY FULL RESULT</button>
+        
+        <br>
+        <button onclick="logout()" style="background:transparent; border:1px solid var(--neon-red); color:var(--neon-red); padding:5px 10px; margin-top:20px;">LOGOUT</button>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURATION (EDIT THIS) ---
+        
+        const ACCESS_CONFIG = {
+            validUser: "admin",        // Your Username
+            validPass: "rehan123",     // Your Password
+            expiryDate: "2026-12-30"   // Format: YYYY-MM-DD (Expiration Date)
+        };
+
+        const API_KEY = "bronx-api";   // API Key parameter
+
+        // --- 2. LOGIN LOGIC ---
+
+        function handleLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('login-error');
+
+            // Check Date
+            const today = new Date();
+            const expiry = new Date(ACCESS_CONFIG.expiryDate);
+
+            if (today > expiry) {
+                errorMsg.innerText = "ACCESS EXPIRED. CONTACT ADMIN.";
+                return;
+            }
+
+            // Check Credentials
+            if (user === ACCESS_CONFIG.validUser && pass === ACCESS_CONFIG.validPass) {
+                // Success
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('dashboard-section').style.display = 'block';
+                localStorage.setItem('isLoggedIn', 'true');
+            } else {
+                errorMsg.innerText = "INVALID CREDENTIALS";
+            }
+        }
+
+        // Auto Logout on Load if Expired
+        window.onload = function() {
+            const today = new Date();
+            const expiry = new Date(ACCESS_CONFIG.expiryDate);
+            
+            if (today > expiry) {
+                localStorage.removeItem('isLoggedIn');
+                alert("Subscription Expired!");
+                location.reload(); 
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            location.reload();
+        }
+
+        // --- 3. SEARCH LOGIC ---
+
+        async function searchNumber() {
+            const phone = document.getElementById('phoneInput').value;
+            const resultArea = document.getElementById('result-area');
+            
+            if (!phone) { alert("Please enter a number"); return; }
+
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Searching Database... 📡</p>";
+
+            try {
+                // API Call
+                const url = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=${API_KEY}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                resultArea.innerHTML = ""; // Clear loading text
+
+                // The API might return an array (list) or a single object. 
+                // We handle both cases here.
+                let resultsArray = [];
+                if (Array.isArray(data)) {
+                    resultsArray = data;
+                } else if (data.status === "success" || data.data) {
+                    // Adjust based on actual API structure
+                    resultsArray = [data]; 
+                } else {
+                    // Fallback if data comes as a direct object
+                    resultsArray = [data];
+                }
+
+                if (resultsArray.length === 0) {
+                    resultArea.innerHTML = "<p style='color:red'>No Records Found</p>";
+                    return;
+                }
+
+                // Loop through ALL results
+                resultsArray.forEach((item) => {
+                    // Note: You may need to change item.name, item.mobile etc. based on exactly 
+                    // what keys the API returns. I am assuming standard keys.
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
+├─ 👤 𝗡𝗮𝗺𝗲: ${item.name || "N/A"}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${item.mobile || item.number || phone}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${item.father || item.father_name || "N/A"}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${item.address || "N/A"}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${item.circle || item.state || "N/A"}
+├─ 🆔 𝗜𝗗: ${item.operator || "N/A"}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${item.email || "N/A"}
+                    `;
+
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.innerText = record.trim();
+                    resultArea.appendChild(div);
+                });
+
+            } catch (error) {
+                console.error(error);
+                resultArea.innerHTML = "<p style='color:red'>Server Error or Invalid API Key.</p>";
+            }
+        }
+
+        // --- 4. COPY LOGIC ---
+        function copyAllResults() {
+            const resultText = document.getElementById('result-area').innerText;
+            if(!resultText) { alert("Nothing to copy!"); return; }
+
+            navigator.clipboard.writeText(resultText).then(() => {
+                alert("✅ Full Result Copied to Clipboard!");
+            });
+        }
+    </script>
+</body>
+</html>
