@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING (SAME OP LOOK) --- */
+        /* --- CSS STYLING (THEME: NEON DARK) --- */
         :root {
             --neon-blue: #00f3ff;
             --neon-red: #ff004c;
@@ -74,12 +74,15 @@
         }
 
         .menu-btn:hover { background: var(--neon-blue); color: black; box-shadow: 0 0 20px var(--neon-blue); }
+        
         .menu-btn.vehicle { border-color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 0, 76, 0.2); }
         .menu-btn.vehicle:hover { background: var(--neon-red); color: white; box-shadow: 0 0 20px var(--neon-red); }
-        .menu-btn.adhar { border-color: var(--neon-gold); }
-        .menu-btn.adhar:hover { background: var(--neon-gold); color: black; }
-        .menu-btn.mail { border-color: var(--neon-green); }
-        .menu-btn.mail:hover { background: var(--neon-green); color: black; }
+        
+        .menu-btn.adhar { border-color: var(--neon-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+        .menu-btn.adhar:hover { background: var(--neon-gold); color: black; box-shadow: 0 0 20px var(--neon-gold); }
+        
+        .menu-btn.mail { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 106, 0.2); }
+        .menu-btn.mail:hover { background: var(--neon-green); color: black; box-shadow: 0 0 20px var(--neon-green); }
 
 
         .profile-container {
@@ -190,8 +193,8 @@
         <div class="menu-grid">
             <div class="menu-btn" onclick="showSection('number-section')">📱<br>Number Info</div>
             <div class="menu-btn vehicle" onclick="showSection('vehicle-section')">🏎️<br>Vehicle Info</div>
-            <div class="menu-btn adhar" onclick="alert('Coming Soon! 🚧')">🆔<br>Adhar Info</div>
-            <div class="menu-btn mail" onclick="alert('Coming Soon! 🚧')">📧<br>Mail Info</div>
+            <div class="menu-btn adhar" onclick="showSection('adhar-section')">🆔<br>Adhar Info</div>
+            <div class="menu-btn mail" onclick="showSection('mail-section')">📧<br>Mail Info</div>
         </div>
         
         <button onclick="logout()" class="btn btn-back">LOGOUT</button>
@@ -222,6 +225,34 @@
 
         <div id="result-area-rc" class="result-area"></div>
         <button class="btn btn-copy" onclick="copyResult('result-area-rc')" style="background: linear-gradient(90deg, var(--neon-gold), var(--neon-red));">📋 COPY</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
+    </div>
+
+    <div id="adhar-section" class="container">
+        <h1 style="background: linear-gradient(to right, var(--neon-gold), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ADHAR INFO</h1>
+        <div class="subtitle">UIDAI INTELLIGENCE</div>
+        
+        <div style="display: flex; gap: 5px;">
+            <input type="number" id="adharInput" placeholder="Enter Adhar Number" style="border-color: var(--neon-gold);">
+            <button class="btn btn-search" onclick="searchAdhar()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-gold), #fff);">GO</button>
+        </div>
+
+        <div id="result-area-adhar" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-adhar')" style="background: linear-gradient(90deg, var(--neon-gold), #fff); color:black;">📋 COPY</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
+    </div>
+
+    <div id="mail-section" class="container">
+        <h1 style="background: linear-gradient(to right, var(--neon-green), var(--neon-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MAIL INFO</h1>
+        <div class="subtitle">EMAIL OSINT</div>
+        
+        <div style="display: flex; gap: 5px;">
+            <input type="email" id="mailInput" placeholder="Enter Email Address" style="border-color: var(--neon-green);">
+            <button class="btn btn-search" onclick="searchMail()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));">GO</button>
+        </div>
+
+        <div id="result-area-mail" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-mail')" style="background: linear-gradient(90deg, var(--neon-green), var(--neon-blue)); color:black;">📋 COPY</button>
         <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
     </div>
 
@@ -277,50 +308,41 @@
             return "N/A"; 
         }
 
-        // --- 3-LAYER ENGINE SYSTEM (Updated for Parsing) ---
+        // --- 3-LAYER ENGINE SYSTEM ---
         async function smartFetch(url) {
             const encodedUrl = encodeURIComponent(url);
-
-            // Engine 1: ThingProxy (Good for text)
             const engine1 = `https://thingproxy.freeboard.io/fetch/${url}`;
-            // Engine 2: CorsProxy (Fastest)
             const engine2 = `https://corsproxy.io/?${encodedUrl}`;
-            // Engine 3: AllOrigins (Reliable Backup)
             const engine3 = `https://api.allorigins.win/get?url=${encodedUrl}`;
 
-            // Try Engine 1
             try {
                 let res = await fetch(engine1);
                 if(res.ok) return await res.json();
             } catch(e) { console.log("Engine 1 Failed"); }
 
-            // Try Engine 2
             try {
                 let res = await fetch(engine2);
                 if(res.ok) return await res.json();
             } catch(e) { console.log("Engine 2 Failed"); }
 
-            // Try Engine 3 (Includes Parsing Fix)
             try {
                 let res = await fetch(engine3);
                 if(res.ok) {
                     let data = await res.json();
-                    if(data.contents) return JSON.parse(data.contents); // FIX FOR ALLORIGINS
+                    if(data.contents) return JSON.parse(data.contents); 
                     return data;
                 }
             } catch(e) { console.log("Engine 3 Failed"); }
 
-            throw new Error("All Servers Busy. Try again in 10 seconds.");
+            throw new Error("All Servers Busy. Try again later.");
         }
 
-        // --- 1. NUMBER SEARCH FUNCTION ---
+        // --- 1. NUMBER SEARCH ---
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
             const resultArea = document.getElementById('result-area-num');
-            
-            if (!phone) { alert("Please enter a number"); return; }
-            
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Database... 📡</p>";
+            if (!phone) { alert("Enter Number"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-blue)'>Scanning...</p>";
             const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
 
             try {
@@ -328,93 +350,49 @@
                 resultArea.innerHTML = ""; 
 
                 let resultsArray = [];
-                if (Array.isArray(data)) { resultsArray = data; }
-                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
-                else if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
-                else if (data.info && Array.isArray(data.info)) { resultsArray = data.info; }
-                else { resultsArray = [data]; }
+                if (Array.isArray(data)) resultsArray = data;
+                else if (data.data) resultsArray = Array.isArray(data.data) ? data.data : [data.data];
+                else resultsArray = [data];
 
                 if (!resultsArray || resultsArray.length === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
-                     return;
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data.</p>"; return;
                 }
 
                 resultsArray.forEach((item, index) => {
                     if(!item) return; 
-
-                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
-                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
-                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
-                    const address = getVal(item, ["address", "city", "location", "Address"]);
-                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
-                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
-                    const email = getVal(item, ["email", "mail", "Email"]);
-
                     const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
-├─ 👤 𝗡𝗮𝗺𝗲: ${name}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
-├─ 🆔 𝗜𝗗: ${id}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item, ["name", "fullname", "consumer_name", "Name"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "phone", "number", "Mobile"]) || phone}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item, ["fname", "father", "guardian", "father_name", "Father"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item, ["address", "city", "location", "Address"])}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${getVal(item, ["circle", "state", "region", "Circle"])}
+├─ 🆔 𝗜𝗗: ${getVal(item, ["id", "uid", "consumer_id", "ID", "operator"])}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item, ["email", "mail", "Email"])}
                     `;
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.innerText = record.trim();
                     resultArea.appendChild(div);
                 });
-
-            } catch (error) {
-                console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`;
-            }
+            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
         }
 
-        // --- 2. VEHICLE SEARCH FUNCTION (FIXED N/A) ---
+        // --- 2. VEHICLE SEARCH ---
         async function searchVehicle() {
             const rc = document.getElementById('vehicleInput').value.trim();
             const resultArea = document.getElementById('result-area-rc');
-            
-            if (!rc) { alert("Enter Vehicle Number!"); return; }
-            
-            resultArea.innerHTML = "<p style='color:var(--neon-red)'>Connecting to RTO... 🏎️</p>";
+            if (!rc) { alert("Enter RC Number"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-red)'>Scanning RTO...</p>";
             const targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${rc}`;
 
             try {
-                // Using same Smart Fetch so it handles proxy correctly
                 const data = await smartFetch(targetUrl);
                 resultArea.innerHTML = "";
-
                 if (data.status !== "success" || !data.details) {
-                    resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>";
-                    return;
+                    resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Not Found.</p>"; return;
                 }
-
                 const d = data.details;
-
-                // SPECIAL FIX: Using getVal with Exact Keys including spaces
-                const owner = getVal(d, ["Owner Name", "Owner", "owner_name"]);
-                const father = getVal(d, ["Father's Name", "Father Name", "father_name"]);
-                const phone = getVal(d, ["Phone", "Mobile", "mobile_no"]);
-                const address = getVal(d, ["Address", "Present Address"]);
-                const city = getVal(d, ["City Name", "city"]);
-                const serial = getVal(d, ["Owner Serial No", "Serial"]);
-                
-                const maker = getVal(d, ["Maker Model", "Model"]);
-                const vClass = getVal(d, ["Vehicle Class", "Class"]);
-                const fuel = getVal(d, ["Fuel Type", "Fuel"]);
-                const regDate = getVal(d, ["Registration Date", "Reg Date"]);
-                const rto = getVal(d, ["Registered RTO", "RTO"]);
-
-                // Legal Keys
-                const insComp = getVal(d, ["Insurance Company"]);
-                const insUpto = getVal(d, ["Insurance Upto"]);
-                const pucUpto = getVal(d, ["PUC Upto"]);
-                const fitness = getVal(d, ["Fitness Upto"]);
-                const tax = getVal(d, ["Tax Upto"]);
-
                 const vipRecord = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
       🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
@@ -424,40 +402,128 @@
 ╚══════════════════════╝
 
  ⭐ OWNER DETAILS ⭐
-👤 Owner: ${owner}
-🧑‍🦳 Father: ${father}
-📱 Phone: ${phone}
-🏠 Address: ${address}
-📍 City: ${city}
-🔢 Serial: ${serial}
+👤 Owner: ${getVal(d, ["Owner Name", "Owner"])}
+🧑‍🦳 Father: ${getVal(d, ["Father's Name", "Father Name"])}
+📱 Phone: ${getVal(d, ["Phone", "Mobile"])}
+🏠 Address: ${getVal(d, ["Address", "Present Address"])}
+📍 City: ${getVal(d, ["City Name", "city"])}
+🔢 Serial: ${getVal(d, ["Owner Serial No", "Serial"])}
 
  ⭐ VEHICLE SPECS ⭐
-🚘 Maker: ${maker}
-🚜 Class: ${vClass}
-⛽ Fuel: ${fuel}
-🗓️ Reg Date: ${regDate}
-🏛️ RTO: ${rto}
+🚘 Maker: ${getVal(d, ["Maker Model", "Model"])}
+🚜 Class: ${getVal(d, ["Vehicle Class", "Class"])}
+⛽ Fuel: ${getVal(d, ["Fuel Type", "Fuel"])}
+🗓️ Reg Date: ${getVal(d, ["Registration Date", "Reg Date"])}
+🏛️ RTO: ${getVal(d, ["Registered RTO", "RTO"])}
 
  ⭐ LEGAL & VALIDITY ⭐
-🏥 Insurer: ${insComp}
-📅 Ins. Upto: ${insUpto}
-💨 PUC Upto: ${pucUpto}
-🛠️ Fitness: ${fitness}
-💸 Tax Upto: ${tax}
+🏥 Insurer: ${getVal(d, ["Insurance Company"])}
+📅 Ins. Upto: ${getVal(d, ["Insurance Upto"])}
+💨 PUC Upto: ${getVal(d, ["PUC Upto"])}
+🛠️ Fitness: ${getVal(d, ["Fitness Upto"])}
+💸 Tax Upto: ${getVal(d, ["Tax Upto"])}
 ━━━━━━━━━━━━━━━━━━━━
                 `;
-
                 const div = document.createElement('div');
                 div.className = 'result-card';
                 div.style.borderLeft = "4px solid var(--neon-red)"; 
                 div.style.color = "var(--neon-gold)"; 
                 div.innerText = vipRecord.trim();
                 resultArea.appendChild(div);
+            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+        }
 
-            } catch (error) {
-                console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.<br>${error.message}</p>`;
-            }
+        // --- 3. ADHAR SEARCH ---
+        async function searchAdhar() {
+            const num = document.getElementById('adharInput').value;
+            const resultArea = document.getElementById('result-area-adhar');
+            if (!num) { alert("Enter Adhar Number"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Scanning UIDAI...</p>";
+            
+            // EXACT URL FROM YOUR REQUEST
+            const targetUrl = `https://bronx-adhar-api.vercel.app/aadhar=${num}`;
+
+            try {
+                const data = await smartFetch(targetUrl);
+                resultArea.innerHTML = "";
+
+                let resultsArray = [];
+                if (Array.isArray(data)) resultsArray = data;
+                else if (data.data) resultsArray = Array.isArray(data.data) ? data.data : [data.data];
+                else resultsArray = [data];
+
+                if (!resultsArray || resultsArray.length === 0) {
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data.</p>"; return;
+                }
+
+                resultsArray.forEach((item) => {
+                    if(!item) return;
+                    // KEYS FROM YOUR API JSON
+                    const record = `
+├─ 🆔 𝗜𝗗: ${getVal(item, ["id", "ID", "uid"])}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item, ["name", "Name"])}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item, ["fname", "father", "guardian"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "phone"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item, ["address", "Address"])}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item, ["email", "mail"])}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(item, ["alt", "alt_mobile"])}
+                    `;
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.style.borderLeft = "4px solid var(--neon-gold)";
+                    div.innerText = record.trim();
+                    resultArea.appendChild(div);
+                });
+            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+        }
+
+        // --- 4. MAIL SEARCH ---
+        async function searchMail() {
+            const mail = document.getElementById('mailInput').value;
+            const resultArea = document.getElementById('result-area-mail');
+            if (!mail) { alert("Enter Email"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-green)'>Scanning Email Database...</p>";
+            
+            // EXACT URL FROM YOUR REQUEST
+            const targetUrl = `https://bronx-mail-api.vercel.app/mail=${mail}`;
+
+            try {
+                const data = await smartFetch(targetUrl);
+                resultArea.innerHTML = "";
+
+                // MAIL API RETURNS "results": [ ... ]
+                let resultsArray = [];
+                if (data.results && Array.isArray(data.results)) {
+                    resultsArray = data.results;
+                } else if (Array.isArray(data)) {
+                    resultsArray = data;
+                } else {
+                    resultsArray = [data];
+                }
+
+                if (!resultsArray || resultsArray.length === 0) {
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data.</p>"; return;
+                }
+
+                resultsArray.forEach((item) => {
+                    if(!item) return;
+                    const record = `
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item, ["email", "mail"]) || mail}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item, ["name", "Name"])}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item, ["fname", "father"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "phone"])}
+├─ 🆔 𝗜𝗗: ${getVal(item, ["id", "uid"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item, ["address", "Address"])}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(item, ["alt", "alt_mobile"])}
+                    `;
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.style.borderLeft = "4px solid var(--neon-green)";
+                    div.style.color = "var(--neon-green)";
+                    div.innerText = record.trim();
+                    resultArea.appendChild(div);
+                });
+            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
         }
 
         function copyResult(areaId) {
