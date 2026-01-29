@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bronx Ultra Intelligence</title>
+    <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING (SAME OP LOOK) --- */
+        /* --- CSS STYLING --- */
         :root {
             --neon-blue: #00f3ff;
             --neon-red: #ff004c;
@@ -29,30 +29,64 @@
             background-size: 40px 40px;
         }
 
-        #login-section {
+        /* --- SHARED CONTAINER STYLES --- */
+        .container {
+            display: none; /* Hidden by default */
+            width: 100%;
+            max-width: 380px; /* Made smaller as requested */
+            padding: 20px;
             text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- LOGIN PAGE --- */
+        #login-section {
+            display: block; /* Visible initially */
             background: var(--glass);
-            padding: 40px;
+            padding: 30px;
             border: 2px solid var(--neon-blue);
             box-shadow: 0 0 20px var(--neon-blue);
             border-radius: 15px;
-            width: 90%;
-            max-width: 400px;
         }
 
-        #dashboard-section {
-            display: none; 
-            width: 100%;
-            max-width: 450px;
-            padding: 20px;
-            text-align: center;
+        /* --- MENU GRID (NEW) --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
         }
 
+        .menu-btn {
+            background: rgba(0,0,0,0.6);
+            border: 2px solid var(--neon-blue);
+            color: white;
+            padding: 20px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+
+        .menu-btn:hover { background: var(--neon-blue); color: black; box-shadow: 0 0 20px var(--neon-blue); }
+        .menu-btn.vehicle { border-color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 0, 76, 0.2); }
+        .menu-btn.vehicle:hover { background: var(--neon-red); color: white; box-shadow: 0 0 20px var(--neon-red); }
+        .menu-btn.adhar { border-color: var(--neon-gold); }
+        .menu-btn.adhar:hover { background: var(--neon-gold); color: black; }
+        .menu-btn.mail { border-color: var(--neon-green); }
+        .menu-btn.mail:hover { background: var(--neon-green); color: black; }
+
+        /* --- PROFILE & HEADERS --- */
         .profile-container {
             position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
+            width: 100px; /* Smaller */
+            height: 100px; /* Smaller */
+            margin: 0 auto 15px;
         }
         
         .profile-pic {
@@ -60,7 +94,7 @@
             height: 100%;
             border-radius: 50%;
             border: 3px solid var(--neon-blue);
-            box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue), inset 0 0 10px var(--neon-blue);
             object-fit: cover;
         }
 
@@ -68,23 +102,24 @@
             background: linear-gradient(to right, var(--neon-blue), var(--neon-red));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 26px; 
+            font-size: 22px; 
             letter-spacing: 2px;
             margin-bottom: 5px;
             text-transform: uppercase;
             font-weight: 800;
         }
 
-        .subtitle { color: #ccc; font-size: 14px; margin-bottom: 30px; }
+        .subtitle { color: #ccc; font-size: 12px; margin-bottom: 20px; }
 
+        /* --- INPUTS & BUTTONS --- */
         input {
             width: 100%;
             background: black;
             border: 2px solid var(--neon-green);
             color: white;
-            padding: 15px;
+            padding: 12px;
             margin-bottom: 15px;
-            font-size: 16px;
+            font-size: 14px;
             outline: none;
             text-align: center;
         }
@@ -92,34 +127,23 @@
 
         .btn {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             border: none;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             text-transform: uppercase;
             color: black;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             transition: 0.3s;
         }
         .btn-search { background: linear-gradient(90deg, var(--neon-blue), var(--neon-red)); }
         .btn-copy { background: linear-gradient(90deg, var(--neon-green), var(--neon-gold)); }
+        .btn-back { background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); margin-top: 15px; }
         .btn:active { transform: scale(0.98); }
 
-        .info-box {
-            border: 2px solid var(--neon-blue);
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.8);
-            box-shadow: 0 0 10px var(--neon-blue);
-            margin-bottom: 20px;
-            color: var(--neon-blue);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        .info-highlight { color: var(--neon-red); font-weight: bold; }
-        .info-white { color: white; }
-
-        #result-area { text-align: left; margin-top: 20px; }
+        /* --- RESULT CARDS --- */
+        .result-area { text-align: left; margin-top: 20px; }
 
         .result-card {
             background: rgba(20, 20, 20, 0.95);
@@ -129,15 +153,22 @@
             font-family: monospace;
             white-space: pre-wrap; 
             color: var(--neon-green);
-            font-size: 13px;
+            font-size: 12px; /* Smaller font */
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             overflow-x: hidden;
+            line-height: 1.4;
         }
+
+        /* --- VEHICLE SPECIFIC COLORS --- */
+        .v-title { color: var(--neon-red); font-weight: bold; text-align: center; display: block; margin-bottom: 5px;}
+        .v-label { color: var(--neon-gold); font-weight: bold; }
+        .v-val { color: white; }
+
     </style>
 </head>
 <body>
 
-    <div id="login-section">
+    <div id="login-section" class="container" style="display: block;">
         <h2 style="color:var(--neon-gold); margin-bottom:20px;">ACCESS CONTROL</h2>
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
@@ -145,30 +176,49 @@
         <p id="login-error" style="color:var(--neon-red); margin-top:10px;"></p>
     </div>
 
-    <div id="dashboard-section">
+    <div id="menu-section" class="container">
         <div class="profile-container">
             <img src="https://i.ibb.co/YTjW35Hs/file-000000007b0872069c1067c615adaa48.png" alt="Profile" class="profile-pic">
         </div>
-
         <h1>BRONX ULTRA</h1>
-        <div class="subtitle">Telegram ID<br><span style="color:var(--neon-blue)">@BRONX_ULTRA</span></div>
+        <div class="subtitle">CHOOSE YOUR TOOL</div>
+
+        <div class="menu-grid">
+            <div class="menu-btn" onclick="showSection('number-section')">📱<br>Number Info</div>
+            <div class="menu-btn vehicle" onclick="showSection('vehicle-section')">🏎️<br>Vehicle Info</div>
+            <div class="menu-btn adhar" onclick="alert('Coming Soon! 🚧')">🆔<br>Adhar Info</div>
+            <div class="menu-btn mail" onclick="alert('Coming Soon! 🚧')">📧<br>Mail Info</div>
+        </div>
+        
+        <button onclick="logout()" class="btn btn-back">LOGOUT</button>
+    </div>
+
+    <div id="number-section" class="container">
+        <h1>NUMBER SEARCH</h1>
+        <div class="subtitle">@BRONX_ULTRA</div>
+        
+        <div style="display: flex; gap: 5px;">
+            <input type="number" id="phoneInput" placeholder="Enter Phone Number">
+            <button class="btn btn-search" onclick="searchNumber()" style="width: 40%; margin-bottom: 15px;">GO</button>
+        </div>
+
+        <div id="result-area-num" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
+    </div>
+
+    <div id="vehicle-section" class="container">
+        <h1 style="background: linear-gradient(to right, var(--neon-red), var(--neon-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VEHICLE INFO</h1>
+        <div class="subtitle">RTO INTELLIGENCE</div>
 
         <div style="display: flex; gap: 5px;">
-            <input type="number" id="phoneInput" placeholder="Enter Phone Number" style="border-color: var(--neon-green);">
-            <button class="btn btn-search" onclick="searchNumber()" style="width: 40%; margin-bottom: 15px;">SEARCH</button>
+            <input type="text" id="vehicleInput" placeholder="Ex: HR12AQ4000" style="border-color: var(--neon-red); text-transform: uppercase;">
+            <button class="btn btn-search" onclick="searchVehicle()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-red), var(--neon-gold));">GO</button>
         </div>
 
-        <div class="info-box">
-            🔐 <b>Secure Phone Intelligence System</b><br>
-            <span class="info-white">Get complete phone number details</span><br>
-            Name • Address • Network • <span class="info-highlight">More</span><br>
-            Fast • Reliable • Verified 📡
-        </div>
-
-        <div id="result-area"></div>
-        <button class="btn btn-copy" onclick="copyAllResults()">📋 COPY FULL RESULT</button>
-        <br>
-        <button onclick="logout()" style="background:transparent; border:1px solid var(--neon-red); color:var(--neon-red); padding:5px 10px; margin-top:20px;">LOGOUT</button>
+        <div id="result-area-rc" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-rc')" style="background: linear-gradient(90deg, var(--neon-gold), var(--neon-red));">📋 COPY</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
     </div>
 
     <script>
@@ -179,6 +229,14 @@
             expiryDate: "2026-12-30"   
         };
 
+        // --- NAVIGATION LOGIC ---
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.container').forEach(div => div.style.display = 'none');
+            // Show target section
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
         // --- LOGIN LOGIC ---
         function handleLogin() {
             const user = document.getElementById('username').value;
@@ -187,119 +245,84 @@
             const today = new Date();
             const expiry = new Date(ACCESS_CONFIG.expiryDate);
 
-            if (today > expiry) { errorMsg.innerText = "ACCESS EXPIRED. CONTACT ADMIN."; return; }
+            if (today > expiry) { errorMsg.innerText = "ACCESS EXPIRED."; return; }
 
             if (user === ACCESS_CONFIG.validUser && pass === ACCESS_CONFIG.validPass) {
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('dashboard-section').style.display = 'block';
                 localStorage.setItem('isLoggedIn', 'true');
+                showSection('menu-section');
             } else {
                 errorMsg.innerText = "INVALID CREDENTIALS";
             }
         }
 
         window.onload = function() {
-            const today = new Date();
-            const expiry = new Date(ACCESS_CONFIG.expiryDate);
-            if (today > expiry) { localStorage.removeItem('isLoggedIn'); }
+            // Check Auto Login
+            if(localStorage.getItem('isLoggedIn') === 'true') {
+                showSection('menu-section');
+            }
         }
 
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- VALUE CHECKER (BOT STYLE) ---
+        // --- HELPER: Get Value Safely ---
         function getVal(item, keys) {
+            if(!item) return "N/A";
             for (let i = 0; i < keys.length; i++) {
                 let k = keys[i];
-                if (item[k] && item[k] !== "null" && item[k] !== "") { return item[k]; }
+                if (item[k] && item[k] !== "null" && item[k] !== "") return item[k];
             }
             return "N/A"; 
         }
 
-        // --- 3-LAYER ENGINE SYSTEM (NO FILE NEEDED) ---
-        async function smartFetch(phone) {
-            const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
-            const encodedUrl = encodeURIComponent(targetUrl);
-
-            // Engine 1: ThingProxy (Good for text)
-            const engine1 = `https://thingproxy.freeboard.io/fetch/${targetUrl}`;
-            // Engine 2: CorsProxy (Fastest)
-            const engine2 = `https://corsproxy.io/?${encodedUrl}`;
-            // Engine 3: AllOrigins (Reliable Backup)
-            const engine3 = `https://api.allorigins.win/raw?url=${encodedUrl}`;
-
-            // Try Engine 1
-            try {
-                console.log("Trying Engine 1...");
-                let res = await fetch(engine1);
-                if(res.ok) return await res.json();
-            } catch(e) { console.log("Engine 1 Failed"); }
-
-            // Try Engine 2
-            try {
-                console.log("Trying Engine 2...");
-                let res = await fetch(engine2);
-                if(res.ok) return await res.json();
-            } catch(e) { console.log("Engine 2 Failed"); }
-
-            // Try Engine 3
-            try {
-                console.log("Trying Engine 3...");
-                let res = await fetch(engine3);
-                if(res.ok) return await res.json();
-            } catch(e) { console.log("Engine 3 Failed"); }
-
-            throw new Error("All Servers Busy. Try again in 10 seconds.");
-        }
-
-        // --- MAIN SEARCH FUNCTION ---
+        // --- 1. NUMBER SEARCH LOGIC (Existing) ---
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
-            const resultArea = document.getElementById('result-area');
+            const resultArea = document.getElementById('result-area-num');
+            if (!phone) { alert("Enter Number!"); return; }
             
-            if (!phone) { alert("Please enter a number"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-blue)'>Scanning...</p>";
             
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Database... 📡<br>Scanning Servers...</p>";
+            // Using Multi-Engine Logic
+            const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
+            const encodedUrl = encodeURIComponent(targetUrl);
+            const engine1 = `https://corsproxy.io/?${encodedUrl}`;
+            const engine2 = `https://api.allorigins.win/raw?url=${encodedUrl}`;
 
             try {
-                const data = await smartFetch(phone);
-                resultArea.innerHTML = ""; 
-
-                let resultsArray = [];
-                if (Array.isArray(data)) { resultsArray = data; }
-                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
-                else if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
-                else if (data.info && Array.isArray(data.info)) { resultsArray = data.info; }
-                else { resultsArray = [data]; }
-
-                if (!resultsArray || resultsArray.length === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
-                     return;
+                let data;
+                try {
+                    let res = await fetch(engine1);
+                    if(res.ok) data = await res.json();
+                    else throw new Error("Fail");
+                } catch(e) {
+                    let res = await fetch(engine2);
+                    data = await res.json();
                 }
 
-                let count = 0;
+                resultArea.innerHTML = ""; 
+                
+                // Extract Data
+                let resultsArray = [];
+                if (Array.isArray(data)) resultsArray = data;
+                else if (data.data) resultsArray = Array.isArray(data.data) ? data.data : [data.data];
+                else resultsArray = [data];
+
+                if (!resultsArray || resultsArray.length === 0) {
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data.</p>"; return;
+                }
+
                 resultsArray.forEach((item, index) => {
                     if(!item) return; 
-                    count++;
-
-                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
-                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
-                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
-                    const address = getVal(item, ["address", "city", "location", "Address"]);
-                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
-                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
-                    const email = getVal(item, ["email", "mail", "Email"]);
-
                     const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
-├─ 👤 𝗡𝗮𝗺𝗲: ${name}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
-├─ 🆔 𝗜𝗗: ${id}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item, ["name", "fullname", "consumer_name", "Name"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "phone", "number"]) || phone}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item, ["fname", "father", "guardian", "father_name"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item, ["address", "city", "location"])}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${getVal(item, ["circle", "state"])}
+├─ 🆔 𝗜𝗗: ${getVal(item, ["id", "operator"])}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item, ["email", "mail"])}
                     `;
-
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.innerText = record.trim();
@@ -307,17 +330,94 @@
                 });
 
             } catch (error) {
-                console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`;
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`;
             }
         }
 
-        function copyAllResults() {
-            const resultText = document.getElementById('result-area').innerText;
-            if(!resultText) { alert("Nothing to copy!"); return; }
-            navigator.clipboard.writeText(resultText).then(() => {
-                alert("✅ Full Result Copied to Clipboard!");
-            });
+        // --- 2. VEHICLE SEARCH LOGIC (NEW) ---
+        async function searchVehicle() {
+            const rc = document.getElementById('vehicleInput').value.trim();
+            const resultArea = document.getElementById('result-area-rc');
+            
+            if (!rc) { alert("Enter Vehicle Number!"); return; }
+            
+            resultArea.innerHTML = "<p style='color:var(--neon-red)'>Connecting to RTO... 🏎️</p>";
+
+            const targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${rc}`;
+            // Use Direct Fetch first (since it's Vercel to Vercel), fallback to proxy
+            
+            try {
+                let data;
+                try {
+                    // Try Direct
+                    let res = await fetch(targetUrl);
+                    if(res.ok) data = await res.json();
+                    else throw new Error("Direct Fail");
+                } catch(e) {
+                    // Try Proxy
+                    let res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
+                    data = await res.json();
+                }
+
+                resultArea.innerHTML = "";
+
+                if (data.status !== "success" || !data.details) {
+                    resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>";
+                    return;
+                }
+
+                const d = data.details;
+
+                // DESIGNING THE VIP CARD
+                const vipRecord = `
+◤━━━━━━━━━━━━━━━━━━━━◥
+      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+╔══════════════════════╗
+  🎯 Target RC: ${rc.toUpperCase()}
+╚══════════════════════╝
+
+ ⭐ OWNER DETAILS ⭐
+👤 Owner: ${d["Owner Name"] || "N/A"}
+🧑‍🦳 Father: ${d["Father's Name"] || "N/A"}
+📱 Phone: ${d["Phone"] || "Masked"}
+🏠 Address: ${d["Address"] || "N/A"}
+📍 City: ${d["City Name"] || "N/A"}
+🔢 Serial: ${d["Owner Serial No"] || "N/A"}
+
+ ⭐ VEHICLE SPECS ⭐
+🚘 Maker: ${d["Maker Model"] || "N/A"}
+🚜 Class: ${d["Vehicle Class"] || "N/A"}
+⛽ Fuel: ${d["Fuel Type"] || "N/A"}
+🗓️ Reg Date: ${d["Registration Date"] || "N/A"}
+🏛️ RTO: ${d["Registered RTO"] || "N/A"}
+
+ ⭐ LEGAL & VALIDITY ⭐
+🏥 Insurer: ${d["Insurance Company"] || "N/A"}
+📅 Ins. Upto: ${d["Insurance Upto"] || "N/A"}
+💨 PUC Upto: ${d["PUC Upto"] || "N/A"}
+🛠️ Fitness: ${d["Fitness Upto"] || "N/A"}
+💸 Tax Upto: ${d["Tax Upto"] || "N/A"}
+━━━━━━━━━━━━━━━━━━━━
+                `;
+
+                const div = document.createElement('div');
+                div.className = 'result-card';
+                div.style.borderLeft = "4px solid var(--neon-red)"; // Red border for Vehicle
+                div.style.color = "var(--neon-gold)"; // Gold text for luxury feel
+                div.innerText = vipRecord.trim();
+                resultArea.appendChild(div);
+
+            } catch (error) {
+                console.error(error);
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.</p>`;
+            }
+        }
+
+        function copyResult(areaId) {
+            const text = document.getElementById(areaId).innerText;
+            if(!text) { alert("Nothing to copy!"); return; }
+            navigator.clipboard.writeText(text).then(() => alert("Copied!"));
         }
     </script>
 </body>
