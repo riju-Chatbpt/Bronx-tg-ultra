@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING (SAME NEON LOOK) --- */
+        /* --- CSS STYLING (SAME OP LOOK) --- */
         :root {
             --neon-blue: #00f3ff;
             --neon-red: #ff004c;
@@ -29,26 +29,29 @@
             background-size: 40px 40px;
         }
 
+        /* --- CONTAINER CONTROL --- */
         .container {
-            display: none; 
+            display: none; /* Hidden by default */
             width: 100%;
-            max-width: 380px; 
+            max-width: 400px;
             padding: 20px;
             text-align: center;
             animation: fadeIn 0.5s ease;
         }
-
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* --- LOGIN PAGE --- */
         #login-section {
-            display: block; 
+            display: block; /* Visible initially */
             background: var(--glass);
-            padding: 30px;
+            padding: 40px;
             border: 2px solid var(--neon-blue);
             box-shadow: 0 0 20px var(--neon-blue);
             border-radius: 15px;
         }
 
+        /* --- MENU GRID --- */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -78,11 +81,12 @@
         .menu-btn.mail { border-color: var(--neon-green); }
         .menu-btn.mail:hover { background: var(--neon-green); color: black; }
 
+
         .profile-container {
             position: relative;
-            width: 100px; 
-            height: 100px; 
-            margin: 0 auto 15px;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
         }
         
         .profile-pic {
@@ -90,7 +94,7 @@
             height: 100%;
             border-radius: 50%;
             border: 3px solid var(--neon-blue);
-            box-shadow: 0 0 20px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+            box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
             object-fit: cover;
         }
 
@@ -98,23 +102,23 @@
             background: linear-gradient(to right, var(--neon-blue), var(--neon-red));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 22px; 
+            font-size: 26px; 
             letter-spacing: 2px;
             margin-bottom: 5px;
             text-transform: uppercase;
             font-weight: 800;
         }
 
-        .subtitle { color: #ccc; font-size: 12px; margin-bottom: 20px; }
+        .subtitle { color: #ccc; font-size: 14px; margin-bottom: 30px; }
 
         input {
             width: 100%;
             background: black;
             border: 2px solid var(--neon-green);
             color: white;
-            padding: 12px;
+            padding: 15px;
             margin-bottom: 15px;
-            font-size: 14px;
+            font-size: 16px;
             outline: none;
             text-align: center;
         }
@@ -122,20 +126,33 @@
 
         .btn {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: none;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
             cursor: pointer;
             text-transform: uppercase;
             color: black;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             transition: 0.3s;
         }
         .btn-search { background: linear-gradient(90deg, var(--neon-blue), var(--neon-red)); }
         .btn-copy { background: linear-gradient(90deg, var(--neon-green), var(--neon-gold)); }
         .btn-back { background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); margin-top: 15px; }
         .btn:active { transform: scale(0.98); }
+
+        .info-box {
+            border: 2px solid var(--neon-blue);
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 10px var(--neon-blue);
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .info-highlight { color: var(--neon-red); font-weight: bold; }
+        .info-white { color: white; }
 
         .result-area { text-align: left; margin-top: 20px; }
 
@@ -147,10 +164,9 @@
             font-family: monospace;
             white-space: pre-wrap; 
             color: var(--neon-green);
-            font-size: 12px; 
+            font-size: 13px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             overflow-x: hidden;
-            line-height: 1.4;
         }
     </style>
 </head>
@@ -186,19 +202,19 @@
         <div class="subtitle">@BRONX_ULTRA</div>
         
         <div style="display: flex; gap: 5px;">
-            <input type="number" id="phoneInput" placeholder="Enter Phone Number">
-            <button class="btn btn-search" onclick="searchNumber()" style="width: 40%; margin-bottom: 15px;">GO</button>
+            <input type="number" id="phoneInput" placeholder="Enter Phone Number" style="border-color: var(--neon-green);">
+            <button class="btn btn-search" onclick="searchNumber()" style="width: 40%; margin-bottom: 15px;">SEARCH</button>
         </div>
 
         <div id="result-area-num" class="result-area"></div>
-        <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY</button>
+        <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY FULL RESULT</button>
         <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
     </div>
 
     <div id="vehicle-section" class="container">
         <h1 style="background: linear-gradient(to right, var(--neon-red), var(--neon-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VEHICLE INFO</h1>
         <div class="subtitle">RTO INTELLIGENCE</div>
-
+        
         <div style="display: flex; gap: 5px;">
             <input type="text" id="vehicleInput" placeholder="Ex: HR12AQ4000" style="border-color: var(--neon-red); text-transform: uppercase;">
             <button class="btn btn-search" onclick="searchVehicle()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-red), var(--neon-gold));">GO</button>
@@ -231,7 +247,7 @@
             const today = new Date();
             const expiry = new Date(ACCESS_CONFIG.expiryDate);
 
-            if (today > expiry) { errorMsg.innerText = "ACCESS EXPIRED."; return; }
+            if (today > expiry) { errorMsg.innerText = "ACCESS EXPIRED. CONTACT ADMIN."; return; }
 
             if (user === ACCESS_CONFIG.validUser && pass === ACCESS_CONFIG.validPass) {
                 localStorage.setItem('isLoggedIn', 'true');
@@ -243,7 +259,7 @@
         }
 
         window.onload = function() {
-            if(localStorage.getItem('isLoggedIn') === 'true') {
+            if (localStorage.getItem('isLoggedIn') === 'true') { 
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('menu-section').style.display = 'block';
             }
@@ -251,63 +267,88 @@
 
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- FETCH HELPER (THE FIX FOR N/A) ---
-        // This handles "AllOrigins" weird response format
-        async function fetchSmart(url) {
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-            
-            try {
-                // Try Direct First (Works if Vercel Rewrite is active or API has CORS enabled)
-                let response = await fetch(url);
-                if (response.ok) return await response.json();
-                throw new Error("Direct Fail");
-            } catch (e) {
-                // Try Proxy
-                console.log("Using Proxy...");
-                let response = await fetch(proxyUrl);
-                let data = await response.json();
-                // AllOrigins returns data inside "contents" as a string
-                if (data.contents) {
-                    return JSON.parse(data.contents); 
-                }
-                throw new Error("Proxy Fail");
+        // --- VALUE CHECKER (Universal N/A Fixer) ---
+        function getVal(item, keys) {
+            if(!item) return "N/A";
+            for (let i = 0; i < keys.length; i++) {
+                let k = keys[i];
+                if (item[k] && item[k] !== "null" && item[k] !== "") { return item[k]; }
             }
+            return "N/A"; 
         }
 
-        // --- 1. NUMBER SEARCH LOGIC (FIXED KEYS) ---
+        // --- 3-LAYER ENGINE SYSTEM (Updated for Parsing) ---
+        async function smartFetch(url) {
+            const encodedUrl = encodeURIComponent(url);
+
+            // Engine 1: ThingProxy (Good for text)
+            const engine1 = `https://thingproxy.freeboard.io/fetch/${url}`;
+            // Engine 2: CorsProxy (Fastest)
+            const engine2 = `https://corsproxy.io/?${encodedUrl}`;
+            // Engine 3: AllOrigins (Reliable Backup)
+            const engine3 = `https://api.allorigins.win/get?url=${encodedUrl}`;
+
+            // Try Engine 1
+            try {
+                let res = await fetch(engine1);
+                if(res.ok) return await res.json();
+            } catch(e) { console.log("Engine 1 Failed"); }
+
+            // Try Engine 2
+            try {
+                let res = await fetch(engine2);
+                if(res.ok) return await res.json();
+            } catch(e) { console.log("Engine 2 Failed"); }
+
+            // Try Engine 3 (Includes Parsing Fix)
+            try {
+                let res = await fetch(engine3);
+                if(res.ok) {
+                    let data = await res.json();
+                    if(data.contents) return JSON.parse(data.contents); // FIX FOR ALLORIGINS
+                    return data;
+                }
+            } catch(e) { console.log("Engine 3 Failed"); }
+
+            throw new Error("All Servers Busy. Try again in 10 seconds.");
+        }
+
+        // --- 1. NUMBER SEARCH FUNCTION ---
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
             const resultArea = document.getElementById('result-area-num');
-            if (!phone) { alert("Enter Number!"); return; }
             
-            resultArea.innerHTML = "<p style='color:var(--neon-blue)'>Scanning Database...</p>";
+            if (!phone) { alert("Please enter a number"); return; }
+            
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Database... 📡</p>";
             const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
 
             try {
-                const data = await fetchSmart(targetUrl);
+                const data = await smartFetch(targetUrl);
                 resultArea.innerHTML = ""; 
-                
+
                 let resultsArray = [];
-                if (Array.isArray(data)) resultsArray = data;
-                else if (data.data) resultsArray = Array.isArray(data.data) ? data.data : [data.data];
-                else resultsArray = [data];
+                if (Array.isArray(data)) { resultsArray = data; }
+                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
+                else if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
+                else if (data.info && Array.isArray(data.info)) { resultsArray = data.info; }
+                else { resultsArray = [data]; }
 
                 if (!resultsArray || resultsArray.length === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data.</p>"; return;
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
+                     return;
                 }
 
                 resultsArray.forEach((item, index) => {
                     if(!item) return; 
-                    
-                    // MAPPING WITH EXACT KEYS YOU PROVIDED
-                    // mobile, name, fname, address, alt, circle, id, email
-                    const name = item.name || item.Name || "Unknown";
-                    const mobile = item.mobile || item.Mobile || phone;
-                    const father = item.fname || item.father || "N/A";
-                    const address = item.address || item.Address || "N/A";
-                    const circle = item.circle || item.Circle || "N/A";
-                    const id = item.id || item.ID || "N/A";
-                    const email = item.email || item.Email || "N/A";
+
+                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
+                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
+                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
+                    const address = getVal(item, ["address", "city", "location", "Address"]);
+                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
+                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
+                    const email = getVal(item, ["email", "mail", "Email"]);
 
                     const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
@@ -326,12 +367,12 @@
                 });
 
             } catch (error) {
-                console.log(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: Server Busy or Invalid Key</p>`;
+                console.error(error);
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`;
             }
         }
 
-        // --- 2. VEHICLE SEARCH LOGIC (FIXED JSON PATH) ---
+        // --- 2. VEHICLE SEARCH FUNCTION (FIXED N/A) ---
         async function searchVehicle() {
             const rc = document.getElementById('vehicleInput').value.trim();
             const resultArea = document.getElementById('result-area-rc');
@@ -339,14 +380,13 @@
             if (!rc) { alert("Enter Vehicle Number!"); return; }
             
             resultArea.innerHTML = "<p style='color:var(--neon-red)'>Connecting to RTO... 🏎️</p>";
-
             const targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${rc}`;
-            
+
             try {
-                const data = await fetchSmart(targetUrl);
+                // Using same Smart Fetch so it handles proxy correctly
+                const data = await smartFetch(targetUrl);
                 resultArea.innerHTML = "";
 
-                // CHECKING STRUCTURE: data -> details -> keys
                 if (data.status !== "success" || !data.details) {
                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>";
                     return;
@@ -354,7 +394,27 @@
 
                 const d = data.details;
 
-                // USING EXACT KEYS FROM YOUR JSON
+                // SPECIAL FIX: Using getVal with Exact Keys including spaces
+                const owner = getVal(d, ["Owner Name", "Owner", "owner_name"]);
+                const father = getVal(d, ["Father's Name", "Father Name", "father_name"]);
+                const phone = getVal(d, ["Phone", "Mobile", "mobile_no"]);
+                const address = getVal(d, ["Address", "Present Address"]);
+                const city = getVal(d, ["City Name", "city"]);
+                const serial = getVal(d, ["Owner Serial No", "Serial"]);
+                
+                const maker = getVal(d, ["Maker Model", "Model"]);
+                const vClass = getVal(d, ["Vehicle Class", "Class"]);
+                const fuel = getVal(d, ["Fuel Type", "Fuel"]);
+                const regDate = getVal(d, ["Registration Date", "Reg Date"]);
+                const rto = getVal(d, ["Registered RTO", "RTO"]);
+
+                // Legal Keys
+                const insComp = getVal(d, ["Insurance Company"]);
+                const insUpto = getVal(d, ["Insurance Upto"]);
+                const pucUpto = getVal(d, ["PUC Upto"]);
+                const fitness = getVal(d, ["Fitness Upto"]);
+                const tax = getVal(d, ["Tax Upto"]);
+
                 const vipRecord = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
       🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
@@ -364,26 +424,26 @@
 ╚══════════════════════╝
 
  ⭐ OWNER DETAILS ⭐
-👤 Owner: ${d["Owner Name"] || "N/A"}
-🧑‍🦳 Father: ${d["Father's Name"] || "N/A"}
-📱 Phone: ${d["Phone"] || "N/A"}
-🏠 Address: ${d["Address"] || "N/A"}
-📍 City: ${d["City Name"] || "N/A"}
-🔢 Serial: ${d["Owner Serial No"] || "N/A"}
+👤 Owner: ${owner}
+🧑‍🦳 Father: ${father}
+📱 Phone: ${phone}
+🏠 Address: ${address}
+📍 City: ${city}
+🔢 Serial: ${serial}
 
  ⭐ VEHICLE SPECS ⭐
-🚘 Maker: ${d["Maker Model"] || "N/A"}
-🚜 Class: ${d["Vehicle Class"] || "N/A"}
-⛽ Fuel: ${d["Fuel Type"] || "N/A"}
-🗓️ Reg Date: ${d["Registration Date"] || "N/A"}
-🏛️ RTO: ${d["Registered RTO"] || "N/A"}
+🚘 Maker: ${maker}
+🚜 Class: ${vClass}
+⛽ Fuel: ${fuel}
+🗓️ Reg Date: ${regDate}
+🏛️ RTO: ${rto}
 
  ⭐ LEGAL & VALIDITY ⭐
-🏥 Insurer: ${d["Insurance Company"] || "N/A"}
-📅 Ins. Upto: ${d["Insurance Upto"] || "N/A"}
-💨 PUC Upto: ${d["PUC Upto"] || "N/A"}
-🛠️ Fitness: ${d["Fitness Upto"] || "N/A"}
-💸 Tax Upto: ${d["Tax Upto"] || "N/A"}
+🏥 Insurer: ${insComp}
+📅 Ins. Upto: ${insUpto}
+💨 PUC Upto: ${pucUpto}
+🛠️ Fitness: ${fitness}
+💸 Tax Upto: ${tax}
 ━━━━━━━━━━━━━━━━━━━━
                 `;
 
@@ -396,7 +456,7 @@
 
             } catch (error) {
                 console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.</p>`;
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.<br>${error.message}</p>`;
             }
         }
 
