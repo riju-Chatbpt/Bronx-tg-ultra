@@ -31,7 +31,7 @@
 
         /* --- CONTAINER CONTROL --- */
         .container {
-            display: none; 
+            display: none; /* Hidden by default */
             width: 100%;
             max-width: 400px;
             padding: 20px;
@@ -43,7 +43,7 @@
 
         /* --- LOGIN PAGE --- */
         #login-section {
-            display: block; 
+            display: block; /* Visible initially */
             background: var(--glass);
             padding: 40px;
             border: 2px solid var(--neon-blue);
@@ -287,7 +287,7 @@
 
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- VALUE CHECKER (The Working Logic) ---
+        // --- VALUE CHECKER (Universal N/A Fixer) ---
         function getVal(item, keys) {
             if(!item) return "N/A";
             for (let i = 0; i < keys.length; i++) {
@@ -297,34 +297,35 @@
             return "N/A"; 
         }
 
-        // --- 3-LAYER ENGINE SYSTEM (The Working Fetch) ---
+        // --- 3-LAYER ENGINE SYSTEM (Updated for Parsing) ---
         async function smartFetch(url) {
             const encodedUrl = encodeURIComponent(url);
+
+            // Engine 1: ThingProxy (Good for text)
             const engine1 = `https://thingproxy.freeboard.io/fetch/${url}`;
+            // Engine 2: CorsProxy (Fastest)
             const engine2 = `https://corsproxy.io/?${encodedUrl}`;
+            // Engine 3: AllOrigins (Reliable Backup)
             const engine3 = `https://api.allorigins.win/get?url=${encodedUrl}`;
 
-            // Engine 1
+            // Try Engine 1
             try {
                 let res = await fetch(engine1);
                 if(res.ok) return await res.json();
             } catch(e) { console.log("Engine 1 Failed"); }
 
-            // Engine 2
+            // Try Engine 2
             try {
                 let res = await fetch(engine2);
                 if(res.ok) return await res.json();
             } catch(e) { console.log("Engine 2 Failed"); }
 
-            // Engine 3 (Includes Parsing Fix)
+            // Try Engine 3 (Includes Parsing Fix)
             try {
                 let res = await fetch(engine3);
                 if(res.ok) {
                     let data = await res.json();
-                    if(data.contents) {
-                        try { return JSON.parse(data.contents); } 
-                        catch(e) { return data.contents; }
-                    }
+                    if(data.contents) return JSON.parse(data.contents); // FIX FOR ALLORIGINS
                     return data;
                 }
             } catch(e) { console.log("Engine 3 Failed"); }
@@ -332,61 +333,108 @@
             throw new Error("All Servers Busy. Try again in 10 seconds.");
         }
 
-        // --- 1. NUMBER SEARCH ---
+        // --- 1. NUMBER SEARCH FUNCTION ---
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
             const resultArea = document.getElementById('result-area-num');
+            
             if (!phone) { alert("Please enter a number"); return; }
+            
             resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Database... 📡</p>";
             const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
 
             try {
                 const data = await smartFetch(targetUrl);
                 resultArea.innerHTML = ""; 
+
                 let resultsArray = [];
                 if (Array.isArray(data)) { resultsArray = data; }
                 else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
+                else if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
+                else if (data.info && Array.isArray(data.info)) { resultsArray = data.info; }
                 else { resultsArray = [data]; }
 
                 if (!resultsArray || resultsArray.length === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return;
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
+                     return;
                 }
 
                 resultsArray.forEach((item, index) => {
                     if(!item) return; 
+
+                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
+                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
+                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
+                    const address = getVal(item, ["address", "city", "location", "Address"]);
+                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
+                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
+                    const email = getVal(item, ["email", "mail", "Email"]);
+
                     const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item, ["name", "fullname", "consumer_name", "Name"])}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "phone", "number", "Mobile"]) || phone}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item, ["fname", "father", "guardian", "father_name", "Father"])}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item, ["address", "city", "location", "Address"])}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${getVal(item, ["circle", "state", "region", "Circle"])}
-├─ 🆔 𝗜𝗗: ${getVal(item, ["id", "uid", "consumer_id", "ID", "operator"])}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item, ["email", "mail", "Email"])}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
+├─ 🆔 𝗜𝗗: ${id}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
                     `;
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.innerText = record.trim();
                     resultArea.appendChild(div);
                 });
-            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`; }
+
+            } catch (error) {
+                console.error(error);
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`;
+            }
         }
 
-        // --- 2. VEHICLE SEARCH ---
+        // --- 2. VEHICLE SEARCH FUNCTION ---
         async function searchVehicle() {
             const rc = document.getElementById('vehicleInput').value.trim();
             const resultArea = document.getElementById('result-area-rc');
+            
             if (!rc) { alert("Enter Vehicle Number!"); return; }
+            
             resultArea.innerHTML = "<p style='color:var(--neon-red)'>Connecting to RTO... 🏎️</p>";
             const targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${rc}`;
 
             try {
+                // Using same Smart Fetch so it handles proxy correctly
                 const data = await smartFetch(targetUrl);
                 resultArea.innerHTML = "";
+
                 if (data.status !== "success" || !data.details) {
-                    resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>"; return;
+                    resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>";
+                    return;
                 }
+
                 const d = data.details;
+
+                // SPECIAL FIX: Using getVal with Exact Keys including spaces
+                const owner = getVal(d, ["Owner Name", "Owner", "owner_name"]);
+                const father = getVal(d, ["Father's Name", "Father Name", "father_name"]);
+                const phone = getVal(d, ["Phone", "Mobile", "mobile_no"]);
+                const address = getVal(d, ["Address", "Present Address"]);
+                const city = getVal(d, ["City Name", "city"]);
+                const serial = getVal(d, ["Owner Serial No", "Serial"]);
+                
+                const maker = getVal(d, ["Maker Model", "Model"]);
+                const vClass = getVal(d, ["Vehicle Class", "Class"]);
+                const fuel = getVal(d, ["Fuel Type", "Fuel"]);
+                const regDate = getVal(d, ["Registration Date", "Reg Date"]);
+                const rto = getVal(d, ["Registered RTO", "RTO"]);
+
+                // Legal Keys
+                const insComp = getVal(d, ["Insurance Company"]);
+                const insUpto = getVal(d, ["Insurance Upto"]);
+                const pucUpto = getVal(d, ["PUC Upto"]);
+                const fitness = getVal(d, ["Fitness Upto"]);
+                const tax = getVal(d, ["Tax Upto"]);
+
                 const vipRecord = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
       🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
@@ -394,33 +442,42 @@
 ╔══════════════════════╗
   🎯 Target RC: ${rc.toUpperCase()}
 ╚══════════════════════╝
+
  ⭐ OWNER DETAILS ⭐
-👤 Owner: ${getVal(d, ["Owner Name", "Owner", "owner_name"])}
-🧑‍🦳 Father: ${getVal(d, ["Father's Name", "Father Name", "father_name"])}
-📱 Phone: ${getVal(d, ["Phone", "Mobile", "mobile_no"])}
-🏠 Address: ${getVal(d, ["Address", "Present Address"])}
-📍 City: ${getVal(d, ["City Name", "city"])}
-🔢 Serial: ${getVal(d, ["Owner Serial No", "Serial"])}
+👤 Owner: ${owner}
+🧑‍🦳 Father: ${father}
+📱 Phone: ${phone}
+🏠 Address: ${address}
+📍 City: ${city}
+🔢 Serial: ${serial}
+
  ⭐ VEHICLE SPECS ⭐
-🚘 Maker: ${getVal(d, ["Maker Model", "Model"])}
-🚜 Class: ${getVal(d, ["Vehicle Class", "Class"])}
-⛽ Fuel: ${getVal(d, ["Fuel Type", "Fuel"])}
-🗓️ Reg Date: ${getVal(d, ["Registration Date", "Reg Date"])}
-🏛️ RTO: ${getVal(d, ["Registered RTO", "RTO"])}
+🚘 Maker: ${maker}
+🚜 Class: ${vClass}
+⛽ Fuel: ${fuel}
+🗓️ Reg Date: ${regDate}
+🏛️ RTO: ${rto}
+
  ⭐ LEGAL & VALIDITY ⭐
-🏥 Insurer: ${getVal(d, ["Insurance Company"])}
-📅 Ins. Upto: ${getVal(d, ["Insurance Upto"])}
-💨 PUC Upto: ${getVal(d, ["PUC Upto"])}
-🛠️ Fitness: ${getVal(d, ["Fitness Upto"])}
-💸 Tax Upto: ${getVal(d, ["Tax Upto"])}
-━━━━━━━━━━━━━━━━━━━━`;
+🏥 Insurer: ${insComp}
+📅 Ins. Upto: ${insUpto}
+💨 PUC Upto: ${pucUpto}
+🛠️ Fitness: ${fitness}
+💸 Tax Upto: ${tax}
+━━━━━━━━━━━━━━━━━━━━
+                `;
+
                 const div = document.createElement('div');
                 div.className = 'result-card';
                 div.style.borderLeft = "4px solid var(--neon-red)"; 
                 div.style.color = "var(--neon-gold)"; 
                 div.innerText = vipRecord.trim();
                 resultArea.appendChild(div);
-            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.<br>${error.message}</p>`; }
+
+            } catch (error) {
+                console.error(error);
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.<br>${error.message}</p>`;
+            }
         }
 
         // --- 3. ADHAR SEARCH (New & Integrated) ---
