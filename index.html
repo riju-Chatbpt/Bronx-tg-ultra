@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Intelligence</title>
     <style>
-        /* --- CSS STYLING --- */
+        /* --- CSS STYLING (SAME OP LOOK) --- */
         :root {
             --neon-blue: #00f3ff;
             --neon-red: #ff004c;
@@ -29,7 +29,6 @@
             background-size: 40px 40px;
         }
 
-        /* --- LOGIN PAGE --- */
         #login-section {
             text-align: center;
             background: var(--glass);
@@ -41,7 +40,6 @@
             max-width: 400px;
         }
 
-        /* --- MAIN DASHBOARD --- */
         #dashboard-section {
             display: none; 
             width: 100%;
@@ -50,7 +48,6 @@
             text-align: center;
         }
 
-        /* Profile Image */
         .profile-container {
             position: relative;
             width: 120px;
@@ -67,7 +64,6 @@
             object-fit: cover;
         }
 
-        /* NAME TITLE */
         h1 {
             background: linear-gradient(to right, var(--neon-blue), var(--neon-red));
             -webkit-background-clip: text;
@@ -79,13 +75,8 @@
             font-weight: 800;
         }
 
-        .subtitle {
-            color: #ccc;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
+        .subtitle { color: #ccc; font-size: 14px; margin-bottom: 30px; }
 
-        /* Inputs */
         input {
             width: 100%;
             background: black;
@@ -97,10 +88,8 @@
             outline: none;
             text-align: center;
         }
-        
         input:focus { box-shadow: 0 0 15px var(--neon-green); }
 
-        /* Buttons */
         .btn {
             width: 100%;
             padding: 15px;
@@ -113,18 +102,10 @@
             margin-bottom: 15px;
             transition: 0.3s;
         }
-
-        .btn-search {
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-red));
-        }
-
-        .btn-copy {
-            background: linear-gradient(90deg, var(--neon-green), var(--neon-gold));
-        }
-        
+        .btn-search { background: linear-gradient(90deg, var(--neon-blue), var(--neon-red)); }
+        .btn-copy { background: linear-gradient(90deg, var(--neon-green), var(--neon-gold)); }
         .btn:active { transform: scale(0.98); }
 
-        /* Info Box */
         .info-box {
             border: 2px solid var(--neon-blue);
             padding: 15px;
@@ -135,15 +116,10 @@
             font-size: 14px;
             line-height: 1.6;
         }
-        
         .info-highlight { color: var(--neon-red); font-weight: bold; }
         .info-white { color: white; }
 
-        /* Results Area */
-        #result-area {
-            text-align: left;
-            margin-top: 20px;
-        }
+        #result-area { text-align: left; margin-top: 20px; }
 
         .result-card {
             background: rgba(20, 20, 20, 0.95);
@@ -157,7 +133,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             overflow-x: hidden;
         }
-
     </style>
 </head>
 <body>
@@ -171,7 +146,6 @@
     </div>
 
     <div id="dashboard-section">
-        
         <div class="profile-container">
             <img src="https://i.ibb.co/YTjW35Hs/file-000000007b0872069c1067c615adaa48.png" alt="Profile" class="profile-pic">
         </div>
@@ -192,22 +166,20 @@
         </div>
 
         <div id="result-area"></div>
-
         <button class="btn btn-copy" onclick="copyAllResults()">📋 COPY FULL RESULT</button>
-        
         <br>
         <button onclick="logout()" style="background:transparent; border:1px solid var(--neon-red); color:var(--neon-red); padding:5px 10px; margin-top:20px;">LOGOUT</button>
     </div>
 
     <script>
-        // --- 1. CONFIGURATION ---
+        // --- CONFIGURATION ---
         const ACCESS_CONFIG = {
             validUser: "admin",        
             validPass: "rehan123",     
             expiryDate: "2026-12-30"   
         };
 
-        // --- 2. LOGIN LOGIC ---
+        // --- LOGIN LOGIC ---
         function handleLogin() {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
@@ -215,10 +187,7 @@
             const today = new Date();
             const expiry = new Date(ACCESS_CONFIG.expiryDate);
 
-            if (today > expiry) {
-                errorMsg.innerText = "ACCESS EXPIRED. CONTACT ADMIN.";
-                return;
-            }
+            if (today > expiry) { errorMsg.innerText = "ACCESS EXPIRED. CONTACT ADMIN."; return; }
 
             if (user === ACCESS_CONFIG.validUser && pass === ACCESS_CONFIG.validPass) {
                 document.getElementById('login-section').style.display = 'none';
@@ -232,79 +201,86 @@
         window.onload = function() {
             const today = new Date();
             const expiry = new Date(ACCESS_CONFIG.expiryDate);
-            if (today > expiry) {
-                localStorage.removeItem('isLoggedIn');
-            }
+            if (today > expiry) { localStorage.removeItem('isLoggedIn'); }
         }
 
-        function logout() {
-            localStorage.removeItem('isLoggedIn');
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- 3. HELPER FUNCTION (BOT LOGIC) ---
+        // --- VALUE CHECKER (BOT STYLE) ---
         function getVal(item, keys) {
             for (let i = 0; i < keys.length; i++) {
                 let k = keys[i];
-                if (item[k] && item[k] !== "null" && item[k] !== "") {
-                    return item[k];
-                }
+                if (item[k] && item[k] !== "null" && item[k] !== "") { return item[k]; }
             }
             return "N/A"; 
         }
 
-        // --- 4. SEARCH LOGIC (VERCEL REWRITE MODE) ---
+        // --- 3-LAYER ENGINE SYSTEM (NO FILE NEEDED) ---
+        async function smartFetch(phone) {
+            const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
+            const encodedUrl = encodeURIComponent(targetUrl);
 
+            // Engine 1: ThingProxy (Good for text)
+            const engine1 = `https://thingproxy.freeboard.io/fetch/${targetUrl}`;
+            // Engine 2: CorsProxy (Fastest)
+            const engine2 = `https://corsproxy.io/?${encodedUrl}`;
+            // Engine 3: AllOrigins (Reliable Backup)
+            const engine3 = `https://api.allorigins.win/raw?url=${encodedUrl}`;
+
+            // Try Engine 1
+            try {
+                console.log("Trying Engine 1...");
+                let res = await fetch(engine1);
+                if(res.ok) return await res.json();
+            } catch(e) { console.log("Engine 1 Failed"); }
+
+            // Try Engine 2
+            try {
+                console.log("Trying Engine 2...");
+                let res = await fetch(engine2);
+                if(res.ok) return await res.json();
+            } catch(e) { console.log("Engine 2 Failed"); }
+
+            // Try Engine 3
+            try {
+                console.log("Trying Engine 3...");
+                let res = await fetch(engine3);
+                if(res.ok) return await res.json();
+            } catch(e) { console.log("Engine 3 Failed"); }
+
+            throw new Error("All Servers Busy. Try again in 10 seconds.");
+        }
+
+        // --- MAIN SEARCH FUNCTION ---
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
             const resultArea = document.getElementById('result-area');
             
             if (!phone) { alert("Please enter a number"); return; }
             
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Secure Server... 📡</p>";
-
-            // USE LOCAL VERCEL PROXY (Must add vercel.json for this to work)
-            const internalUrl = `/api/proxy?num=${phone}&key=bronx-api`;
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Database... 📡<br>Scanning Servers...</p>";
 
             try {
-                // Fetch from our own Vercel server (Bypasses CORS instantly)
-                let response = await fetch(internalUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`Server Error: ${response.status}`);
-                }
-                
-                let data = await response.json();
-
+                const data = await smartFetch(phone);
                 resultArea.innerHTML = ""; 
 
-                // --- DATA FINDER ---
                 let resultsArray = [];
-
-                if (Array.isArray(data)) {
-                    resultsArray = data;
-                } else if (data.data && Array.isArray(data.data)) {
-                    resultsArray = data.data;
-                } else if (data.results && Array.isArray(data.results)) {
-                    resultsArray = data.results;
-                } else if (data.info && Array.isArray(data.info)) {
-                    resultsArray = data.info;
-                } else {
-                    resultsArray = [data]; 
-                }
+                if (Array.isArray(data)) { resultsArray = data; }
+                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
+                else if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
+                else if (data.info && Array.isArray(data.info)) { resultsArray = data.info; }
+                else { resultsArray = [data]; }
 
                 if (!resultsArray || resultsArray.length === 0) {
                      resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
                      return;
                 }
 
-                // --- RENDER ALL RESULTS ---
                 let count = 0;
                 resultsArray.forEach((item, index) => {
                     if(!item) return; 
                     count++;
 
-                    // MAPPING
                     const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
                     const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
                     const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
@@ -332,14 +308,13 @@
 
             } catch (error) {
                 console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>Make sure you added 'vercel.json' file.<br>Error: ${error.message}</p>`;
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`;
             }
         }
 
         function copyAllResults() {
             const resultText = document.getElementById('result-area').innerText;
             if(!resultText) { alert("Nothing to copy!"); return; }
-
             navigator.clipboard.writeText(resultText).then(() => {
                 alert("✅ Full Result Copied to Clipboard!");
             });
