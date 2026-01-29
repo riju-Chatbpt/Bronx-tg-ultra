@@ -1,9 +1,20 @@
 {
-  "version": 2,
   "rewrites": [
-    { "source": "/api/adhar/:match*", "destination": "https://bronx-adhar-api.vercel.app/aadhar=:match*" },
-    { "source": "/api/mail/:match*", "destination": "https://bronx-mail-api.vercel.app/mail=:match*" },
-    { "source": "/api/number", "destination": "https://bronx-api-sable.vercel.app/search" },
-    { "source": "/api/vehicle", "destination": "https://bronx-rc-api.vercel.app/" }
+    { 
+      "source": "/api/number", 
+      "destination": "https://bronx-api-sable.vercel.app/search" 
+    },
+    { 
+      "source": "/api/vehicle", 
+      "destination": "https://bronx-rc-api.vercel.app/" 
+    },
+    { 
+      "source": "/api/adhar/:path*", 
+      "destination": "https://bronx-adhar-api.vercel.app/:path*" 
+    },
+    { 
+      "source": "/api/mail/:path*", 
+      "destination": "https://bronx-mail-api.vercel.app/:path*" 
+    }
   ]
 }
