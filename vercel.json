@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/proxy",
-      "destination": "https://bronx-api-sable.vercel.app/search?num={number}=bronx-api"
+      "destination": "https://bronx-api-sable.vercel.app/search"
     }
   ]
 }
