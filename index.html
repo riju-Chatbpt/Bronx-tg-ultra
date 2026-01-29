@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING (NEON THEME) --- */
+        /* --- CSS STYLING --- */
         :root {
             --neon-blue: #00f3ff;
             --neon-red: #ff004c;
@@ -24,8 +24,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-image: 
-                linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
+            background-image: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
             background-size: 40px 40px;
         }
 
@@ -254,25 +253,8 @@
 
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- THE MAGIC FUNCTION (FROM YOUR BOT) ---
-        // This function works exactly like the bot's logic
-        function getVal(item, keys) {
-            if (!item) return "N/A";
-            
-            // If keys is a string, make it an array
-            if (!Array.isArray(keys)) keys = [keys];
-
-            for (let i = 0; i < keys.length; i++) {
-                let k = keys[i];
-                // Check if key exists and is valid
-                if (item[k] !== undefined && item[k] !== null && item[k] !== "null" && item[k] !== "") {
-                    return item[k];
-                }
-            }
-            return "N/A";
-        }
-
-        // --- FETCH ENGINE ---
+        // --- FETCH ENGINE (THE PROBLEM SOLVER) ---
+        // This function ensures data is ALWAYS parsed as JSON
         async function smartFetch(url) {
             const proxy1 = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
             const proxy2 = `https://corsproxy.io/?${encodeURIComponent(url)}`;
@@ -280,8 +262,14 @@
             try {
                 let res = await fetch(proxy1);
                 let data = await res.json();
+                
+                // CRITICAL FIX: AllOrigins returns stringified JSON in 'contents'
                 if(data.contents) {
-                    try { return JSON.parse(data.contents); } catch(e) { return data.contents; }
+                    if (typeof data.contents === 'string') {
+                        try { return JSON.parse(data.contents); } 
+                        catch(e) { return data.contents; } // Return as is if not valid JSON
+                    }
+                    return data.contents; // If it's already an object
                 }
                 return data;
             } catch(e) {
@@ -289,13 +277,24 @@
                     let res = await fetch(proxy2);
                     return await res.json();
                 } catch(e2) {
+                    // Fallback to direct fetch
                     let res = await fetch(url);
                     return await res.json();
                 }
             }
         }
 
-        // --- 1. NUMBER SEARCH (BOT LOGIC APPLIED) ---
+        // --- BOT HELPERS ---
+        function getVal(item, keys) {
+            if (!item) return "N/A";
+            if (!Array.isArray(keys)) keys = [keys];
+            for (let k of keys) {
+                if (item[k] && item[k] !== "null" && item[k] !== "") return item[k];
+            }
+            return "N/A";
+        }
+
+        // --- 1. NUMBER SEARCH ---
         async function searchNumber() {
             const val = document.getElementById('phoneInput').value;
             const area = document.getElementById('result-area-num');
@@ -314,7 +313,6 @@
                 if(list.length === 0) { area.innerHTML = "<p style='color:red'>No Data</p>"; return; }
 
                 list.forEach((itm, i) => {
-                    // EXACT KEYS FROM YOUR BOT CODE
                     const rec = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, ["name", "fullname", "consumer_name"])}
@@ -322,7 +320,7 @@
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, ["fname", "father", "guardian", "father_name"])}
 ├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, ["address", "city", "location"])}
 ├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${getVal(itm, ["circle", "state", "region"])}
-├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "uid", "consumer_id", "operator"])}
+├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "uid", "consumer_id"])}
 └─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, ["email", "mail"])}`;
                     
                     const div = document.createElement('div');
@@ -333,7 +331,7 @@
             } catch(e) { area.innerHTML = "<p style='color:red'>Error Fetching Data</p>"; }
         }
 
-        // --- 2. VEHICLE SEARCH (BOT LOGIC APPLIED) ---
+        // --- 2. VEHICLE SEARCH ---
         async function searchVehicle() {
             const val = document.getElementById('vehicleInput').value;
             const area = document.getElementById('result-area-rc');
@@ -344,10 +342,11 @@
                 const data = await smartFetch(`https://bronx-rc-api.vercel.app/?rc_number=${val}`);
                 area.innerHTML = "";
                 
+                // IMPORTANT: Check data.details
                 if(data.status !== "success" || !data.details) { area.innerHTML = "<p style='color:red'>Not Found</p>"; return; }
                 
                 const d = data.details;
-                // EXACT KEYS FROM YOUR BOT CODE (d["Key Name"])
+                // EXACT BOT KEYS (WITH SPACES)
                 const rec = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
       🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
@@ -388,7 +387,7 @@
             } catch(e) { area.innerHTML = "<p style='color:red'>Error Fetching Data</p>"; }
         }
 
-        // --- 3. ADHAR SEARCH (BOT LOGIC APPLIED) ---
+        // --- 3. ADHAR SEARCH ---
         async function searchAdhar() {
             const val = document.getElementById('adharInput').value;
             const area = document.getElementById('result-area-adhar');
@@ -407,18 +406,16 @@
                 if(list.length === 0) { area.innerHTML = "<p style='color:red'>No Data</p>"; return; }
 
                 list.forEach(itm => {
-                    // EXACT KEYS FROM YOUR BOT CODE
                     const rec = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
-├─ 🆔 𝗜𝗗: ${getVal(itm, "id")}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, "name")}
+├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "ID"])}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, ["name", "Name"])}
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, ["fname", "father"])}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, "mobile")}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, "address")}
-├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, "email")}
-└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(itm, "alt")}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, ["mobile", "phone"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, ["address", "Address"])}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, ["email", "mail"])}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(itm, ["alt", "alt_mobile"])}
 ━━━━━━━━━━━━━━━━━━━━`;
-                    
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-gold)";
@@ -428,7 +425,7 @@
             } catch(e) { area.innerHTML = "<p style='color:red'>Error Fetching Data</p>"; }
         }
 
-        // --- 4. MAIL SEARCH (BOT LOGIC APPLIED) ---
+        // --- 4. MAIL SEARCH ---
         async function searchMail() {
             const val = document.getElementById('mailInput').value;
             const area = document.getElementById('result-area-mail');
@@ -447,18 +444,16 @@
                 if(list.length === 0) { area.innerHTML = "<p style='color:red'>No Data</p>"; return; }
 
                 list.forEach((itm, i) => {
-                    // EXACT KEYS & ORDER FROM YOUR BOT CODE
                     const rec = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
-├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, "email")}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, "name")}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, "fname")}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, "mobile")}
-├─ 🆔 𝗜𝗗: ${getVal(itm, "id")}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, "address")}
-└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(itm, "alt")}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, ["email", "mail"]) || val}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, ["name", "Name"])}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, ["fname", "father"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, ["mobile", "phone"])}
+├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "uid"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, ["address", "Address"])}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(itm, ["alt", "alt_mobile"])}
 ━━━━━━━━━━━━━━━━━━━━`;
-                    
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-green)";
