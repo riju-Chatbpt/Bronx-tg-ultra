@@ -282,7 +282,7 @@
             area.innerHTML = "<p style='color:var(--neon-gold)'>Connecting...</p>";
 
             try {
-                const data = await fetchDirect(`https://bronx-api-sable.vercel.app/search?num=${val}&key=bronx-api`);
+                const data = await fetchDirect(`https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`);
                 area.innerHTML = "";
                 
                 let list = [];
