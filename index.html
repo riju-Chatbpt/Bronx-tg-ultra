@@ -153,6 +153,7 @@
             color: var(--neon-green);
             font-size: 13px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            overflow-x: hidden;
         }
 
         /* Error Text */
@@ -200,15 +201,13 @@
     </div>
 
     <script>
-        // --- 1. CONFIGURATION (EDIT THIS) ---
+        // --- 1. CONFIGURATION ---
         
         const ACCESS_CONFIG = {
-            validUser: "admin",        // Your Username
-            validPass: "bronx",     // Your Password
-            expiryDate: "2026-01-30"   // Format: YYYY-MM-DD (Expiration Date)
+            validUser: "admin",        
+            validPass: "bronx",     
+            expiryDate: "2026-12-30"   
         };
-
-        const API_KEY = "bronx-api";   // API Key parameter
 
         // --- 2. LOGIN LOGIC ---
 
@@ -217,7 +216,6 @@
             const pass = document.getElementById('password').value;
             const errorMsg = document.getElementById('login-error');
 
-            // Check Date
             const today = new Date();
             const expiry = new Date(ACCESS_CONFIG.expiryDate);
 
@@ -226,9 +224,7 @@
                 return;
             }
 
-            // Check Credentials
             if (user === ACCESS_CONFIG.validUser && pass === ACCESS_CONFIG.validPass) {
-                // Success
                 document.getElementById('login-section').style.display = 'none';
                 document.getElementById('dashboard-section').style.display = 'block';
                 localStorage.setItem('isLoggedIn', 'true');
@@ -237,16 +233,18 @@
             }
         }
 
-        // Auto Logout on Load if Expired
         window.onload = function() {
             const today = new Date();
             const expiry = new Date(ACCESS_CONFIG.expiryDate);
-            
             if (today > expiry) {
                 localStorage.removeItem('isLoggedIn');
-                alert("Subscription Expired!");
-                location.reload(); 
+                return; 
             }
+            // Optional: Auto login if previously logged in
+            // if(localStorage.getItem('isLoggedIn') === 'true') {
+            //     document.getElementById('login-section').style.display = 'none';
+            //     document.getElementById('dashboard-section').style.display = 'block';
+            // }
         }
 
         function logout() {
@@ -254,55 +252,80 @@
             location.reload();
         }
 
-        // --- 3. SEARCH LOGIC ---
+        // --- 3. SEARCH LOGIC (FIXED) ---
 
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
             const resultArea = document.getElementById('result-area');
             
             if (!phone) { alert("Please enter a number"); return; }
+            if (phone.length < 10) { alert("Enter valid 10 digit number"); return; }
 
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Searching Database... 📡</p>";
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Satellite... 📡</p>";
+
+            // DIRECT API LINK FROM YOUR REQUEST
+            const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
+            
+            // PROXY LINK (Bypass CORS if direct fails)
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
 
             try {
-                // API Call
-                const url = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=${bronx-api}`;
-                const response = await fetch(url);
-                const data = await response.json();
+                let data;
+                let response;
 
-                resultArea.innerHTML = ""; // Clear loading text
+                try {
+                    // Try 1: Direct Connection
+                    console.log("Attempting Direct Connection...");
+                    response = await fetch(targetUrl);
+                    if (!response.ok) throw new Error("Direct Fail");
+                    data = await response.json();
+                } catch (directError) {
+                    // Try 2: Proxy Connection (Bypass)
+                    console.log("Direct failed, attempting Proxy Bypass...");
+                    response = await fetch(proxyUrl);
+                    if (!response.ok) throw new Error(`Server Status: ${response.status}`);
+                    data = await response.json();
+                }
 
-                // The API might return an array (list) or a single object. 
-                // We handle both cases here.
+                resultArea.innerHTML = ""; // Clear loading
+
+                // --- DATA HANDLING ---
+                // We handle if data is Array [{}, {}] OR Object {data: ...} OR direct Object {}
                 let resultsArray = [];
+
                 if (Array.isArray(data)) {
                     resultsArray = data;
+                } else if (data.data && Array.isArray(data.data)) {
+                    resultsArray = data.data;
                 } else if (data.status === "success" || data.data) {
-                    // Adjust based on actual API structure
-                    resultsArray = [data]; 
+                    resultsArray = [data.data || data];
                 } else {
-                    // Fallback if data comes as a direct object
+                    // Assume the whole object is one result
                     resultsArray = [data];
                 }
 
-                if (resultsArray.length === 0) {
-                    resultArea.innerHTML = "<p style='color:red'>No Records Found</p>";
-                    return;
+                // Filter out empty/null results if necessary
+                if (!resultsArray || resultsArray.length === 0) {
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found in Database.</p>";
+                     return;
                 }
 
-                // Loop through ALL results
+                // Render Cards
+                let count = 0;
                 resultsArray.forEach((item) => {
-                    // Note: You may need to change item.name, item.mobile etc. based on exactly 
-                    // what keys the API returns. I am assuming standard keys.
+                    // Check if item is valid
+                    if(!item) return;
+
+                    count++;
                     const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
-├─ 👤 𝗡𝗮𝗺𝗲: ${item.name || "N/A"}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${item.mobile || item.number || phone}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${item.father || item.father_name || "N/A"}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${item.address || "N/A"}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${item.circle || item.state || "N/A"}
-├─ 🆔 𝗜𝗗: ${item.operator || "N/A"}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${item.email || "N/A"}
+├─ 👤 𝗡𝗮𝗺𝗲: ${item.name || item.Name || item.full_name || "Unknown"}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${item.mobile || item.Mobile || item.number || phone}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${item.father || item.Father || item.father_name || "N/A"}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${item.address || item.Address || "N/A"}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${item.circle || item.Circle || item.state || "N/A"}
+├─ 🆔 𝗜𝗗: ${item.operator || item.Operator || "N/A"}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${item.email || item.Email || "N/A"}
                     `;
 
                     const div = document.createElement('div');
@@ -311,9 +334,13 @@
                     resultArea.appendChild(div);
                 });
 
+                if(count === 0) {
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No valid data received.</p>";
+                }
+
             } catch (error) {
                 console.error(error);
-                resultArea.innerHTML = "<p style='color:red'>Server Error or Invalid API Key.</p>";
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Failed.<br><br>Error: ${error.message}</p>`;
             }
         }
 
