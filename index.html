@@ -232,7 +232,6 @@
             const expiry = new Date(ACCESS_CONFIG.expiryDate);
             if (today > expiry) {
                 localStorage.removeItem('isLoggedIn');
-                return; 
             }
         }
 
@@ -241,7 +240,21 @@
             location.reload();
         }
 
-        // --- 3. SEARCH LOGIC (UNIVERSAL SCANNER) ---
+        // --- 3. HELPER FUNCTION FROM YOUR BOT (THE FIX!) ---
+        
+        // This function checks ALL possible keys, just like your Bot
+        function getVal(item, keys) {
+            for (let i = 0; i < keys.length; i++) {
+                let k = keys[i];
+                // Check if key exists and is not empty or null
+                if (item[k] && item[k] !== "null" && item[k] !== "") {
+                    return item[k];
+                }
+            }
+            return "N/A"; // Return N/A if nothing found
+        }
+
+        // --- 4. SEARCH LOGIC ---
 
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
@@ -251,7 +264,7 @@
             
             resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Satellite... 📡</p>";
 
-            // 1. URL CONFIGURATION
+            // URLs
             const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
             const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
 
@@ -259,7 +272,7 @@
                 let data;
                 let response;
 
-                // 2. FETCH DATA (Try Direct -> Then Proxy)
+                // Try Direct then Proxy
                 try {
                     response = await fetch(targetUrl);
                     if (!response.ok) throw new Error("Direct Fail");
@@ -269,58 +282,54 @@
                     data = await response.json();
                 }
 
-                resultArea.innerHTML = ""; // Clear loading text
+                resultArea.innerHTML = ""; 
 
-                // 3. UNIVERSAL DATA FINDER (Finds array anywhere)
+                // --- DATA EXTRACTION ---
+                // Find the array no matter where it is hidden
                 let resultsArray = [];
 
                 if (Array.isArray(data)) {
                     resultsArray = data;
                 } else if (data.data && Array.isArray(data.data)) {
-                    resultsArray = data.data; // API often hides data here
+                    resultsArray = data.data;
                 } else if (data.results && Array.isArray(data.results)) {
                     resultsArray = data.results;
                 } else if (data.info && Array.isArray(data.info)) {
                     resultsArray = data.info;
                 } else {
-                    // If it's a single object, put it in an array
-                    resultsArray = [data];
+                    resultsArray = [data]; // Single object
                 }
 
-                // If array is found but empty
                 if (!resultsArray || resultsArray.length === 0) {
                      resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
                      return;
                 }
 
-                // 4. DISPLAY ALL RESULTS (Loop 10 times if 10 results)
+                // --- GENERATE CARDS (USING YOUR BOT LOGIC) ---
                 let count = 0;
-                resultsArray.forEach((item) => {
-                    // Skip completely empty items
+                resultsArray.forEach((item, index) => {
                     if(!item) return;
-
                     count++;
-                    
-                    // --- MAPPING (Using keys you provided) ---
-                    // Priority: item.fname -> if empty, try item.father -> if empty, show N/A
-                    
-                    const nameStr = item.name || item.Name || "Unknown";
-                    const mobileStr = item.mobile || item.Mobile || item.number || phone;
-                    const fatherStr = item.fname || item.father || item.Father || "N/A";
-                    const addressStr = item.address || item.Address || "N/A";
-                    const circleStr = item.circle || item.Circle || item.state || "N/A";
-                    const idStr = item.id || item.operator || item.ID || "N/A";
-                    const emailStr = item.email || item.Email || "N/A";
+
+                    // USING getVal EXACTLY LIKE YOUR BOT CODE
+                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
+                    // Mobile: if not found in data, use the searched phone number
+                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
+                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
+                    const address = getVal(item, ["address", "city", "location", "Address"]);
+                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
+                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
+                    const email = getVal(item, ["email", "mail", "Email"]);
 
                     const record = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
-├─ 👤 𝗡𝗮𝗺𝗲: ${nameStr}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobileStr}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${fatherStr}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${addressStr}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circleStr}
-├─ 🆔 𝗜𝗗: ${idStr}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${emailStr}
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
+├─ 🆔 𝗜𝗗: ${id}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
                     `;
 
                     const div = document.createElement('div');
@@ -331,11 +340,11 @@
 
             } catch (error) {
                 console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ System Error. Check API Key.</p>`;
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Error: ${error.message}</p>`;
             }
         }
 
-        // --- 4. COPY LOGIC ---
+        // --- 5. COPY LOGIC ---
         function copyAllResults() {
             const resultText = document.getElementById('result-area').innerText;
             if(!resultText) { alert("Nothing to copy!"); return; }
