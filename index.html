@@ -29,11 +29,11 @@
             background-size: 40px 40px;
         }
 
-        /* --- SHARED CONTAINER STYLES --- */
+        /* --- CONTAINER STYLES --- */
         .container {
-            display: none; /* Hidden by default */
+            display: none; /* SAB KUCH HIDDEN RAHEGA */
             width: 100%;
-            max-width: 380px; /* Made smaller as requested */
+            max-width: 380px; 
             padding: 20px;
             text-align: center;
             animation: fadeIn 0.5s ease;
@@ -41,9 +41,9 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- LOGIN PAGE --- */
+        /* --- LOGIN PAGE (Visible by Default) --- */
         #login-section {
-            display: block; /* Visible initially */
+            display: block; 
             background: var(--glass);
             padding: 30px;
             border: 2px solid var(--neon-blue);
@@ -51,7 +51,7 @@
             border-radius: 15px;
         }
 
-        /* --- MENU GRID (NEW) --- */
+        /* --- MENU GRID --- */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -81,11 +81,11 @@
         .menu-btn.mail { border-color: var(--neon-green); }
         .menu-btn.mail:hover { background: var(--neon-green); color: black; }
 
-        /* --- PROFILE & HEADERS --- */
+        /* --- PROFILE --- */
         .profile-container {
             position: relative;
-            width: 100px; /* Smaller */
-            height: 100px; /* Smaller */
+            width: 100px; 
+            height: 100px; 
             margin: 0 auto 15px;
         }
         
@@ -111,7 +111,6 @@
 
         .subtitle { color: #ccc; font-size: 12px; margin-bottom: 20px; }
 
-        /* --- INPUTS & BUTTONS --- */
         input {
             width: 100%;
             background: black;
@@ -142,7 +141,6 @@
         .btn-back { background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); margin-top: 15px; }
         .btn:active { transform: scale(0.98); }
 
-        /* --- RESULT CARDS --- */
         .result-area { text-align: left; margin-top: 20px; }
 
         .result-card {
@@ -153,17 +151,11 @@
             font-family: monospace;
             white-space: pre-wrap; 
             color: var(--neon-green);
-            font-size: 12px; /* Smaller font */
+            font-size: 12px; 
             box-shadow: 0 5px 15px rgba(0,0,0,0.5);
             overflow-x: hidden;
             line-height: 1.4;
         }
-
-        /* --- VEHICLE SPECIFIC COLORS --- */
-        .v-title { color: var(--neon-red); font-weight: bold; text-align: center; display: block; margin-bottom: 5px;}
-        .v-label { color: var(--neon-gold); font-weight: bold; }
-        .v-val { color: white; }
-
     </style>
 </head>
 <body>
@@ -229,11 +221,9 @@
             expiryDate: "2026-12-30"   
         };
 
-        // --- NAVIGATION LOGIC ---
+        // --- NAVIGATION ---
         function showSection(sectionId) {
-            // Hide all sections
             document.querySelectorAll('.container').forEach(div => div.style.display = 'none');
-            // Show target section
             document.getElementById(sectionId).style.display = 'block';
         }
 
@@ -249,40 +239,43 @@
 
             if (user === ACCESS_CONFIG.validUser && pass === ACCESS_CONFIG.validPass) {
                 localStorage.setItem('isLoggedIn', 'true');
-                showSection('menu-section');
+                // HIDE LOGIN, SHOW MENU
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('menu-section').style.display = 'block';
             } else {
                 errorMsg.innerText = "INVALID CREDENTIALS";
             }
         }
 
         window.onload = function() {
-            // Check Auto Login
             if(localStorage.getItem('isLoggedIn') === 'true') {
-                showSection('menu-section');
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('menu-section').style.display = 'block';
             }
         }
 
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- HELPER: Get Value Safely ---
+        // --- SUPER SCANNER FUNCTION (FIXES N/A) ---
+        // This checks every possible spelling of a key
         function getVal(item, keys) {
             if(!item) return "N/A";
             for (let i = 0; i < keys.length; i++) {
                 let k = keys[i];
+                // Check exact match, or nested matches if needed
                 if (item[k] && item[k] !== "null" && item[k] !== "") return item[k];
             }
             return "N/A"; 
         }
 
-        // --- 1. NUMBER SEARCH LOGIC (Existing) ---
+        // --- 1. NUMBER SEARCH LOGIC (FIXED) ---
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
             const resultArea = document.getElementById('result-area-num');
             if (!phone) { alert("Enter Number!"); return; }
             
-            resultArea.innerHTML = "<p style='color:var(--neon-blue)'>Scanning...</p>";
+            resultArea.innerHTML = "<p style='color:var(--neon-blue)'>Scanning Database...</p>";
             
-            // Using Multi-Engine Logic
             const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
             const encodedUrl = encodeURIComponent(targetUrl);
             const engine1 = `https://corsproxy.io/?${encodedUrl}`;
@@ -301,7 +294,6 @@
 
                 resultArea.innerHTML = ""; 
                 
-                // Extract Data
                 let resultsArray = [];
                 if (Array.isArray(data)) resultsArray = data;
                 else if (data.data) resultsArray = Array.isArray(data.data) ? data.data : [data.data];
@@ -313,15 +305,24 @@
 
                 resultsArray.forEach((item, index) => {
                     if(!item) return; 
+                    
+                    // SUPER SCANNER KEYS (ADDED MORE VARIATIONS)
+                    const name = getVal(item, ["name", "Name", "fullname", "full_name", "consumer_name", "user_name"]);
+                    const father = getVal(item, ["father", "Father", "fname", "father_name", "guardian_name"]);
+                    const address = getVal(item, ["address", "Address", "city", "location", "permanent_address"]);
+                    const circle = getVal(item, ["circle", "Circle", "state", "region", "zone"]);
+                    const id = getVal(item, ["id", "ID", "operator", "consumer_id", "uid"]);
+                    const email = getVal(item, ["email", "Email", "mail"]);
+
                     const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item, ["name", "fullname", "consumer_name", "Name"])}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "phone", "number"]) || phone}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item, ["fname", "father", "guardian", "father_name"])}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item, ["address", "city", "location"])}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${getVal(item, ["circle", "state"])}
-├─ 🆔 𝗜𝗗: ${getVal(item, ["id", "operator"])}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item, ["email", "mail"])}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "Mobile", "phone", "number"]) || phone}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
+├─ 🆔 𝗜𝗗: ${id}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
                     `;
                     const div = document.createElement('div');
                     div.className = 'result-card';
@@ -334,7 +335,7 @@
             }
         }
 
-        // --- 2. VEHICLE SEARCH LOGIC (NEW) ---
+        // --- 2. VEHICLE SEARCH LOGIC (FIXED N/A) ---
         async function searchVehicle() {
             const rc = document.getElementById('vehicleInput').value.trim();
             const resultArea = document.getElementById('result-area-rc');
@@ -344,17 +345,14 @@
             resultArea.innerHTML = "<p style='color:var(--neon-red)'>Connecting to RTO... 🏎️</p>";
 
             const targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${rc}`;
-            // Use Direct Fetch first (since it's Vercel to Vercel), fallback to proxy
             
             try {
                 let data;
                 try {
-                    // Try Direct
-                    let res = await fetch(targetUrl);
+                    let res = await fetch(targetUrl); // Try Direct
                     if(res.ok) data = await res.json();
                     else throw new Error("Direct Fail");
                 } catch(e) {
-                    // Try Proxy
                     let res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`);
                     data = await res.json();
                 }
@@ -368,7 +366,20 @@
 
                 const d = data.details;
 
-                // DESIGNING THE VIP CARD
+                // SPECIAL FIX: Trying EXACT keys from your JSON example
+                const owner = d["Owner Name"] || d["Owner"] || d["owner_name"] || "N/A";
+                const father = d["Father's Name"] || d["Father Name"] || d["father_name"] || "N/A";
+                const phone = d["Phone"] || d["Mobile"] || d["mobile_no"] || "Masked";
+                const address = d["Address"] || d["Present Address"] || "N/A";
+                const city = d["City Name"] || d["city"] || "N/A";
+                const serial = d["Owner Serial No"] || d["Serial"] || "N/A";
+                
+                const maker = d["Maker Model"] || d["Model"] || "N/A";
+                const vClass = d["Vehicle Class"] || d["Class"] || "N/A";
+                const fuel = d["Fuel Type"] || d["Fuel"] || "N/A";
+                const regDate = d["Registration Date"] || d["Reg Date"] || "N/A";
+                const rto = d["Registered RTO"] || d["RTO"] || "N/A";
+
                 const vipRecord = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
       🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
@@ -378,19 +389,19 @@
 ╚══════════════════════╝
 
  ⭐ OWNER DETAILS ⭐
-👤 Owner: ${d["Owner Name"] || "N/A"}
-🧑‍🦳 Father: ${d["Father's Name"] || "N/A"}
-📱 Phone: ${d["Phone"] || "Masked"}
-🏠 Address: ${d["Address"] || "N/A"}
-📍 City: ${d["City Name"] || "N/A"}
-🔢 Serial: ${d["Owner Serial No"] || "N/A"}
+👤 Owner: ${owner}
+🧑‍🦳 Father: ${father}
+📱 Phone: ${phone}
+🏠 Address: ${address}
+📍 City: ${city}
+🔢 Serial: ${serial}
 
  ⭐ VEHICLE SPECS ⭐
-🚘 Maker: ${d["Maker Model"] || "N/A"}
-🚜 Class: ${d["Vehicle Class"] || "N/A"}
-⛽ Fuel: ${d["Fuel Type"] || "N/A"}
-🗓️ Reg Date: ${d["Registration Date"] || "N/A"}
-🏛️ RTO: ${d["Registered RTO"] || "N/A"}
+🚘 Maker: ${maker}
+🚜 Class: ${vClass}
+⛽ Fuel: ${fuel}
+🗓️ Reg Date: ${regDate}
+🏛️ RTO: ${rto}
 
  ⭐ LEGAL & VALIDITY ⭐
 🏥 Insurer: ${d["Insurance Company"] || "N/A"}
@@ -403,8 +414,8 @@
 
                 const div = document.createElement('div');
                 div.className = 'result-card';
-                div.style.borderLeft = "4px solid var(--neon-red)"; // Red border for Vehicle
-                div.style.color = "var(--neon-gold)"; // Gold text for luxury feel
+                div.style.borderLeft = "4px solid var(--neon-red)"; 
+                div.style.color = "var(--neon-gold)"; 
                 div.innerText = vipRecord.trim();
                 resultArea.appendChild(div);
 
