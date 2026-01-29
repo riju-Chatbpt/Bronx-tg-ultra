@@ -205,7 +205,7 @@
         
         const ACCESS_CONFIG = {
             validUser: "admin",        
-            validPass: "bronx",     
+            validPass: "rehan123",     
             expiryDate: "2026-12-30"   
         };
 
@@ -240,11 +240,6 @@
                 localStorage.removeItem('isLoggedIn');
                 return; 
             }
-            // Optional: Auto login if previously logged in
-            // if(localStorage.getItem('isLoggedIn') === 'true') {
-            //     document.getElementById('login-section').style.display = 'none';
-            //     document.getElementById('dashboard-section').style.display = 'block';
-            // }
         }
 
         function logout() {
@@ -252,21 +247,20 @@
             location.reload();
         }
 
-        // --- 3. SEARCH LOGIC (FIXED) ---
+        // --- 3. SEARCH LOGIC (CORRECTED KEYS) ---
 
         async function searchNumber() {
             const phone = document.getElementById('phoneInput').value;
             const resultArea = document.getElementById('result-area');
             
             if (!phone) { alert("Please enter a number"); return; }
-            if (phone.length < 10) { alert("Enter valid 10 digit number"); return; }
-
+            
             resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Satellite... 📡</p>";
 
-            // DIRECT API LINK FROM YOUR REQUEST
+            // DIRECT API LINK 
             const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
             
-            // PROXY LINK (Bypass CORS if direct fails)
+            // PROXY LINK (Safety)
             const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
 
             try {
@@ -274,23 +268,19 @@
                 let response;
 
                 try {
-                    // Try 1: Direct Connection
-                    console.log("Attempting Direct Connection...");
+                    // Try 1: Direct
                     response = await fetch(targetUrl);
                     if (!response.ok) throw new Error("Direct Fail");
                     data = await response.json();
                 } catch (directError) {
-                    // Try 2: Proxy Connection (Bypass)
-                    console.log("Direct failed, attempting Proxy Bypass...");
+                    // Try 2: Proxy
                     response = await fetch(proxyUrl);
-                    if (!response.ok) throw new Error(`Server Status: ${response.status}`);
                     data = await response.json();
                 }
 
                 resultArea.innerHTML = ""; // Clear loading
 
                 // --- DATA HANDLING ---
-                // We handle if data is Array [{}, {}] OR Object {data: ...} OR direct Object {}
                 let resultsArray = [];
 
                 if (Array.isArray(data)) {
@@ -300,32 +290,34 @@
                 } else if (data.status === "success" || data.data) {
                     resultsArray = [data.data || data];
                 } else {
-                    // Assume the whole object is one result
                     resultsArray = [data];
                 }
 
-                // Filter out empty/null results if necessary
                 if (!resultsArray || resultsArray.length === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found in Database.</p>";
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
                      return;
                 }
 
-                // Render Cards
+                // Render Cards with YOUR EXACT KEYS
                 let count = 0;
                 resultsArray.forEach((item) => {
-                    // Check if item is valid
                     if(!item) return;
 
                     count++;
+                    
+                    // HERE IS THE FIX: MAPPING CORRECT KEYS
+                    // API: fname -> Code: Father
+                    // API: id    -> Code: ID
+                    
                     const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
-├─ 👤 𝗡𝗮𝗺𝗲: ${item.name || item.Name || item.full_name || "Unknown"}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${item.mobile || item.Mobile || item.number || phone}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${item.father || item.Father || item.father_name || "N/A"}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${item.address || item.Address || "N/A"}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${item.circle || item.Circle || item.state || "N/A"}
-├─ 🆔 𝗜𝗗: ${item.operator || item.Operator || "N/A"}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${item.email || item.Email || "N/A"}
+├─ 👤 𝗡𝗮𝗺𝗲: ${item.name || "Unknown"}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${item.mobile || phone}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${item.fname || "N/A"}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${item.address || "N/A"}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${item.circle || "N/A"}
+├─ 🆔 𝗜𝗗: ${item.id || "N/A"}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${item.email || "N/A"}
                     `;
 
                     const div = document.createElement('div');
@@ -340,7 +332,7 @@
 
             } catch (error) {
                 console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Failed.<br><br>Error: ${error.message}</p>`;
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Error: ${error.message}</p>`;
             }
         }
 
