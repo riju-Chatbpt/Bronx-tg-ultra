@@ -1,8 +1,9 @@
 {
-  "rewrites": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/api/proxy",
-      "destination": "https://bronx-api-sable.vercel.app/search"
+      "src": "index.html",
+      "use": "@vercel/static"
     }
   ]
 }
