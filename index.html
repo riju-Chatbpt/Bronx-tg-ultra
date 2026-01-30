@@ -60,7 +60,7 @@
     </div>
 
     <div id="number-section" class="container">
-        <h1>NUMBER SEARCH</h1><input type="number" id="phoneInput" placeholder="Enter Number">
+        <h1>NUMBER SEARCH</h1><input type="number" id="phoneInput" placeholder="Enter Phone Number">
         <button class="btn btn-search" onclick="searchNumber()">SEARCH</button>
         <div id="result-area-num" class="result-area"></div>
         <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY FULL</button>
@@ -132,7 +132,7 @@
             throw new Error("All Servers Busy. Try again.");
         }
 
-        // --- 1. NUMBER SEARCH (FIXED: USING DIRECT VERCEL ROUTE) ---
+        // --- 1. NUMBER SEARCH (MODIFIED: USING DIRECT VERCEL ROUTE) ---
         async function searchNumber() {
             const val = document.getElementById('phoneInput').value;
             const area = document.getElementById('result-area-num');
