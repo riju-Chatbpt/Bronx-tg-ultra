@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bronx Ultra Suite</title>
+    <style>
+        /* --- CSS STYLING --- */
+        :root { --neon-blue: #00f3ff; --neon-red: #ff004c; --neon-green: #00ff6a; --neon-gold: #ffd700; --dark-bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
+        body { background-color: var(--dark-bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-image: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%); background-size: 40px 40px; }
+        .container { display: none; width: 100%; max-width: 400px; padding: 20px; text-align: center; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #login-section { display: block; background: var(--glass); padding: 40px; border: 2px solid var(--neon-blue); box-shadow: 0 0 20px var(--neon-blue); border-radius: 15px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .menu-btn { background: rgba(0,0,0,0.6); border: 2px solid var(--neon-blue); color: white; padding: 20px 10px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: bold; font-size: 14px; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
+        .menu-btn:hover { background: var(--neon-blue); color: black; box-shadow: 0 0 20px var(--neon-blue); }
+        .menu-btn.vehicle { border-color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 0, 76, 0.2); }
+        .menu-btn.vehicle:hover { background: var(--neon-red); color: white; box-shadow: 0 0 20px var(--neon-red); }
+        .menu-btn.adhar { border-color: var(--neon-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+        .menu-btn.adhar:hover { background: var(--neon-gold); color: black; box-shadow: 0 0 20px var(--neon-gold); }
+        .menu-btn.mail { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 106, 0.2); }
+        .menu-btn.mail:hover { background: var(--neon-green); color: black; box-shadow: 0 0 20px var(--neon-green); }
+        .profile-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
+        .profile-pic { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--neon-blue); box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue); object-fit: cover; }
+        h1 { background: linear-gradient(to right, var(--neon-blue), var(--neon-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 26px; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; font-weight: 800; }
+        .subtitle { color: #ccc; font-size: 14px; margin-bottom: 30px; }
+        input { width: 100%; background: black; border: 2px solid var(--neon-green); color: white; padding: 15px; margin-bottom: 15px; font-size: 16px; outline: none; text-align: center; }
+        input:focus { box-shadow: 0 0 15px var(--neon-green); }
+        .btn { width: 100%; padding: 15px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; text-transform: uppercase; color: black; margin-bottom: 15px; transition: 0.3s; }
+        .btn-search { background: linear-gradient(90deg, var(--neon-blue), var(--neon-red)); }
+        .btn-copy { background: linear-gradient(90deg, var(--neon-green), var(--neon-gold)); }
+        .btn-back { background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); margin-top: 15px; }
+        .btn:active { transform: scale(0.98); }
+        .result-area { text-align: left; margin-top: 20px; }
+        .result-card { background: rgba(20, 20, 20, 0.95); border-left: 4px solid var(--neon-gold); padding: 15px; margin-bottom: 15px; font-family: monospace; white-space: pre-wrap; color: var(--neon-green); font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); overflow-x: hidden; }
+    </style>
+</head>
+<body>
+
+    <div id="login-section" class="container" style="display: block;">
+        <h2 style="color:var(--neon-gold); margin-bottom:20px;">ACCESS CONTROL</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button class="btn btn-search" onclick="handleLogin()">Login System</button>
+        <p id="login-error" style="color:var(--neon-red); margin-top:10px;"></p>
+    </div>
+
+    <div id="menu-section" class="container">
+        <div class="profile-container"><img src="https://i.ibb.co/YTjW35Hs/file-000000007b0872069c1067c615adaa48.png" class="profile-pic"></div>
+        <h1>BRONX ULTRA</h1>
+        <div class="subtitle">CHOOSE YOUR TOOL</div>
+        <div class="menu-grid">
+            <div class="menu-btn" onclick="showSection('number-section')">📱<br>Number Info</div>
+            <div class="menu-btn vehicle" onclick="showSection('vehicle-section')">🏎️<br>Vehicle Info</div>
+            <div class="menu-btn adhar" onclick="showSection('adhar-section')">🆔<br>Adhar Info</div>
+            <div class="menu-btn mail" onclick="showSection('mail-section')">📧<br>Mail Info</div>
+        </div>
+        <button onclick="logout()" class="btn btn-back">LOGOUT</button>
+    </div>
+
+    <div id="number-section" class="container">
+        <h1>NUMBER SEARCH</h1><input type="number" id="phoneInput" placeholder="Enter Number">
+        <button class="btn btn-search" onclick="searchNumber()">SEARCH</button>
+        <div id="result-area-num" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY FULL</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
+    </div>
+
+    <div id="vehicle-section" class="container">
+        <h1>VEHICLE INFO</h1><input type="text" id="vehicleInput" placeholder="HR12AQ4000">
+        <button class="btn btn-search" onclick="searchVehicle()">GO</button>
+        <div id="result-area-rc" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-rc')">📋 COPY FULL</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
+    </div>
+
+    <div id="adhar-section" class="container">
+        <h1>ADHAR INFO</h1><input type="number" id="adharInput" placeholder="Adhar Number">
+        <button class="btn btn-search" onclick="searchAdhar()">GO</button>
+        <div id="result-area-adhar" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-adhar')">📋 COPY FULL</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
+    </div>
+
+    <div id="mail-section" class="container">
+        <h1>MAIL INFO</h1><input type="email" id="mailInput" placeholder="Enter Email">
+        <button class="btn btn-search" onclick="searchMail()">GO</button>
+        <div id="result-area-mail" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-mail')">📋 COPY FULL</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
+    </div>
+
+    <script>
+        const ACCESS_CONFIG = { validUser: "admin", validPass: "rehan123", expiryDate: "2026-12-30" };
+        function showSection(id) { document.querySelectorAll('.container').forEach(div => div.style.display = 'none'); document.getElementById(id).style.display = 'block'; }
+        function handleLogin() {
+            const u = document.getElementById('username').value; const p = document.getElementById('password').value;
+            const today = new Date(); const expiry = new Date(ACCESS_CONFIG.expiryDate);
+            if (today > expiry) { document.getElementById('login-error').innerText = "ACCESS EXPIRED."; return; }
+            if (u === ACCESS_CONFIG.validUser && p === ACCESS_CONFIG.validPass) { localStorage.setItem('isLoggedIn', 'true'); showSection('menu-section'); } 
+            else { document.getElementById('login-error').innerText = "INVALID CREDENTIALS"; }
+        }
+        window.onload = () => { if(localStorage.getItem('isLoggedIn')==='true') showSection('menu-section'); };
+        function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
+
+        function getVal(item, keys) {
+            if (!item) return "N/A";
+            if (!Array.isArray(keys)) keys = [keys];
+            // Check Exact Match
+            for (let k of keys) { if (item[k] && item[k] !== "null" && item[k] !== "") return item[k]; }
+            // Check Lowercase Match
+            let lowerKeys = Object.keys(item).map(k => k.toLowerCase());
+            let lowerValues = Object.values(item);
+            for (let k of keys) {
+                let idx = lowerKeys.indexOf(k.toLowerCase());
+                if (idx > -1 && lowerValues[idx] && lowerValues[idx] !== "null" && lowerValues[idx] !== "") return lowerValues[idx];
+            }
+            return "N/A";
+        }
+
+        // --- SMART FETCH (4-LAYER PROXY) ---
+        async function smartFetch(url) {
+            const enc = encodeURIComponent(url);
+            const engines = [
+                `https://corsproxy.io/?${enc}`,
+                `https://thingproxy.freeboard.io/fetch/${url}`,
+                `https://api.allorigins.win/get?url=${enc}`,
+                `https://api.codetabs.com/v1/proxy?quest=${enc}`
+            ];
+            for (let i = 0; i < engines.length; i++) {
+                try {
+                    let res = await fetch(engines[i]);
+                    if (res.ok) {
+                        let data = await res.json();
+                        if (data.contents) { try { return JSON.parse(data.contents); } catch(e) { return data.contents; } }
+                        return data;
+                    }
+                } catch(e) { console.log(`Engine ${i} failed`); }
+            }
+            throw new Error("All Servers Busy");
+        }
+
+        // --- 1. NUMBER SEARCH (USING SMART FETCH + YOUR EXACT CODE) ---
+        async function searchNumber() {
+            const phone = document.getElementById('phoneInput').value;
+            const resultArea = document.getElementById('result-area-num');
+            if (!phone) { alert("Please enter a number"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Database... 📡</p>";
+            
+            // DIRECT URL FOR SMARTFETCH (Not Vercel rewrite)
+            const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=op`;
+
+            try {
+                const data = await smartFetch(targetUrl);
+                resultArea.innerHTML = ""; 
+                let resultsArray = [];
+                if (Array.isArray(data)) { resultsArray = data; }
+                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
+                else if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
+                else if (data.info && Array.isArray(data.info)) { resultsArray = data.info; }
+                else { resultsArray = [data]; }
+
+                if (!resultsArray || resultsArray.length === 0) {
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return;
+                }
+
+                resultsArray.forEach((item, index) => {
+                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
+                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
+                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
+                    const address = getVal(item, ["address", "city", "location", "Address"]);
+                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
+                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
+                    const email = getVal(item, ["email", "mail", "Email"]);
+
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
+├─ 🆔 𝗜𝗗: ${id}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
+                    `;
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.innerText = record.trim();
+                    resultArea.appendChild(div);
+                });
+            } catch (error) {
+                console.error(error);
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`;
+            }
+        }
+
+        // --- 2. VEHICLE SEARCH (VERCEL REWRITE) ---
+        async function searchVehicle() {
+            const rc = document.getElementById('vehicleInput').value.trim();
+            const resultArea = document.getElementById('result-area-rc');
+            if (!rc) { alert("Enter Vehicle Number!"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-red)'>Connecting to RTO... 🏎️</p>";
+            try {
+                // Uses Vercel Rewrite
+                const res = await fetch(`/api/vehicle?rc_number=${rc}`);
+                const data = await res.json();
+                resultArea.innerHTML = "";
+                if (data.status !== "success" || !data.details) { resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>"; return; }
+                const d = data.details;
+                const owner = getVal(d, ["Owner Name", "Owner"]);
+                const father = getVal(d, ["Father's Name", "Father Name"]);
+                const phone = getVal(d, ["Phone", "Mobile"]);
+                const address = getVal(d, ["Address", "Present Address"]);
+                const city = getVal(d, ["City Name", "city"]);
+                const serial = getVal(d, ["Owner Serial No", "Serial"]);
+                const maker = getVal(d, ["Maker Model", "Model"]);
+                const vClass = getVal(d, ["Vehicle Class", "Class"]);
+                const fuel = getVal(d, ["Fuel Type", "Fuel"]);
+                const regDate = getVal(d, ["Registration Date", "Reg Date"]);
+                const rto = getVal(d, ["Registered RTO", "RTO"]);
+                const insComp = getVal(d, ["Insurance Company"]);
+                const insUpto = getVal(d, ["Insurance Upto"]);
+                const pucUpto = getVal(d, ["PUC Upto"]);
+                const fitness = getVal(d, ["Fitness Upto"]);
+                const tax = getVal(d, ["Tax Upto"]);
+                const vipRecord = `
+◤━━━━━━━━━━━━━━━━━━━━◥
+      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+╔══════════════════════╗
+  🎯 Target RC: ${rc.toUpperCase()}
+╚══════════════════════╝
+ ⭐ OWNER DETAILS ⭐
+👤 Owner: ${owner}
+🧑‍🦳 Father: ${father}
+📱 Phone: ${phone}
+🏠 Address: ${address}
+📍 City: ${city}
+🔢 Serial: ${serial}
+ ⭐ VEHICLE SPECS ⭐
+🚘 Maker: ${maker}
+🚜 Class: ${vClass}
+⛽ Fuel: ${fuel}
+🗓️ Reg Date: ${regDate}
+🏛️ RTO: ${rto}
+ ⭐ LEGAL & VALIDITY ⭐
+🏥 Insurer: ${insComp}
+📅 Ins. Upto: ${insUpto}
+💨 PUC Upto: ${pucUpto}
+🛠️ Fitness: ${fitness}
+💸 Tax Upto: ${tax}
+━━━━━━━━━━━━━━━━━━━━`;
+                const div = document.createElement('div');
+                div.className = 'result-card';
+                div.style.borderLeft = "4px solid var(--neon-red)"; div.style.color = "var(--neon-gold)";
+                div.innerText = vipRecord.trim();
+                resultArea.appendChild(div);
+            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.<br>${error.message}</p>`; }
+        }
+
+        // --- 3. ADHAR SEARCH (VERCEL REWRITE) ---
+        async function searchAdhar() {
+            const num = document.getElementById('adharInput').value;
+            const resultArea = document.getElementById('result-area-adhar');
+            if (!num) { alert("Enter Adhar Number"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Scanning UIDAI... 🆔</p>";
+            try {
+                // Uses Vercel Rewrite + Text Parsing
+                const res = await fetch(`/api/adhar/${num}`);
+                const rawText = await res.text();
+                
+                const match = rawText.match(/Results:\s*(\[.*\])/s);
+                let list = [];
+                if (match && match[1]) { list = JSON.parse(match[1]); } 
+                else { try { const j = JSON.parse(rawText); list = j.results || [j]; } catch(e){} }
+
+                if(!list || list.length === 0) { resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return; }
+                resultArea.innerHTML = "";
+
+                list.forEach(item => {
+                    const id = getVal(item, ["id", "ID", "uid"]);
+                    const name = getVal(item, ["name", "Name"]);
+                    const father = getVal(item, ["fname", "father", "guardian"]);
+                    const mobile = getVal(item, ["mobile", "phone"]);
+                    const address = getVal(item, ["address", "Address"]);
+                    const email = getVal(item, ["email", "mail"]);
+                    const alt = getVal(item, ["alt", "alt_mobile"]);
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
+├─ 🆔 𝗜𝗗: ${id}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${alt}
+━━━━━━━━━━━━━━━━━━━━`;
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.style.borderLeft = "4px solid var(--neon-gold)";
+                    div.innerText = record.trim();
+                    resultArea.appendChild(div);
+                });
+            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+        }
+
+        // --- 4. MAIL SEARCH (VERCEL REWRITE) ---
+        async function searchMail() {
+            const mail = document.getElementById('mailInput').value;
+            const resultArea = document.getElementById('result-area-mail');
+            if (!mail) { alert("Enter Email"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-green)'>Scanning Email... 📧</p>";
+            try {
+                // Uses Vercel Rewrite + Text Parsing
+                const res = await fetch(`/api/mail/${mail}`);
+                const rawText = await res.text();
+                
+                let list = [];
+                try {
+                    const j = JSON.parse(rawText);
+                    list = j.results || (Array.isArray(j) ? j : [j]);
+                } catch(e) {
+                    const match = rawText.match(/Results:\s*(\[.*\])/s);
+                    if (match && match[1]) list = JSON.parse(match[1]);
+                }
+
+                if(!list || list.length === 0) { resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return; }
+                resultArea.innerHTML = "";
+
+                list.forEach((item, index) => {
+                    const email = getVal(item, ["email", "mail"]) || mail;
+                    const name = getVal(item, ["name", "Name"]);
+                    const father = getVal(item, ["fname", "father"]);
+                    const mobile = getVal(item, ["mobile", "phone"]);
+                    const id = getVal(item, ["id", "uid"]);
+                    const address = getVal(item, ["address", "Address"]);
+                    const alt = getVal(item, ["alt", "alt_mobile"]);
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
+├─ 🆔 𝗜𝗗: ${id}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${alt}
+━━━━━━━━━━━━━━━━━━━━`;
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.style.borderLeft = "4px solid var(--neon-green)"; div.style.color = "var(--neon-green)";
+                    div.innerText = record.trim();
+                    resultArea.appendChild(div);
+                });
+            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+        }
+
+        function copyResult(id) {
+            const text = document.getElementById(id).innerText;
+            if(!text) { alert("Nothing to copy!"); return; }
+            navigator.clipboard.writeText(text).then(() => alert("Copied!"));
+        }
+    </script>
+</body>
+</html>
