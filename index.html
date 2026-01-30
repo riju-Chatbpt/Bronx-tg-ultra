@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING --- */
+        /* --- NEON THEME --- */
         :root { --neon-blue: #00f3ff; --neon-red: #ff004c; --neon-green: #00ff6a; --neon-gold: #ffd700; --dark-bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
         body { background-color: var(--dark-bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-image: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%); background-size: 40px 40px; }
@@ -38,7 +38,7 @@
 </head>
 <body>
 
-    <div id="login-section" class="container">
+    <div id="login-section" class="container" style="display: block;">
         <h2 style="color:var(--neon-gold); margin-bottom:20px;">ACCESS CONTROL</h2>
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
@@ -98,10 +98,8 @@
             const u = document.getElementById('username').value; const p = document.getElementById('password').value;
             const today = new Date(); const expiry = new Date(ACCESS_CONFIG.expiryDate);
             if (today > expiry) { document.getElementById('login-error').innerText = "ACCESS EXPIRED."; return; }
-            if (u === ACCESS_CONFIG.validUser && p === ACCESS_CONFIG.validPass) {
-                localStorage.setItem('isLoggedIn', 'true');
-                showSection('menu-section');
-            } else { document.getElementById('login-error').innerText = "INVALID CREDENTIALS"; }
+            if (u === ACCESS_CONFIG.validUser && p === ACCESS_CONFIG.validPass) { localStorage.setItem('isLoggedIn', 'true'); showSection('menu-section'); } 
+            else { document.getElementById('login-error').innerText = "INVALID CREDENTIALS"; }
         }
         window.onload = () => { if(localStorage.getItem('isLoggedIn')==='true') showSection('menu-section'); };
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
@@ -113,6 +111,32 @@
             return "N/A";
         }
 
+        // --- 4-LAYER PROXY ENGINE (NO SERVER BUSY) ---
+        async function smartFetch(url) {
+            const enc = encodeURIComponent(url);
+            const engines = [
+                `https://thingproxy.freeboard.io/fetch/${url}`, // 1. ThingProxy
+                `https://corsproxy.io/?${enc}`,                 // 2. CorsProxy
+                `https://api.allorigins.win/get?url=${enc}`,    // 3. AllOrigins (Returns JSON wrapper)
+                `https://api.codetabs.com/v1/proxy?quest=${enc}` // 4. CodeTabs (Brahmastra)
+            ];
+
+            for (let i = 0; i < engines.length; i++) {
+                try {
+                    let res = await fetch(engines[i]);
+                    if (res.ok) {
+                        let data = await res.json();
+                        // AllOrigins special unpacking
+                        if (data.contents) {
+                            try { return JSON.parse(data.contents); } catch(e) { return data.contents; }
+                        }
+                        return data;
+                    }
+                } catch(e) { console.log(`Engine ${i+1} Failed`); }
+            }
+            throw new Error("All Servers Busy. Try again.");
+        }
+
         // --- 1. NUMBER SEARCH ---
         async function searchNumber() {
             const val = document.getElementById('phoneInput').value;
@@ -120,25 +144,22 @@
             if(!val) return alert("Enter Number");
             area.innerHTML = "<p style='color:var(--neon-gold)'>Connecting...</p>";
             try {
-                const res = await fetch(`/api/number?num=${val}&key=bronx-api`);
-                const data = await res.json();
+                const data = await smartFetch(`https://bronx-api-sable.vercel.app/search?num=${val}&key=bronx-api`);
                 area.innerHTML = "";
                 let list = Array.isArray(data) ? data : (data.data ? [data.data] : [data]);
                 
-                if(!list || list.length === 0) throw new Error("No Data");
+                list.forEach((itm, i) => {
+                    // YOUR ORDER
+                    const name = getVal(itm, ["name", "fullname", "consumer_name"]);
+                    const mobile = getVal(itm, ["mobile", "phone", "number"]) || val;
+                    const father = getVal(itm, ["fname", "father", "guardian"]);
+                    const address = getVal(itm, ["address", "city", "location"]);
+                    const circle = getVal(itm, ["circle", "state", "region"]);
+                    const id = getVal(itm, ["id", "uid", "consumer_id"]);
+                    const email = getVal(itm, ["email", "mail"]);
 
-                list.forEach((item, index) => {
-                    // YOUR EXACT STRUCTURE
-                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
-                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : val;
-                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
-                    const address = getVal(item, ["address", "city", "location", "Address"]);
-                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
-                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
-                    const email = getVal(item, ["email", "mail", "Email"]);
-
-                    const record = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+                    const rec = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
 ├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
@@ -146,13 +167,13 @@
 ├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
 ├─ 🆔 𝗜𝗗: ${id}
 └─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
-                    `;
+━━━━━━━━━━━━━━━━━━━━`;
                     const div = document.createElement('div');
                     div.className = 'result-card';
-                    div.innerText = record.trim();
+                    div.innerText = rec.trim();
                     area.appendChild(div);
                 });
-            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>${e.message}</p>`; }
         }
 
         // --- 2. VEHICLE SEARCH ---
@@ -162,15 +183,15 @@
             if(!val) return alert("Enter RC");
             area.innerHTML = "<p style='color:var(--neon-red)'>Scanning...</p>";
             try {
-                const res = await fetch(`/api/vehicle?rc_number=${val}`);
-                const data = await res.json();
-                if(data.status !== "success") throw new Error("Not Found");
+                const data = await smartFetch(`https://bronx-rc-api.vercel.app/?rc_number=${val}`);
+                area.innerHTML = "";
+                if (data.status !== "success" || !data.details) throw new Error("Not Found");
                 const d = data.details;
-                
-                // YOUR EXACT STRUCTURE
-                const owner = getVal(d, ["Owner Name", "Owner", "owner_name"]);
-                const father = getVal(d, ["Father's Name", "Father Name", "father_name"]);
-                const phone = getVal(d, ["Phone", "Mobile", "mobile_no"]);
+
+                // YOUR EXACT ORDER
+                const owner = getVal(d, ["Owner Name", "Owner"]);
+                const father = getVal(d, ["Father's Name", "Father Name"]);
+                const phone = getVal(d, ["Phone", "Mobile"]);
                 const address = getVal(d, ["Address", "Present Address"]);
                 const city = getVal(d, ["City Name", "city"]);
                 const serial = getVal(d, ["Owner Serial No", "Serial"]);
@@ -185,7 +206,7 @@
                 const fitness = getVal(d, ["Fitness Upto"]);
                 const tax = getVal(d, ["Tax Upto"]);
 
-                const vipRecord = `
+                const rec = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
       🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
 ◢◤◢◤◢◤◢◤◢◤◢◤◢◤
@@ -215,45 +236,55 @@
 🛠️ Fitness: ${fitness}
 💸 Tax Upto: ${tax}
 ━━━━━━━━━━━━━━━━━━━━`;
-                
                 const div = document.createElement('div');
                 div.className = 'result-card';
                 div.style.borderLeft = "4px solid var(--neon-red)";
                 div.style.color = "var(--neon-gold)";
-                div.innerText = vipRecord.trim();
+                div.innerText = rec.trim();
                 area.appendChild(div);
-            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>${e.message}</p>`; }
         }
 
-        // --- 3. ADHAR SEARCH ---
+        // --- 3. ADHAR SEARCH (PYTHON LOGIC VIA PROXY) ---
         async function searchAdhar() {
             const val = document.getElementById('adharInput').value;
             const area = document.getElementById('result-area-adhar');
             if(!val) return alert("Enter Adhar");
             area.innerHTML = "<p style='color:var(--neon-gold)'>Scanning...</p>";
             try {
-                const res = await fetch(`/api/adhar/${val}`);
-                const rawText = await res.text();
+                // Fetch TEXT using SmartFetch because API returns mixed data
+                const enc = encodeURIComponent(`https://bronx-adhar-api.vercel.app/aadhar=${val}`);
+                let rawText = "";
                 
+                // Try fetching text directly from CodeTabs (Best for text scraping)
+                try {
+                    let r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${enc}`);
+                    rawText = await r.text();
+                } catch(e) {
+                    // Fallback to ThingProxy
+                    let r = await fetch(`https://thingproxy.freeboard.io/fetch/https://bronx-adhar-api.vercel.app/aadhar=${val}`);
+                    rawText = await r.text();
+                }
+
+                // REGEX LOGIC FROM PYTHON
                 const match = rawText.match(/Results:\s*(\[.*\])/s);
                 let list = [];
                 if (match && match[1]) list = JSON.parse(match[1]);
                 else { try { const j = JSON.parse(rawText); list = j.results || [j]; } catch(e){} }
 
-                if(!list || list.length === 0) throw new Error("Empty");
+                if(list.length === 0) throw new Error("No Data");
                 area.innerHTML = "";
 
-                list.forEach((item) => {
-                    // YOUR EXACT STRUCTURE
-                    const id = getVal(item, ["id", "ID", "uid"]);
-                    const name = getVal(item, ["name", "Name"]);
-                    const father = getVal(item, ["fname", "father", "guardian"]);
-                    const mobile = getVal(item, ["mobile", "phone"]);
-                    const address = getVal(item, ["address", "Address"]);
-                    const email = getVal(item, ["email", "mail"]);
-                    const alt = getVal(item, ["alt", "alt_mobile"]);
+                list.forEach(itm => {
+                    const id = getVal(itm, ["id", "ID", "uid"]);
+                    const name = getVal(itm, ["name", "Name"]);
+                    const father = getVal(itm, ["fname", "father", "guardian"]);
+                    const mobile = getVal(itm, ["mobile", "phone"]);
+                    const address = getVal(itm, ["address", "Address"]);
+                    const email = getVal(itm, ["email", "mail"]);
+                    const alt = getVal(itm, ["alt", "alt_mobile"]);
 
-                    const record = `
+                    const rec = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
 ├─ 🆔 𝗜𝗗: ${id}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
@@ -266,46 +297,50 @@
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-gold)";
-                    div.innerText = record.trim();
+                    div.innerText = rec.trim();
                     area.appendChild(div);
                 });
-            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>${e.message}</p>`; }
         }
 
-        // --- 4. MAIL SEARCH ---
+        // --- 4. MAIL SEARCH (PYTHON LOGIC VIA PROXY) ---
         async function searchMail() {
             const val = document.getElementById('mailInput').value;
             const area = document.getElementById('result-area-mail');
             if(!val) return alert("Enter Email");
             area.innerHTML = "<p style='color:var(--neon-green)'>Scanning...</p>";
             try {
-                const res = await fetch(`/api/mail/${val}`);
-                const rawText = await res.text();
+                const enc = encodeURIComponent(`https://bronx-mail-api.vercel.app/mail=${val}`);
+                let rawText = "";
                 
-                let list = [];
                 try {
-                    const j = JSON.parse(rawText);
-                    list = j.results || (Array.isArray(j) ? j : [j]);
+                    let r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${enc}`);
+                    rawText = await r.text();
                 } catch(e) {
-                    const match = rawText.match(/Results:\s*(\[.*\])/s);
-                    if (match && match[1]) list = JSON.parse(match[1]);
+                    let r = await fetch(`https://thingproxy.freeboard.io/fetch/https://bronx-mail-api.vercel.app/mail=${val}`);
+                    rawText = await r.text();
                 }
 
-                if(!list || list.length === 0) throw new Error("Empty");
+                // REGEX LOGIC
+                const match = rawText.match(/Results:\s*(\[.*\])/s);
+                let list = [];
+                if (match && match[1]) list = JSON.parse(match[1]);
+                else { try { const j = JSON.parse(rawText); list = j.results || [j]; } catch(e){} }
+
+                if(list.length === 0) throw new Error("No Data");
                 area.innerHTML = "";
 
-                list.forEach((item, index) => {
-                    // YOUR EXACT STRUCTURE
-                    const email = getVal(item, ["email", "mail"]) || val;
-                    const name = getVal(item, ["name", "Name"]);
-                    const father = getVal(item, ["fname", "father"]);
-                    const mobile = getVal(item, ["mobile", "phone"]);
-                    const id = getVal(item, ["id", "uid"]);
-                    const address = getVal(item, ["address", "Address"]);
-                    const alt = getVal(item, ["alt", "alt_mobile"]);
+                list.forEach((itm, i) => {
+                    const email = getVal(itm, ["email", "mail"]) || val;
+                    const name = getVal(itm, ["name", "Name"]);
+                    const father = getVal(itm, ["fname", "father"]);
+                    const mobile = getVal(itm, ["mobile", "phone"]);
+                    const id = getVal(itm, ["id", "uid"]);
+                    const address = getVal(itm, ["address", "Address"]);
+                    const alt = getVal(itm, ["alt", "alt_mobile"]);
 
-                    const record = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+                    const rec = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
 ├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
@@ -317,10 +352,11 @@
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-green)";
-                    div.innerText = record.trim();
+                    div.style.color = "var(--neon-green)";
+                    div.innerText = rec.trim();
                     area.appendChild(div);
                 });
-            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>${e.message}</p>`; }
         }
 
         function copyResult(id) {
