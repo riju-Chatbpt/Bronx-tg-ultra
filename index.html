@@ -3,20 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bronx Login</title>
-    <link rel="stylesheet" href="style.css">
+    <title>BRONX ULTRA VIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS STYLES (DESIGN) --- */
+        body {
+            background-color: #000;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Mobile App Container */
+        .app-container {
+            width: 100%;
+            max-width: 380px;
+            background: #050505;
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid #222;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
+            text-align: center;
+            position: relative;
+            min-height: 500px;
+        }
+
+        /* Hidden Pages */
+        .page { display: none; animation: fadeIn 0.4s; }
+        .active-page { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography */
+        h1, h2 { text-transform: uppercase; margin: 10px 0; letter-spacing: 1px; }
+        .sub-text { font-size: 12px; color: #777; margin-bottom: 20px; }
+
+        /* Inputs */
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #111;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+        /* OP Buttons */
+        .op-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: black;
+            color: white;
+            border: 2px solid;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            transition: 0.2s;
+        }
+        .op-btn:active { transform: scale(0.95); }
+
+        /* Color Themes */
+        .theme-blue { border-color: cyan; color: cyan; box-shadow: 0 0 10px cyan; }
+        .theme-blue:hover { background: cyan; color: black; }
+
+        .theme-red { border-color: #ff003c; color: #ff003c; box-shadow: 0 0 10px #ff003c; }
+        .theme-red:hover { background: #ff003c; color: white; }
+
+        .theme-green { border-color: lime; color: lime; box-shadow: 0 0 10px lime; }
+        .theme-green:hover { background: lime; color: black; }
+
+        .theme-gold { border-color: gold; color: gold; box-shadow: 0 0 10px gold; }
+        .theme-gold:hover { background: gold; color: black; }
+
+        /* Result Box */
+        .result-box {
+            margin-top: 15px;
+            background: #000;
+            border: 1px dashed #555;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            text-align: left;
+            white-space: pre-wrap;
+            display: none;
+            overflow-x: auto;
+        }
+
+        .profile-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 15px white;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 style="color: white; text-shadow: 0 0 10px white;">BRONX ULTRA</h1>
-        <p style="color: #666; font-size: 12px;">PRIVATE ACCESS ONLY</p>
-        <br>
-        <input type="text" id="usr" placeholder="USERNAME">
-        <input type="password" id="pwd" placeholder="PASSWORD">
-        <br><br>
-        <button class="op-btn theme-blue" onclick="doLogin()">LOGIN NOW 🔓</button>
-        <p id="msg" style="margin-top:15px; font-weight:bold;"></p>
+
+    <div class="app-container">
+        
+        <div id="p-login" class="page active-page">
+            <h1 style="color: cyan; text-shadow: 0 0 10px cyan;">SECURE LOGIN</h1>
+            <p class="sub-text">AUTHENTICATION REQUIRED</p>
+            <br>
+            <input type="text" id="login-user" placeholder="USERNAME">
+            <input type="password" id="login-pass" placeholder="PASSWORD">
+            <br><br>
+            <button class="op-btn theme-blue" onclick="attemptLogin()">LOGIN NOW 🔓</button>
+            <p id="login-msg" style="color: red; margin-top: 10px; font-weight: bold;"></p>
+        </div>
+
+        <div id="p-dashboard" class="page">
+            <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" class="profile-img">
+            <h2>REHAN MALIK</h2>
+            <a href="https://t.me/BRONX_ULTRA" target="_blank" style="color: gold; text-decoration: none; font-weight: bold;">
+                @BRONX_ULTRA ✈️
+            </a>
+            <hr style="border-color: #333; margin: 20px 0;">
+            
+            <p style="text-align: left; color: #888; font-size: 14px;">SELECT TOOL:</p>
+
+            <button class="op-btn theme-blue" onclick="showPage('p-number')">📱 NUMBER INFO</button>
+            <button class="op-btn theme-red" onclick="showPage('p-vehicle')">🏎️ VEHICLE INFO</button>
+            <button class="op-btn theme-green" onclick="showPage('p-adhar')">🆔 ADHAR INFO</button>
+            <button class="op-btn theme-gold" onclick="showPage('p-mail')">📧 MAIL INFO</button>
+            
+            <br>
+            <button class="op-btn" style="border-color: #444; color: #777;" onclick="doLogout()">LOGOUT 🔒</button>
+        </div>
+
+        <div id="p-number" class="page">
+            <h2 style="color: cyan;">📱 NUMBER INFO</h2>
+            <p class="sub-text">SIM DATABASE SEARCH</p>
+            
+            <input type="number" id="num-inp" placeholder="Enter Mobile Number">
+            <button id="num-btn" class="op-btn theme-blue" onclick="apiNumber()">SEARCH 🔍</button>
+            
+            <div id="num-res" class="result-box" style="color: cyan; border-color: cyan;"></div>
+            <button id="num-copy" class="op-btn theme-gold" style="display:none;" onclick="copyResult('num-res')">📋 COPY</button>
+            
+            <br><br>
+            <button class="op-btn" onclick="showPage('p-dashboard')">🔙 BACK</button>
+        </div>
+
+        <div id="p-vehicle" class="page">
+            <h2 style="color: red;">🏎️ VEHICLE INFO</h2>
+            <p class="sub-text">RTO DATABASE SEARCH</p>
+            
+            <input type="text" id="veh-inp" placeholder="Enter RC (HR12AQ4000)">
+            <button id="veh-btn" class="op-btn theme-red" onclick="apiVehicle()">SEARCH 🔍</button>
+            
+            <div id="veh-res" class="result-box" style="color: #ffaaaa; border-color: red;"></div>
+            <button id="veh-copy" class="op-btn theme-gold" style="display:none;" onclick="copyResult('veh-res')">📋 COPY</button>
+            
+            <br><br>
+            <button class="op-btn" onclick="showPage('p-dashboard')">🔙 BACK</button>
+        </div>
+
+        <div id="p-adhar" class="page">
+            <h2 style="color: lime;">🆔 ADHAR INFO</h2>
+            <p class="sub-text">UIDAI SEARCH</p>
+            
+            <input type="number" id="adh-inp" placeholder="Enter Adhar Number">
+            <button id="adh-btn" class="op-btn theme-green" onclick="apiAdhar()">SEARCH 🔍</button>
+            
+            <div id="adh-res" class="result-box" style="color: lime; border-color: lime;"></div>
+            <button id="adh-copy" class="op-btn theme-gold" style="display:none;" onclick="copyResult('adh-res')">📋 COPY</button>
+            
+            <br><br>
+            <button class="op-btn" onclick="showPage('p-dashboard')">🔙 BACK</button>
+        </div>
+
+        <div id="p-mail" class="page">
+            <h2 style="color: gold;">📧 MAIL INFO</h2>
+            <p class="sub-text">EMAIL OSINT SEARCH</p>
+            
+            <input type="email" id="mail-inp" placeholder="Enter Email Address">
+            <button id="mail-btn" class="op-btn theme-gold" onclick="apiMail()">SEARCH 🔍</button>
+            
+            <div id="mail-res" class="result-box" style="color: gold; border-color: gold;"></div>
+            <button id="mail-copy" class="op-btn theme-blue" style="display:none;" onclick="copyResult('mail-res')">📋 COPY</button>
+            
+            <br><br>
+            <button class="op-btn" onclick="showPage('p-dashboard')">🔙 BACK</button>
+        </div>
+
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        // --- CONFIGURATION ---
+        const CONFIG = {
+            user: "REHAN",
+            pass: "123",
+            expiry: "2026-12-30" // YYYY-MM-DD
+        };
+
+        // --- NAVIGATION SYSTEM ---
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(div => div.classList.remove('active-page'));
+            // Show target page
+            document.getElementById(pageId).classList.add('active-page');
+        }
+
+        // --- LOGIN SYSTEM ---
+        function attemptLogin() {
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+            const msg = document.getElementById('login-msg');
+
+            // Expiry Check
+            const today = new Date();
+            const expDate = new Date(CONFIG.expiry);
+            
+            if (today > expDate) {
+                msg.innerText = "⛔ ACCOUNT EXPIRED!";
+                return;
+            }
+
+            if (u === CONFIG.user && p === CONFIG.pass) {
+                showPage('p-dashboard');
+            } else {
+                msg.innerText = "❌ WRONG PASSWORD";
+            }
+        }
+
+        function doLogout() {
+            location.reload(); // Refresh page to logout
+        }
+
+        // --- COPY UTILITY ---
+        function copyResult(divId) {
+            const txt = document.getElementById(divId).innerText;
+            navigator.clipboard.writeText(txt).then(() => alert("✅ Copied to Clipboard!"));
+        }
+
+        // ================= API 1: NUMBER =================
+        async function apiNumber() {
+            const inp = document.getElementById('num-inp').value;
+            const res = document.getElementById('num-res');
+            const btn = document.getElementById('num-btn');
+            const cpy = document.getElementById('num-copy');
+
+            if(!inp) return alert("Enter Number!");
+            
+            btn.innerText = "SEARCHING...";
+            res.style.display = "block";
+            res.innerText = "🔍 Scanning Database...";
+            cpy.style.display = "none";
+
+            try {
+                const req = await fetch(`https://bronx-api-sable.vercel.app/search?num=${inp}&key=bronx-api`);
+                const data = await req.json();
+
+                res.innerText = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
+├─ 👤 𝗡𝗮𝗺𝗲: ${data.name || "N/A"}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${data.mobile || inp}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${data.fname || "N/A"}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${data.address || "N/A"}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${data.circle || "N/A"}
+├─ 🆔 𝗜𝗗: ${data.id || "N/A"}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${data.email || "N/A"}`;
+                cpy.style.display = "block";
+            } catch(e) { res.innerText = "❌ Error/Not Found"; }
+            btn.innerText = "SEARCH 🔍";
+        }
+
+        // ================= API 2: VEHICLE =================
+        async function apiVehicle() {
+            const inp = document.getElementById('veh-inp').value;
+            const res = document.getElementById('veh-res');
+            const btn = document.getElementById('veh-btn');
+            const cpy = document.getElementById('veh-copy');
+
+            if(!inp) return alert("Enter RC!");
+            
+            btn.innerText = "CONNECTING...";
+            res.style.display = "block";
+            res.innerText = "🛰️ Connecting Satellite...";
+            cpy.style.display = "none";
+
+            try {
+                const req = await fetch(`https://bronx-rc-api.vercel.app/?rc_number=${inp}`);
+                const json = await req.json();
+                
+                if(json.status === "success" && json.details) {
+                    const d = json.details;
+                    res.innerText = `
+◤━━━━━━━━━━━━━━━━━━━━◥
+      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+╔══════════════════════╗
+  🎯 Target RC: ${json.rc_number || inp}
+╚══════════════════════╝
+
+ ⭐ OWNER DETAILS ⭐
+👤 Owner: ${d["Owner Name"] || ""}
+🧑‍🦳 Father: ${d["Father's Name"] || ""}
+📱 Phone: ${d["Phone"] || ""}
+🏠 Address: ${d["Address"] || ""}
+📍 City: ${d["City Name"] || ""}
+🔢 Serial: ${d["Owner Serial No"] || ""}
+
+ ⭐ VEHICLE SPECS ⭐
+🚘 Maker: ${d["Maker Model"] || ""}
+🚜 Class: ${d["Vehicle Class"] || ""}
+⛽ Fuel: ${d["Fuel Type"] || ""}
+🗓️ Reg Date: ${d["Registration Date"] || ""}
+🏛️ RTO: ${d["Registered RTO"] || ""}
+
+ ⭐ LEGAL & VALIDITY ⭐
+🏥 Insurer: ${d["Insurance Company"] || ""}
+📅 Ins. Upto: ${d["Insurance Upto"] || ""}
+💨 PUC Upto: ${d["PUC Upto"] || ""}
+🛠️ Fitness: ${d["Fitness Upto"] || ""}
+💸 Tax Upto: ${d["Tax Upto"] || ""}
+━━━━━━━━━━━━━━━━━━━━`;
+                    cpy.style.display = "block";
+                } else { res.innerText = "❌ No Data Found"; }
+            } catch(e) { res.innerText = "❌ API Error"; }
+            btn.innerText = "SEARCH 🔍";
+        }
+
+        // ================= API 3: ADHAR =================
+        async function apiAdhar() {
+            const inp = document.getElementById('adh-inp').value;
+            const res = document.getElementById('adh-res');
+            const btn = document.getElementById('adh-btn');
+            const cpy = document.getElementById('adh-copy');
+
+            if(!inp) return alert("Enter Adhar!");
+            
+            btn.innerText = "WAIT...";
+            res.style.display = "block";
+            res.innerText = "🔄 Fetching UIDAI...";
+            cpy.style.display = "none";
+
+            try {
+                const req = await fetch(`https://bronx-adhar-api.vercel.app/aadhar=${inp}`);
+                const data = await req.json();
+
+                res.innerText = `
+├─ 🆔 𝗜𝗗: ${data.id || inp}
+├─ 👤 𝗡𝗮𝗺𝗲: ${data.name || "N/A"}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${data.fname || "N/A"}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${data.mobile || "N/A"}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${data.address || "N/A"}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${data.email || "N/A"}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${data.alt || "N/A"}`;
+                cpy.style.display = "block";
+            } catch(e) { res.innerText = "❌ Error/Invalid ID"; }
+            btn.innerText = "SEARCH 🔍";
+        }
+
+        // ================= API 4: MAIL (FIXED) =================
+        async function apiMail() {
+            const inp = document.getElementById('mail-inp').value;
+            const res = document.getElementById('mail-res');
+            const btn = document.getElementById('mail-btn');
+            const cpy = document.getElementById('mail-copy');
+
+            if(!inp) return alert("Enter Email!");
+            
+            btn.innerText = "HACKING...";
+            res.style.display = "block";
+            res.innerText = "📂 Opening Database...";
+            cpy.style.display = "none";
+
+            try {
+                const req = await fetch(`https://bronx-mail-api.vercel.app/mail=${inp}`);
+                const json = await req.json();
+                
+                if (json.results && json.results.length > 0) {
+                    const data = json.results[0];
+                    res.innerText = `
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${data.email || inp}
+├─ 👤 𝗡𝗮𝗺𝗲: ${data.name || "N/A"}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${data.fname || "N/A"}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${data.mobile || "N/A"}
+├─ 🆔 𝗜𝗗: ${data.id || "N/A"}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${data.address || "N/A"}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${data.alt || "N/A"}`;
+                    cpy.style.display = "block";
+                } else {
+                    res.innerText = "❌ No Record Found";
+                }
+            } catch(e) { res.innerText = "❌ API Error"; }
+            btn.innerText = "SEARCH 🔍";
+        }
+
+    </script>
 </body>
 </html>
