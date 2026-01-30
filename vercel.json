@@ -2,10 +2,6 @@
   "version": 2,
   "rewrites": [
     { 
-      "source": "/api/number", 
-      "destination": "https://rajput-api.vercel.app/search" 
-    },
-    { 
       "source": "/api/vehicle", 
       "destination": "https://bronx-rc-api.vercel.app/" 
     },
