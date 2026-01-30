@@ -6,12 +6,12 @@
       "destination": "https://bronx-rc-api.vercel.app/" 
     },
     { 
-      "source": "/api/adhar/:path*", 
-      "destination": "https://bronx-adhar-api.vercel.app/aadhar=:path*" 
+      "source": "/api/adhar/:val", 
+      "destination": "https://bronx-adhar-api.vercel.app/aadhar=:val" 
     },
     { 
-      "source": "/api/mail/:path*", 
-      "destination": "https://bronx-mail-api.vercel.app/mail=:path*" 
+      "source": "/api/mail/:val", 
+      "destination": "https://bronx-mail-api.vercel.app/mail=:val" 
     }
   ]
 }
