@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRONX ACCESS CONTROL</title>
+    <title>BRONX INTEL SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -33,35 +33,35 @@
         .container {
             width: 90%;
             max-width: 380px;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 25px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px;
             border-radius: 15px;
             text-align: center;
             /* Cyan Neon Border like Screenshot 1 */
             border: 2px solid cyan;
-            box-shadow: 0 0 20px cyan;
+            box-shadow: 0 0 25px cyan;
             position: relative;
+            min-height: 550px;
         }
 
         /* --- 3. TYPOGRAPHY --- */
         h1 {
             color: #ffdd00; /* Yellow Text */
             text-shadow: 2px 2px 0px #000;
-            font-size: 22px;
+            font-size: 24px;
             margin-bottom: 25px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            border-bottom: 1px dashed #333;
+            padding-bottom: 10px;
         }
         
-        h2 {
-            font-size: 20px;
-            margin: 10px 0;
-        }
+        h2 { font-size: 18px; margin: 10px 0; text-transform: uppercase; }
 
         /* --- 4. INPUTS (GREEN BORDER LIKE PHOTO) --- */
         input {
-            width: 90%;
-            padding: 15px;
+            width: 85%;
+            padding: 12px;
             margin-bottom: 15px;
             background: #000;
             border: 2px solid #00ff00; /* Green Border */
@@ -70,6 +70,7 @@
             font-size: 16px;
             text-align: center;
             outline: none;
+            box-shadow: 0 0 5px #00ff00;
         }
         input::placeholder { color: #555; }
 
@@ -77,8 +78,8 @@
         
         /* Login Button (Gradient Blue-Pink) */
         .btn-login {
-            width: 100%;
-            padding: 15px;
+            width: 95%;
+            padding: 12px;
             background: linear-gradient(90deg, #00f2ff, #ff0055); /* Gradient */
             border: none;
             color: black;
@@ -87,35 +88,36 @@
             cursor: pointer;
             margin-top: 10px;
             font-family: 'Courier Prime', monospace;
+            text-transform: uppercase;
         }
 
         /* Dashboard Buttons (Neon Outlines) */
         .tool-btn {
-            width: 45%; /* 2 buttons per row */
-            padding: 20px 5px;
-            margin: 8px;
+            width: 44%; /* 2 buttons per row */
+            padding: 15px 5px;
+            margin: 5px;
             background: black;
             color: white;
             border: 2px solid;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             display: inline-block;
             vertical-align: top;
-            font-size: 12px;
+            font-size: 11px;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
             transition: 0.2s;
         }
         .tool-btn:active { transform: scale(0.95); }
 
         /* Colors matching Screenshot 2 */
-        .b-cyan { border-color: cyan; color: cyan; box-shadow: 0 0 10px cyan; }
-        .b-red { border-color: #ff0040; color: #ff0040; box-shadow: 0 0 10px #ff0040; }
-        .b-yellow { border-color: #ffdd00; color: #ffdd00; box-shadow: 0 0 10px #ffdd00; }
-        .b-green { border-color: #00ff00; color: #00ff00; box-shadow: 0 0 10px #00ff00; }
+        .b-cyan { border-color: cyan; color: cyan; box-shadow: 0 0 8px cyan; }
+        .b-red { border-color: #ff0040; color: #ff0040; box-shadow: 0 0 8px #ff0040; }
+        .b-yellow { border-color: #ffdd00; color: #ffdd00; box-shadow: 0 0 8px #ffdd00; }
+        .b-green { border-color: #00ff00; color: #00ff00; box-shadow: 0 0 8px #00ff00; }
 
         .btn-logout {
-            width: 95%;
+            width: 90%;
             margin-top: 20px;
             padding: 10px;
             border: 1px solid red;
@@ -123,55 +125,61 @@
             color: red;
             cursor: pointer;
             font-family: 'Courier Prime', monospace;
+            font-weight: bold;
         }
 
         /* --- 6. RESULT BOX (TELEGRAM STYLE) --- */
         .result-area {
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: left;
-            font-size: 11px;
+            font-size: 12px;
             color: #ddd;
-            background: #111;
-            padding: 10px;
+            background: #0a0a0a;
+            padding: 15px;
             border: 1px dashed #555;
             white-space: pre-wrap;
             display: none;
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
+            overflow-x: hidden;
+            border-left: 3px solid cyan;
         }
         
         .copy-btn {
             background: gold;
             color: black;
             border: none;
-            padding: 5px 10px;
-            margin-top: 5px;
+            padding: 8px;
+            margin-top: 10px;
             cursor: pointer;
-            width: 100%;
+            width: 90%;
             font-weight: bold;
             display: none;
+            text-transform: uppercase;
         }
 
         /* Page Management */
         .page { display: none; }
-        .active { display: block; }
+        .active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         /* Header Text in Dashboard */
         .bronx-title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
             letter-spacing: 2px;
+            margin-bottom: 5px;
         }
         .text-blue { color: cyan; text-shadow: 0 0 10px cyan; }
         .text-pink { color: #ff0055; text-shadow: 0 0 10px #ff0055; }
         
         .profile-pic {
-            width: 80px; height: 80px;
+            width: 90px; height: 90px;
             border-radius: 50%;
-            border: 2px solid cyan;
-            box-shadow: 0 0 15px cyan;
+            border: 3px solid cyan;
+            box-shadow: 0 0 20px cyan;
             background: #222;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             object-fit: cover;
         }
     </style>
@@ -181,13 +189,14 @@
 <div class="container">
 
     <div id="p-login" class="page active">
+        <br><br>
         <h1>ACCESS CONTROL</h1>
-        
-        <input type="text" id="usr" placeholder="Username">
-        <input type="password" id="pwd" placeholder="Password">
-        
+        <br>
+        <input type="text" id="usr" placeholder="USERNAME">
+        <input type="password" id="pwd" placeholder="PASSWORD">
+        <br><br>
         <button class="btn-login" onclick="login()">LOGIN SYSTEM</button>
-        <p id="msg" style="color: red; font-size: 12px; margin-top: 10px;"></p>
+        <p id="msg" style="color: red; font-size: 12px; margin-top: 15px; font-weight: bold;"></p>
     </div>
 
     <div id="p-dashboard" class="page">
@@ -196,7 +205,7 @@
         <div class="bronx-title">
             <span class="text-blue">BRONX</span> <span class="text-pink">ULTRA</span>
         </div>
-        <p style="color: gray; font-size: 10px; margin-bottom: 20px;">CHOOSE YOUR TOOL</p>
+        <p style="color: gray; font-size: 10px; margin-bottom: 25px;">CHOOSE YOUR INTELLIGENCE TOOL</p>
 
         <div>
             <button class="tool-btn b-cyan" onclick="nav('p-number')">
@@ -220,8 +229,10 @@
 
     <div id="p-number" class="page">
         <h2 style="color: cyan;">📱 NUMBER INFO</h2>
+        <p style="font-size:10px; color:#555;">SIM DATABASE V4</p>
+        <br>
         <input type="number" id="inp-num" placeholder="Enter Mobile Number">
-        <button class="tool-btn b-cyan" style="width:100%" onclick="fetchData('num')">SEARCH 🔍</button>
+        <button class="tool-btn b-cyan" style="width:90%" onclick="fetchData('num')">SEARCH DATA 🔍</button>
         <div id="res-num" class="result-area" style="border-color: cyan;"></div>
         <button id="cp-num" class="copy-btn" onclick="copy('res-num')">📋 COPY RESULT</button>
         <br><br>
@@ -230,8 +241,10 @@
 
     <div id="p-vehicle" class="page">
         <h2 style="color: #ff0040;">🏎️ VEHICLE INFO</h2>
+        <p style="font-size:10px; color:#555;">RTO DATABASE V2</p>
+        <br>
         <input type="text" id="inp-veh" placeholder="Enter RC (HR12AQ4000)">
-        <button class="tool-btn b-red" style="width:100%" onclick="fetchData('veh')">SEARCH 🔍</button>
+        <button class="tool-btn b-red" style="width:90%" onclick="fetchData('veh')">SEARCH DATA 🔍</button>
         <div id="res-veh" class="result-area" style="border-color: #ff0040;"></div>
         <button id="cp-veh" class="copy-btn" onclick="copy('res-veh')">📋 COPY RESULT</button>
         <br><br>
@@ -240,8 +253,10 @@
 
     <div id="p-adhar" class="page">
         <h2 style="color: #ffdd00;">🆔 ADHAR INFO</h2>
+        <p style="font-size:10px; color:#555;">UIDAI DATABASE</p>
+        <br>
         <input type="number" id="inp-adh" placeholder="Enter Adhar Number">
-        <button class="tool-btn b-yellow" style="width:100%" onclick="fetchData('adh')">SEARCH 🔍</button>
+        <button class="tool-btn b-yellow" style="width:90%" onclick="fetchData('adh')">SEARCH DATA 🔍</button>
         <div id="res-adh" class="result-area" style="border-color: #ffdd00;"></div>
         <button id="cp-adh" class="copy-btn" onclick="copy('res-adh')">📋 COPY RESULT</button>
         <br><br>
@@ -250,8 +265,10 @@
 
     <div id="p-mail" class="page">
         <h2 style="color: #00ff00;">📧 MAIL INFO</h2>
+        <p style="font-size:10px; color:#555;">EMAIL OSINT</p>
+        <br>
         <input type="email" id="inp-mail" placeholder="Enter Email Address">
-        <button class="tool-btn b-green" style="width:100%" onclick="fetchData('mail')">SEARCH 🔍</button>
+        <button class="tool-btn b-green" style="width:90%" onclick="fetchData('mail')">SEARCH DATA 🔍</button>
         <div id="res-mail" class="result-area" style="border-color: #00ff00;"></div>
         <button id="cp-mail" class="copy-btn" onclick="copy('res-mail')">📋 COPY RESULT</button>
         <br><br>
@@ -293,13 +310,13 @@
         const msg = document.getElementById('msg');
         
         if (new Date() > new Date(CONFIG.expiry)) {
-            msg.innerText = "⛔ EXPIRED!"; return;
+            msg.innerText = "⛔ ACCOUNT EXPIRED!"; return;
         }
         if (u === CONFIG.user && p === CONFIG.pass) {
             localStorage.setItem("logged", "true");
             nav('p-dashboard');
         } else {
-            msg.innerText = "❌ INVALID CREDENTIALS";
+            msg.innerText = "❌ WRONG PASSWORD/USERNAME";
         }
     }
     function logout() {
@@ -311,41 +328,49 @@
         navigator.clipboard.writeText(txt).then(() => alert("COPIED! ✅"));
     }
 
-    // --- MAIN API HANDLER (SOLVES THE ERROR ISSUE) ---
+    // --- MAIN API HANDLER WITH PROXY FIX ---
     async function fetchData(type) {
-        let url = "", inp = "", resBox, cpBtn;
+        let targetUrl = "", inp = "", resBox, cpBtn;
 
         if (type === 'num') {
             inp = document.getElementById('inp-num').value;
             resBox = document.getElementById('res-num');
             cpBtn = document.getElementById('cp-num');
-            url = `https://bronx-api-sable.vercel.app/search?num=${inp}&key=bronx-api`;
+            targetUrl = `https://bronx-api-sable.vercel.app/search?num=${inp}&key=bronx-api`;
         } else if (type === 'veh') {
             inp = document.getElementById('inp-veh').value;
             resBox = document.getElementById('res-veh');
             cpBtn = document.getElementById('cp-veh');
-            url = `https://bronx-rc-api.vercel.app/?rc_number=${inp}`;
+            targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${inp}`;
         } else if (type === 'adh') {
             inp = document.getElementById('inp-adh').value;
             resBox = document.getElementById('res-adh');
             cpBtn = document.getElementById('cp-adh');
-            url = `https://bronx-adhar-api.vercel.app/aadhar=${inp}`;
+            targetUrl = `https://bronx-adhar-api.vercel.app/aadhar=${inp}`;
         } else if (type === 'mail') {
             inp = document.getElementById('inp-mail').value;
             resBox = document.getElementById('res-mail');
             cpBtn = document.getElementById('cp-mail');
-            url = `https://bronx-mail-api.vercel.app/mail=${inp}`;
+            targetUrl = `https://bronx-mail-api.vercel.app/mail=${inp}`;
         }
 
         if (!inp) { alert("Please enter input!"); return; }
 
         resBox.style.display = "block";
-        resBox.innerHTML = "⏳ CONNECTING SERVER...";
+        resBox.innerText = "⏳ BYPASSING SERVER & FETCHING DATA...";
         cpBtn.style.display = "none";
 
         try {
-            const req = await fetch(url);
-            const data = await req.json();
+            // PROXY MAGIC: Isse Browser block nahi karega
+            // We use allorigins.win to bypass CORS
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+            
+            const req = await fetch(proxyUrl);
+            const responseWrap = await req.json();
+            
+            // The real data is inside .contents (string format)
+            if(!responseWrap.contents) throw new Error("Proxy Error");
+            const data = JSON.parse(responseWrap.contents);
 
             let output = "";
 
@@ -368,7 +393,7 @@
                     `🚘 Car: ${d["Maker Model"]}\n` +
                     `🗓️ Date: ${d["Registration Date"]}\n` +
                     `🏛️ RTO: ${d["Registered RTO"]}\n━━━━━━━━━━━━━━━━━━━━`;
-                } else { throw new Error("No Data"); }
+                } else { throw new Error("No Vehicle Data"); }
             }
             else if (type === 'adh') {
                 output = `🆔 𝗔𝗗𝗛𝗔𝗥 𝗜𝗡𝗙𝗢\n` +
@@ -379,7 +404,10 @@
                 `└─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${get(data, ["address"])}\n━━━━━━━━━━━━━━━━━━━━`;
             }
             else if (type === 'mail') {
-                const d = (data.results && data.results[0]) ? data.results[0] : data;
+                // Handle Array or Object
+                let d = data;
+                if(data.results && data.results.length > 0) d = data.results[0];
+                
                 output = `📧 𝗠𝗔𝗜𝗟 𝗜𝗡𝗙𝗢\n` +
                 `├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${get(d, ["email"]) || inp}\n` +
                 `├─ 👤 𝗡𝗮𝗺𝗲: ${get(d, ["name"])}\n` +
@@ -392,7 +420,7 @@
 
         } catch (e) {
             console.log(e);
-            resBox.innerText = "❌ ERROR: Data Not Found or API Offline.\nTry checking the number/ID again.";
+            resBox.innerText = "❌ FAILED: API is Down or Data Invalid.\nTechnical: " + e.message;
         }
     }
 </script>
