@@ -3,419 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRONX ULTRA VIP</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    
+    <title>BRONX ULTRA INTELLIGENCE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- CSS STYLES (DESIGN) --- */
-        body {
-            background-color: #000;
-            color: white;
-            font-family: 'Rajdhani', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow-x: hidden;
+        /* --- OP STYLES --- */
+        body { background: #000; color: #fff; font-family: 'Rajdhani', sans-serif; display: flex; justify-content: center; min-height: 100vh; margin: 0; }
+        
+        .container {
+            width: 100%; max-width: 400px; background: #050505; padding: 20px;
+            border: 1px solid #222; box-shadow: 0 0 20px rgba(0,255,255,0.1);
+            min-height: 100vh; text-align: center;
         }
-
-        /* Mobile App Container */
-        .app-container {
-            width: 100%;
-            max-width: 380px;
-            background: #050505;
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px solid #222;
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
-            text-align: center;
-            position: relative;
-            min-height: 500px;
-        }
-
-        /* Hidden Pages */
-        .page { display: none; animation: fadeIn 0.4s; }
-        .active-page { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Typography */
-        h1, h2 { text-transform: uppercase; margin: 10px 0; letter-spacing: 1px; }
-        .sub-text { font-size: 12px; color: #777; margin-bottom: 20px; }
 
         /* Inputs */
         input {
-            width: 90%;
-            padding: 12px;
-            margin: 10px 0;
-            background: #111;
-            border: 1px solid #444;
-            color: white;
-            border-radius: 8px;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            text-align: center;
-            outline: none;
-            transition: 0.3s;
+            width: 90%; padding: 12px; margin: 10px 0; background: #111;
+            border: 1px solid #444; color: #fff; text-align: center;
+            font-family: 'Rajdhani', sans-serif; font-size: 16px; outline: none;
+            border-radius: 5px;
         }
-        input:focus { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        input:focus { border-color: gold; box-shadow: 0 0 10px rgba(255,215,0,0.3); }
 
-        /* OP Buttons */
-        .op-btn {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            background: black;
-            color: white;
-            border: 2px solid;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        /* Buttons */
+        .btn {
+            width: 100%; padding: 12px; margin: 8px 0; background: #000;
+            color: #fff; border: 2px solid; font-weight: 800; cursor: pointer;
+            text-transform: uppercase; font-size: 18px; border-radius: 8px;
             transition: 0.2s;
         }
-        .op-btn:active { transform: scale(0.95); }
+        .btn:active { transform: scale(0.95); }
 
-        /* Color Themes */
-        .theme-blue { border-color: cyan; color: cyan; box-shadow: 0 0 10px cyan; }
-        .theme-blue:hover { background: cyan; color: black; }
+        /* Themes */
+        .blue { border-color: cyan; color: cyan; box-shadow: 0 0 10px cyan; }
+        .red { border-color: #ff003c; color: #ff003c; box-shadow: 0 0 10px #ff003c; }
+        .green { border-color: lime; color: lime; box-shadow: 0 0 10px lime; }
+        .gold { border-color: gold; color: gold; box-shadow: 0 0 10px gold; }
 
-        .theme-red { border-color: #ff003c; color: #ff003c; box-shadow: 0 0 10px #ff003c; }
-        .theme-red:hover { background: #ff003c; color: white; }
-
-        .theme-green { border-color: lime; color: lime; box-shadow: 0 0 10px lime; }
-        .theme-green:hover { background: lime; color: black; }
-
-        .theme-gold { border-color: gold; color: gold; box-shadow: 0 0 10px gold; }
-        .theme-gold:hover { background: gold; color: black; }
-
-        /* Result Box */
+        /* Result Area (Telegram Style) */
         .result-box {
-            margin-top: 15px;
-            background: #000;
-            border: 1px dashed #555;
-            padding: 15px;
-            border-radius: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            text-align: left;
-            white-space: pre-wrap;
-            display: none;
-            overflow-x: auto;
+            margin-top: 15px; background: #0a0a0a; border: 1px dashed #555;
+            padding: 15px; text-align: left; font-family: monospace; font-size: 13px;
+            white-space: pre-wrap; display: none; overflow-x: auto; color: #ddd;
+            border-radius: 8px;
         }
+        
+        /* Highlight tags styled like TG */
+        b { color: #fff; font-weight: bold; }
+        code { background: #222; padding: 2px 4px; border-radius: 3px; color: #ffcc00; font-family: monospace; }
 
-        .profile-img {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 0 15px white;
-            object-fit: cover;
-            margin-bottom: 10px;
-        }
+        .page { display: none; }
+        .active { display: block; animation: fade 0.3s; }
+        @keyframes fade { from {opacity:0;} to {opacity:1;} }
     </style>
 </head>
-<body>
+<body onload="checkSession()">
 
-    <div class="app-container">
-        
-        <div id="p-login" class="page active-page">
-            <h1 style="color: cyan; text-shadow: 0 0 10px cyan;">SECURE LOGIN</h1>
-            <p class="sub-text">AUTHENTICATION REQUIRED</p>
-            <br>
-            <input type="text" id="login-user" placeholder="USERNAME">
-            <input type="password" id="login-pass" placeholder="PASSWORD">
-            <br><br>
-            <button class="op-btn theme-blue" onclick="attemptLogin()">LOGIN NOW 🔓</button>
-            <p id="login-msg" style="color: red; margin-top: 10px; font-weight: bold;"></p>
-        </div>
+<div class="container">
 
-        <div id="p-dashboard" class="page">
-            <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" class="profile-img">
-            <h2>REHAN MALIK</h2>
-            <a href="https://t.me/BRONX_ULTRA" target="_blank" style="color: gold; text-decoration: none; font-weight: bold;">
-                @BRONX_ULTRA ✈️
-            </a>
-            <hr style="border-color: #333; margin: 20px 0;">
-            
-            <p style="text-align: left; color: #888; font-size: 14px;">SELECT TOOL:</p>
-
-            <button class="op-btn theme-blue" onclick="showPage('p-number')">📱 NUMBER INFO</button>
-            <button class="op-btn theme-red" onclick="showPage('p-vehicle')">🏎️ VEHICLE INFO</button>
-            <button class="op-btn theme-green" onclick="showPage('p-adhar')">🆔 ADHAR INFO</button>
-            <button class="op-btn theme-gold" onclick="showPage('p-mail')">📧 MAIL INFO</button>
-            
-            <br>
-            <button class="op-btn" style="border-color: #444; color: #777;" onclick="doLogout()">LOGOUT 🔒</button>
-        </div>
-
-        <div id="p-number" class="page">
-            <h2 style="color: cyan;">📱 NUMBER INFO</h2>
-            <p class="sub-text">SIM DATABASE SEARCH</p>
-            
-            <input type="number" id="num-inp" placeholder="Enter Mobile Number">
-            <button id="num-btn" class="op-btn theme-blue" onclick="apiNumber()">SEARCH 🔍</button>
-            
-            <div id="num-res" class="result-box" style="color: cyan; border-color: cyan;"></div>
-            <button id="num-copy" class="op-btn theme-gold" style="display:none;" onclick="copyResult('num-res')">📋 COPY</button>
-            
-            <br><br>
-            <button class="op-btn" onclick="showPage('p-dashboard')">🔙 BACK</button>
-        </div>
-
-        <div id="p-vehicle" class="page">
-            <h2 style="color: red;">🏎️ VEHICLE INFO</h2>
-            <p class="sub-text">RTO DATABASE SEARCH</p>
-            
-            <input type="text" id="veh-inp" placeholder="Enter RC (HR12AQ4000)">
-            <button id="veh-btn" class="op-btn theme-red" onclick="apiVehicle()">SEARCH 🔍</button>
-            
-            <div id="veh-res" class="result-box" style="color: #ffaaaa; border-color: red;"></div>
-            <button id="veh-copy" class="op-btn theme-gold" style="display:none;" onclick="copyResult('veh-res')">📋 COPY</button>
-            
-            <br><br>
-            <button class="op-btn" onclick="showPage('p-dashboard')">🔙 BACK</button>
-        </div>
-
-        <div id="p-adhar" class="page">
-            <h2 style="color: lime;">🆔 ADHAR INFO</h2>
-            <p class="sub-text">UIDAI SEARCH</p>
-            
-            <input type="number" id="adh-inp" placeholder="Enter Adhar Number">
-            <button id="adh-btn" class="op-btn theme-green" onclick="apiAdhar()">SEARCH 🔍</button>
-            
-            <div id="adh-res" class="result-box" style="color: lime; border-color: lime;"></div>
-            <button id="adh-copy" class="op-btn theme-gold" style="display:none;" onclick="copyResult('adh-res')">📋 COPY</button>
-            
-            <br><br>
-            <button class="op-btn" onclick="showPage('p-dashboard')">🔙 BACK</button>
-        </div>
-
-        <div id="p-mail" class="page">
-            <h2 style="color: gold;">📧 MAIL INFO</h2>
-            <p class="sub-text">EMAIL OSINT SEARCH</p>
-            
-            <input type="email" id="mail-inp" placeholder="Enter Email Address">
-            <button id="mail-btn" class="op-btn theme-gold" onclick="apiMail()">SEARCH 🔍</button>
-            
-            <div id="mail-res" class="result-box" style="color: gold; border-color: gold;"></div>
-            <button id="mail-copy" class="op-btn theme-blue" style="display:none;" onclick="copyResult('mail-res')">📋 COPY</button>
-            
-            <br><br>
-            <button class="op-btn" onclick="showPage('p-dashboard')">🔙 BACK</button>
-        </div>
-
+    <div id="pg-login" class="page active">
+        <h1 style="color: cyan; text-shadow: 0 0 10px cyan;">BRONX ULTRA</h1>
+        <p style="color: #666; font-size: 12px;">SYSTEM ACCESS</p>
+        <br>
+        <input type="text" id="usr" placeholder="USERNAME">
+        <input type="password" id="pwd" placeholder="PASSWORD">
+        <button class="btn blue" onclick="login()">LOGIN 🔓</button>
+        <p id="msg" style="color: red; font-size:12px; margin-top:10px;"></p>
     </div>
 
-    <script>
-        // --- CONFIGURATION ---
-        const CONFIG = {
-            user: "REHAN",
-            pass: "123",
-            expiry: "2026-12-30" // YYYY-MM-DD
-        };
+    <div id="pg-dash" class="page">
+        <img src="https://i.pinimg.com/736x/8b/16/7a/8b167af653c2399dd93b952a48740620.jpg" style="width:80px; height:80px; border-radius:50%; border:2px solid gold;">
+        <h2>REHAN MALIK</h2>
+        <a href="https://t.me/BRONX_ULTRA" style="color: gold; text-decoration:none;">@BRONX_ULTRA ✈️</a>
+        <br><br>
+        <button class="btn blue" onclick="goto('pg-num')">📱 NUMBER INFO</button>
+        <button class="btn red" onclick="goto('pg-veh')">🏎️ VEHICLE INFO</button>
+        <button class="btn green" onclick="goto('pg-adh')">🆔 ADHAR INFO</button>
+        <button class="btn gold" onclick="goto('pg-mail')">📧 MAIL INFO</button>
+        <br>
+        <button class="btn" style="border-color:#333; color:#777;" onclick="logout()">LOGOUT</button>
+    </div>
 
-        // --- NAVIGATION SYSTEM ---
-        function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page').forEach(div => div.classList.remove('active-page'));
-            // Show target page
-            document.getElementById(pageId).classList.add('active-page');
+    <div id="pg-num" class="page">
+        <h2 style="color: cyan;">📱 NUMBER INFO</h2>
+        <input type="number" id="inp-num" placeholder="Enter Number">
+        <button id="btn-num" class="btn blue" onclick="searchNum()">SEARCH 🔍</button>
+        <div id="res-num" class="result-box" style="border-color: cyan;"></div>
+        <button id="cpy-num" class="btn gold" style="display:none;" onclick="copy('res-num')">📋 COPY</button>
+        <button class="btn" style="border:none; color:#555;" onclick="goto('pg-dash')">🔙 BACK</button>
+    </div>
+
+    <div id="pg-veh" class="page">
+        <h2 style="color: red;">🏎️ VEHICLE INFO</h2>
+        <input type="text" id="inp-veh" placeholder="Enter RC (HR12AQ4000)">
+        <button id="btn-veh" class="btn red" onclick="searchVeh()">SEARCH 🔍</button>
+        <div id="res-veh" class="result-box" style="border-color: red;"></div>
+        <button id="cpy-veh" class="btn gold" style="display:none;" onclick="copy('res-veh')">📋 COPY</button>
+        <button class="btn" style="border:none; color:#555;" onclick="goto('pg-dash')">🔙 BACK</button>
+    </div>
+
+    <div id="pg-adh" class="page">
+        <h2 style="color: lime;">🆔 ADHAR INFO</h2>
+        <input type="number" id="inp-adh" placeholder="Enter Aadhar">
+        <button id="btn-adh" class="btn green" onclick="searchAdh()">SEARCH 🔍</button>
+        <div id="res-adh" class="result-box" style="border-color: lime;"></div>
+        <button id="cpy-adh" class="btn gold" style="display:none;" onclick="copy('res-adh')">📋 COPY</button>
+        <button class="btn" style="border:none; color:#555;" onclick="goto('pg-dash')">🔙 BACK</button>
+    </div>
+
+    <div id="pg-mail" class="page">
+        <h2 style="color: gold;">📧 MAIL INFO</h2>
+        <input type="email" id="inp-mail" placeholder="Enter Email">
+        <button id="btn-mail" class="btn gold" onclick="searchMail()">SEARCH 🔍</button>
+        <div id="res-mail" class="result-box" style="border-color: gold;"></div>
+        <button id="cpy-mail" class="btn blue" style="display:none;" onclick="copy('res-mail')">📋 COPY</button>
+        <button class="btn" style="border:none; color:#555;" onclick="goto('pg-dash')">🔙 BACK</button>
+    </div>
+
+</div>
+
+<script>
+// --- CONFIG ---
+const USER = "REHAN";
+const PASS = "123";
+const EXPIRY = "2026-12-30"; // Set Date
+
+// --- HELPER FUNCTION (YE MAGIC HAI) ---
+// Ye function multiple keys check karega jaisa tum chahte ho
+function getValue(obj, keys) {
+    if (!obj) return "N/A";
+    for (let key of keys) {
+        if (obj[key] && obj[key] !== "null" && obj[key] !== "") {
+            return obj[key];
         }
+    }
+    return "N/A";
+}
 
-        // --- LOGIN SYSTEM ---
-        function attemptLogin() {
-            const u = document.getElementById('login-user').value;
-            const p = document.getElementById('login-pass').value;
-            const msg = document.getElementById('login-msg');
+function mirror(val) {
+    return (val && val !== "null") ? val : "N/A";
+}
 
-            // Expiry Check
-            const today = new Date();
-            const expDate = new Date(CONFIG.expiry);
+// --- SYSTEM LOGIC ---
+function goto(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function checkSession() {
+    if(localStorage.getItem("isLogged")) goto('pg-dash');
+}
+
+function login() {
+    const u = document.getElementById('usr').value;
+    const p = document.getElementById('pwd').value;
+    const today = new Date();
+    const exp = new Date(EXPIRY);
+
+    if(today > exp) {
+        document.getElementById('msg').innerText = "⛔ EXPIRED!";
+        return;
+    }
+    if(u === USER && p === PASS) {
+        localStorage.setItem("isLogged", "true");
+        goto('pg-dash');
+    } else {
+        document.getElementById('msg').innerText = "❌ WRONG PASSWORD";
+    }
+}
+
+function logout() {
+    localStorage.clear();
+    location.reload();
+}
+
+function copy(id) {
+    // Copy karne ke liye HTML tags hatakar sirf text copy karenge
+    const div = document.getElementById(id);
+    const text = div.innerText; // innerText HTML tags hata deta hai
+    navigator.clipboard.writeText(text).then(() => alert("✅ Copied!"));
+}
+
+// --- API 1: NUMBER (WITH YOUR LOGIC) ---
+async function searchNum() {
+    const num = document.getElementById('inp-num').value;
+    const resBox = document.getElementById('res-num');
+    const btn = document.getElementById('btn-num');
+    
+    if(!num) return alert("Enter Number!");
+    btn.innerText = "WAIT...";
+    resBox.innerHTML = "Searching...";
+    resBox.style.display = "block";
+
+    try {
+        const req = await fetch(`https://bronx-api-sable.vercel.app/search?num=${num}&key=bronx-api`);
+        const json = await req.json();
+        const itm = json; // Direct object assumed based on your URL
+        
+        // TUMHARA Logic Apply kiya hai yahan:
+        let html = `🔍...... <b>𝗥𝗘𝗖𝗢𝗥𝗗</b><br>` +
+        `├─ 👤 <b>𝗡𝗮𝗺𝗲:</b> <code>${getValue(itm, ["name", "fullname", "consumer_name"])}</code><br>` +
+        `├─ 📱 <b>𝗠𝗼𝗯𝗶𝗹𝗲:</b> <code>${getValue(itm, ["mobile", "phone", "number"]) || num}</code><br>` +
+        `├─ 🧑‍🦳 <b>𝗙𝗮𝘁𝗵𝗲𝗿:</b> <code>${getValue(itm, ["fname", "father", "guardian", "father_name"])}</code><br>` +
+        `├─ 🏠 <b>𝗔𝗱𝗱𝗿𝗲𝘀𝘀:</b> <code>${getValue(itm, ["address", "city", "location"])}</code><br>` +
+        `├─ 🌍 <b>𝗖𝗶𝗿𝗰𝗹𝗲:</b> <code>${getValue(itm, ["circle", "state", "region"])}</code><br>` +
+        `├─ 🆔 <b>𝗜𝗗:</b> <code>${getValue(itm, ["id", "uid", "consumer_id"])}</code><br>` +
+        `└─ 📧 <b>𝗘𝗺𝗮𝗶𝗹:</b> <code>${getValue(itm, ["email", "mail"])}</code><br>` +
+        `━━━━━━━━━━━━━━━━━━━━`;
+
+        resBox.innerHTML = html;
+        document.getElementById('cpy-num').style.display = "block";
+    } catch(e) { resBox.innerHTML = "❌ Not Found / Error"; }
+    btn.innerText = "SEARCH 🔍";
+}
+
+// --- API 2: VEHICLE ---
+async function searchVeh() {
+    const rc = document.getElementById('inp-veh').value;
+    const resBox = document.getElementById('res-veh');
+    const btn = document.getElementById('btn-veh');
+
+    if(!rc) return alert("Enter RC!");
+    btn.innerText = "WAIT...";
+    resBox.style.display = "block";
+    resBox.innerHTML = "Fetching...";
+
+    try {
+        const req = await fetch(`https://bronx-rc-api.vercel.app/?rc_number=${rc}`);
+        const json = await req.json();
+        
+        if(json.status === "success" && json.details) {
+            const d = json.details;
             
-            if (today > expDate) {
-                msg.innerText = "⛔ ACCOUNT EXPIRED!";
-                return;
-            }
+            // TUMHARA STYLE
+            let html = `◤━━━━━━━━━━━━━━━━━━━━◥<br>` +
+            `      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡<br>` +
+            `◢◤◢◤◢◤◢◤◢◤◢◤◢◤<br>` +
+            `╔══════════════════════╗<br>` +
+            `  🎯 Target RC: ${json.rc_number || rc}<br>` +
+            `╚══════════════════════╝<br><br>` +
 
-            if (u === CONFIG.user && p === CONFIG.pass) {
-                showPage('p-dashboard');
-            } else {
-                msg.innerText = "❌ WRONG PASSWORD";
-            }
-        }
+            ` ⭐ <b>OWNER DETAILS</b> ⭐<br>` +
+            `👤 <b>Owner:</b> <code>${d["Owner Name"] || "N/A"}</code><br>` +
+            `🧑‍🦳 <b>Father:</b> <code>${d["Father's Name"] || "N/A"}</code><br>` +
+            `📱 <b>Phone:</b> <code>${d["Phone"] || "N/A"}</code><br>` +
+            `🏠 <b>Address:</b> <code>${d["Address"] || "N/A"}</code><br>` +
+            `📍 <b>City:</b> <code>${d["City Name"] || "N/A"}</code><br>` +
+            `🔢 <b>Serial:</b> <code>${d["Owner Serial No"] || "N/A"}</code><br><br>` +
 
-        function doLogout() {
-            location.reload(); // Refresh page to logout
-        }
+            ` ⭐ <b>VEHICLE SPECS</b> ⭐<br>` +
+            `🚘 <b>Maker:</b> <code>${d["Maker Model"] || "N/A"}</code><br>` +
+            `🚜 <b>Class:</b> <code>${d["Vehicle Class"] || "N/A"}</code><br>` +
+            `⛽ <b>Fuel:</b> <code>${d["Fuel Type"] || "N/A"}</code><br>` +
+            `🗓️ <b>Reg Date:</b> <code>${d["Registration Date"] || "N/A"}</code><br>` +
+            `🏛️ <b>RTO:</b> <code>${d["Registered RTO"] || "N/A"}</code><br><br>` +
 
-        // --- COPY UTILITY ---
-        function copyResult(divId) {
-            const txt = document.getElementById(divId).innerText;
-            navigator.clipboard.writeText(txt).then(() => alert("✅ Copied to Clipboard!"));
-        }
-
-        // ================= API 1: NUMBER =================
-        async function apiNumber() {
-            const inp = document.getElementById('num-inp').value;
-            const res = document.getElementById('num-res');
-            const btn = document.getElementById('num-btn');
-            const cpy = document.getElementById('num-copy');
-
-            if(!inp) return alert("Enter Number!");
+            ` ⭐ <b>LEGAL & VALIDITY</b> ⭐<br>` +
+            `🏥 <b>Insurer:</b> <code>${d["Insurance Company"] || "N/A"}</code><br>` +
+            `📅 <b>Ins. Upto:</b> <code>${d["Insurance Upto"] || "N/A"}</code><br>` +
+            `💨 <b>PUC Upto:</b> <code>${d["PUC Upto"] || "N/A"}</code><br>` +
+            `🛠️ <b>Fitness:</b> <code>${d["Fitness Upto"] || "N/A"}</code><br>` +
+            `💸 <b>Tax Upto:</b> <code>${d["Tax Upto"] || "N/A"}</code><br>` +
+            `━━━━━━━━━━━━━━━━━━━━`;
             
-            btn.innerText = "SEARCHING...";
-            res.style.display = "block";
-            res.innerText = "🔍 Scanning Database...";
-            cpy.style.display = "none";
+            resBox.innerHTML = html;
+            document.getElementById('cpy-veh').style.display = "block";
+        } else { resBox.innerHTML = "❌ No Data"; }
+    } catch(e) { resBox.innerHTML = "❌ API Error"; }
+    btn.innerText = "SEARCH 🔍";
+}
 
-            try {
-                const req = await fetch(`https://bronx-api-sable.vercel.app/search?num=${inp}&key=bronx-api`);
-                const data = await req.json();
+// --- API 3: ADHAR (With Mirror Logic) ---
+async function searchAdh() {
+    const uid = document.getElementById('inp-adh').value;
+    const resBox = document.getElementById('res-adh');
+    const btn = document.getElementById('btn-adh');
 
-                res.innerText = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
-├─ 👤 𝗡𝗮𝗺𝗲: ${data.name || "N/A"}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${data.mobile || inp}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${data.fname || "N/A"}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${data.address || "N/A"}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${data.circle || "N/A"}
-├─ 🆔 𝗜𝗗: ${data.id || "N/A"}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${data.email || "N/A"}`;
-                cpy.style.display = "block";
-            } catch(e) { res.innerText = "❌ Error/Not Found"; }
-            btn.innerText = "SEARCH 🔍";
-        }
+    if(!uid) return alert("Enter UID!");
+    btn.innerText = "WAIT...";
+    resBox.style.display = "block";
+    resBox.innerHTML = "Fetching...";
 
-        // ================= API 2: VEHICLE =================
-        async function apiVehicle() {
-            const inp = document.getElementById('veh-inp').value;
-            const res = document.getElementById('veh-res');
-            const btn = document.getElementById('veh-btn');
-            const cpy = document.getElementById('veh-copy');
+    try {
+        const req = await fetch(`https://bronx-adhar-api.vercel.app/aadhar=${uid}`);
+        const itm = await req.json();
 
-            if(!inp) return alert("Enter RC!");
-            
-            btn.innerText = "CONNECTING...";
-            res.style.display = "block";
-            res.innerText = "🛰️ Connecting Satellite...";
-            cpy.style.display = "none";
+        // TUMHARA LOGIC
+        let html = `🔍...... <b>𝗥𝗘𝗖𝗢𝗥𝗗</b><br>` +
+        `├─ 🆔 <b>𝗜𝗗:</b> <code>${mirror(itm.id || uid)}</code><br>` +
+        `├─ 👤 <b>𝗡𝗮𝗺𝗲:</b> <code>${mirror(itm.name)}</code><br>` +
+        `├─ 🧑‍🦳 <b>𝗙𝗮𝘁𝗵𝗲𝗿:</b> <code>${mirror(itm.fname || itm.father)}</code><br>` +
+        `├─ 📱 <b>𝗠𝗼𝗯𝗶𝗹𝗲:</b> <code>${mirror(itm.mobile)}</code><br>` +
+        `├─ 🏠 <b>𝗔𝗱𝗱𝗿𝗲𝘀𝘀:</b> <code>${mirror(itm.address)}</code><br>` +
+        `├─ 📧 <b>𝗘𝗺𝗮𝗶𝗹:</b> <code>${mirror(itm.email)}</code><br>` +
+        `└─ 🔄 <b>𝗔𝗹𝘁 𝗡𝘂𝗺:</b> <code>${mirror(itm.alt)}</code><br>` +
+        `━━━━━━━━━━━━━━━━━━━━`;
 
-            try {
-                const req = await fetch(`https://bronx-rc-api.vercel.app/?rc_number=${inp}`);
-                const json = await req.json();
-                
-                if(json.status === "success" && json.details) {
-                    const d = json.details;
-                    res.innerText = `
-◤━━━━━━━━━━━━━━━━━━━━◥
-      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
-◢◤◢◤◢◤◢◤◢◤◢◤◢◤
-╔══════════════════════╗
-  🎯 Target RC: ${json.rc_number || inp}
-╚══════════════════════╝
+        resBox.innerHTML = html;
+        document.getElementById('cpy-adh').style.display = "block";
+    } catch(e) { resBox.innerHTML = "❌ API Error"; }
+    btn.innerText = "SEARCH 🔍";
+}
 
- ⭐ OWNER DETAILS ⭐
-👤 Owner: ${d["Owner Name"] || ""}
-🧑‍🦳 Father: ${d["Father's Name"] || ""}
-📱 Phone: ${d["Phone"] || ""}
-🏠 Address: ${d["Address"] || ""}
-📍 City: ${d["City Name"] || ""}
-🔢 Serial: ${d["Owner Serial No"] || ""}
+// --- API 4: MAIL (With Mirror Logic) ---
+async function searchMail() {
+    const mail = document.getElementById('inp-mail').value;
+    const resBox = document.getElementById('res-mail');
+    const btn = document.getElementById('btn-mail');
 
- ⭐ VEHICLE SPECS ⭐
-🚘 Maker: ${d["Maker Model"] || ""}
-🚜 Class: ${d["Vehicle Class"] || ""}
-⛽ Fuel: ${d["Fuel Type"] || ""}
-🗓️ Reg Date: ${d["Registration Date"] || ""}
-🏛️ RTO: ${d["Registered RTO"] || ""}
+    if(!mail) return alert("Enter Mail!");
+    btn.innerText = "WAIT...";
+    resBox.style.display = "block";
+    resBox.innerHTML = "Scanning...";
 
- ⭐ LEGAL & VALIDITY ⭐
-🏥 Insurer: ${d["Insurance Company"] || ""}
-📅 Ins. Upto: ${d["Insurance Upto"] || ""}
-💨 PUC Upto: ${d["PUC Upto"] || ""}
-🛠️ Fitness: ${d["Fitness Upto"] || ""}
-💸 Tax Upto: ${d["Tax Upto"] || ""}
-━━━━━━━━━━━━━━━━━━━━`;
-                    cpy.style.display = "block";
-                } else { res.innerText = "❌ No Data Found"; }
-            } catch(e) { res.innerText = "❌ API Error"; }
-            btn.innerText = "SEARCH 🔍";
-        }
+    try {
+        const req = await fetch(`https://bronx-mail-api.vercel.app/mail=${mail}`);
+        const json = await req.json();
+        
+        if(json.results && json.results.length > 0) {
+            const itm = json.results[0];
 
-        // ================= API 3: ADHAR =================
-        async function apiAdhar() {
-            const inp = document.getElementById('adh-inp').value;
-            const res = document.getElementById('adh-res');
-            const btn = document.getElementById('adh-btn');
-            const cpy = document.getElementById('adh-copy');
+            // TUMHARA LOGIC
+            let html = `🔍...... <b>𝗥𝗘𝗖𝗢𝗥𝗗</b><br>` +
+            `├─ 📧 <b>𝗘𝗺𝗮𝗶𝗹:</b> <code>${mirror(itm.email || mail)}</code><br>` +
+            `├─ 👤 <b>𝗡𝗮𝗺𝗲:</b> <code>${mirror(itm.name)}</code><br>` +
+            `├─ 🧑‍🦳 <b>𝗙𝗮𝘁𝗵𝗲𝗿:</b> <code>${mirror(itm.fname)}</code><br>` +
+            `├─ 📱 <b>𝗠𝗼𝗯𝗶𝗹𝗲:</b> <code>${mirror(itm.mobile)}</code><br>` +
+            `├─ 🆔 <b>𝗜𝗗:</b> <code>${mirror(itm.id)}</code><br>` +
+            `├─ 🏠 <b>𝗔𝗱𝗱𝗿𝗲𝘀𝘀:</b> <code>${mirror(itm.address)}</code><br>` +
+            `└─ 🔄 <b>𝗔𝗹𝘁 𝗡𝘂𝗺:</b> <code>${mirror(itm.alt)}</code><br>` +
+            `━━━━━━━━━━━━━━━━━━━━`;
 
-            if(!inp) return alert("Enter Adhar!");
-            
-            btn.innerText = "WAIT...";
-            res.style.display = "block";
-            res.innerText = "🔄 Fetching UIDAI...";
-            cpy.style.display = "none";
+            resBox.innerHTML = html;
+            document.getElementById('cpy-mail').style.display = "block";
+        } else { resBox.innerHTML = "❌ No Record"; }
+    } catch(e) { resBox.innerHTML = "❌ API Error"; }
+    btn.innerText = "SEARCH 🔍";
+}
+</script>
 
-            try {
-                const req = await fetch(`https://bronx-adhar-api.vercel.app/aadhar=${inp}`);
-                const data = await req.json();
-
-                res.innerText = `
-├─ 🆔 𝗜𝗗: ${data.id || inp}
-├─ 👤 𝗡𝗮𝗺𝗲: ${data.name || "N/A"}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${data.fname || "N/A"}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${data.mobile || "N/A"}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${data.address || "N/A"}
-├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${data.email || "N/A"}
-└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${data.alt || "N/A"}`;
-                cpy.style.display = "block";
-            } catch(e) { res.innerText = "❌ Error/Invalid ID"; }
-            btn.innerText = "SEARCH 🔍";
-        }
-
-        // ================= API 4: MAIL (FIXED) =================
-        async function apiMail() {
-            const inp = document.getElementById('mail-inp').value;
-            const res = document.getElementById('mail-res');
-            const btn = document.getElementById('mail-btn');
-            const cpy = document.getElementById('mail-copy');
-
-            if(!inp) return alert("Enter Email!");
-            
-            btn.innerText = "HACKING...";
-            res.style.display = "block";
-            res.innerText = "📂 Opening Database...";
-            cpy.style.display = "none";
-
-            try {
-                const req = await fetch(`https://bronx-mail-api.vercel.app/mail=${inp}`);
-                const json = await req.json();
-                
-                if (json.results && json.results.length > 0) {
-                    const data = json.results[0];
-                    res.innerText = `
-├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${data.email || inp}
-├─ 👤 𝗡𝗮𝗺𝗲: ${data.name || "N/A"}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${data.fname || "N/A"}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${data.mobile || "N/A"}
-├─ 🆔 𝗜𝗗: ${data.id || "N/A"}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${data.address || "N/A"}
-└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${data.alt || "N/A"}`;
-                    cpy.style.display = "block";
-                } else {
-                    res.innerText = "❌ No Record Found";
-                }
-            } catch(e) { res.innerText = "❌ API Error"; }
-            btn.innerText = "SEARCH 🔍";
-        }
-
-    </script>
 </body>
 </html>
