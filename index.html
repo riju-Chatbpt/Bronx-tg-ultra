@@ -5,74 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING (SAME OP LOOK) --- */
-        :root {
-            --neon-blue: #00f3ff;
-            --neon-red: #ff004c;
-            --neon-green: #00ff6a;
-            --neon-gold: #ffd700;
-            --dark-bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
-        }
-
+        /* --- CSS STYLING (UNCHANGED) --- */
+        :root { --neon-blue: #00f3ff; --neon-red: #ff004c; --neon-green: #00ff6a; --neon-gold: #ffd700; --dark-bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
-        
-        body {
-            background-color: var(--dark-bg);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-image: 
-                linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
-            background-size: 40px 40px;
-        }
-
-        /* --- CONTAINER CONTROL --- */
-        .container {
-            display: none; /* Hidden by default */
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            text-align: center;
-            animation: fadeIn 0.5s ease;
-        }
-        
+        body { background-color: var(--dark-bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-image: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%); background-size: 40px 40px; }
+        .container { display: none; width: 100%; max-width: 400px; padding: 20px; text-align: center; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- LOGIN PAGE --- */
-        #login-section {
-            display: block; /* Visible initially */
-            background: var(--glass);
-            padding: 40px;
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 20px var(--neon-blue);
-            border-radius: 15px;
-        }
-
-        /* --- MENU GRID --- */
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .menu-btn {
-            background: rgba(0,0,0,0.6);
-            border: 2px solid var(--neon-blue);
-            color: white;
-            padding: 20px 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-weight: bold;
-            font-size: 14px;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
-        }
-
+        #login-section { display: block; background: var(--glass); padding: 40px; border: 2px solid var(--neon-blue); box-shadow: 0 0 20px var(--neon-blue); border-radius: 15px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .menu-btn { background: rgba(0,0,0,0.6); border: 2px solid var(--neon-blue); color: white; padding: 20px 10px; border-radius: 10px; cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: bold; font-size: 14px; box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
         .menu-btn:hover { background: var(--neon-blue); color: black; box-shadow: 0 0 20px var(--neon-blue); }
         .menu-btn.vehicle { border-color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 0, 76, 0.2); }
         .menu-btn.vehicle:hover { background: var(--neon-red); color: white; box-shadow: 0 0 20px var(--neon-red); }
@@ -80,94 +21,19 @@
         .menu-btn.adhar:hover { background: var(--neon-gold); color: black; box-shadow: 0 0 20px var(--neon-gold); }
         .menu-btn.mail { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 106, 0.2); }
         .menu-btn.mail:hover { background: var(--neon-green); color: black; box-shadow: 0 0 20px var(--neon-green); }
-
-
-        .profile-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
-        }
-        
-        .profile-pic {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 3px solid var(--neon-blue);
-            box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
-            object-fit: cover;
-        }
-
-        h1 {
-            background: linear-gradient(to right, var(--neon-blue), var(--neon-red));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 26px; 
-            letter-spacing: 2px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            font-weight: 800;
-        }
-
+        .profile-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; }
+        .profile-pic { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--neon-blue); box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue); object-fit: cover; }
+        h1 { background: linear-gradient(to right, var(--neon-blue), var(--neon-red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 26px; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase; font-weight: 800; }
         .subtitle { color: #ccc; font-size: 14px; margin-bottom: 30px; }
-
-        input {
-            width: 100%;
-            background: black;
-            border: 2px solid var(--neon-green);
-            color: white;
-            padding: 15px;
-            margin-bottom: 15px;
-            font-size: 16px;
-            outline: none;
-            text-align: center;
-        }
+        input { width: 100%; background: black; border: 2px solid var(--neon-green); color: white; padding: 15px; margin-bottom: 15px; font-size: 16px; outline: none; text-align: center; }
         input:focus { box-shadow: 0 0 15px var(--neon-green); }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            border: none;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            text-transform: uppercase;
-            color: black;
-            margin-bottom: 15px;
-            transition: 0.3s;
-        }
+        .btn { width: 100%; padding: 15px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; text-transform: uppercase; color: black; margin-bottom: 15px; transition: 0.3s; }
         .btn-search { background: linear-gradient(90deg, var(--neon-blue), var(--neon-red)); }
         .btn-copy { background: linear-gradient(90deg, var(--neon-green), var(--neon-gold)); }
         .btn-back { background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); margin-top: 15px; }
         .btn:active { transform: scale(0.98); }
-
-        .info-box {
-            border: 2px solid var(--neon-blue);
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.8);
-            box-shadow: 0 0 10px var(--neon-blue);
-            margin-bottom: 20px;
-            color: var(--neon-blue);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        .info-highlight { color: var(--neon-red); font-weight: bold; }
-        .info-white { color: white; }
-
         .result-area { text-align: left; margin-top: 20px; }
-
-        .result-card {
-            background: rgba(20, 20, 20, 0.95);
-            border-left: 4px solid var(--neon-gold);
-            padding: 15px;
-            margin-bottom: 15px;
-            font-family: monospace;
-            white-space: pre-wrap; 
-            color: var(--neon-green);
-            font-size: 13px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            overflow-x: hidden;
-        }
+        .result-card { background: rgba(20, 20, 20, 0.95); border-left: 4px solid var(--neon-gold); padding: 15px; margin-bottom: 15px; font-family: monospace; white-space: pre-wrap; color: var(--neon-green); font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); overflow-x: hidden; }
     </style>
 </head>
 <body>
@@ -181,338 +47,221 @@
     </div>
 
     <div id="menu-section" class="container">
-        <div class="profile-container">
-            <img src="https://i.ibb.co/YTjW35Hs/file-000000007b0872069c1067c615adaa48.png" alt="Profile" class="profile-pic">
-        </div>
+        <div class="profile-container"><img src="https://i.ibb.co/YTjW35Hs/file-000000007b0872069c1067c615adaa48.png" class="profile-pic"></div>
         <h1>BRONX ULTRA</h1>
         <div class="subtitle">CHOOSE YOUR TOOL</div>
-
         <div class="menu-grid">
             <div class="menu-btn" onclick="showSection('number-section')">📱<br>Number Info</div>
             <div class="menu-btn vehicle" onclick="showSection('vehicle-section')">🏎️<br>Vehicle Info</div>
             <div class="menu-btn adhar" onclick="showSection('adhar-section')">🆔<br>Adhar Info</div>
             <div class="menu-btn mail" onclick="showSection('mail-section')">📧<br>Mail Info</div>
         </div>
-        
         <button onclick="logout()" class="btn btn-back">LOGOUT</button>
     </div>
 
     <div id="number-section" class="container">
-        <h1>NUMBER SEARCH</h1>
-        <div class="subtitle">@BRONX_ULTRA</div>
-        <div style="display: flex; gap: 5px;">
-            <input type="number" id="phoneInput" placeholder="Enter Phone Number" style="border-color: var(--neon-green);">
-            <button class="btn btn-search" onclick="searchNumber()" style="width: 40%; margin-bottom: 15px;">SEARCH</button>
-        </div>
+        <h1>NUMBER SEARCH</h1><input type="number" id="phoneInput" placeholder="Enter Number">
+        <button class="btn btn-search" onclick="searchNumber()">SEARCH</button>
         <div id="result-area-num" class="result-area"></div>
-        <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY FULL RESULT</button>
-        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
+        <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY FULL</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
     </div>
 
     <div id="vehicle-section" class="container">
-        <h1 style="background: linear-gradient(to right, var(--neon-red), var(--neon-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VEHICLE INFO</h1>
-        <div class="subtitle">RTO INTELLIGENCE</div>
-        <div style="display: flex; gap: 5px;">
-            <input type="text" id="vehicleInput" placeholder="Ex: HR12AQ4000" style="border-color: var(--neon-red); text-transform: uppercase;">
-            <button class="btn btn-search" onclick="searchVehicle()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-red), var(--neon-gold));">GO</button>
-        </div>
+        <h1>VEHICLE INFO</h1><input type="text" id="vehicleInput" placeholder="HR12AQ4000">
+        <button class="btn btn-search" onclick="searchVehicle()">GO</button>
         <div id="result-area-rc" class="result-area"></div>
-        <button class="btn btn-copy" onclick="copyResult('result-area-rc')" style="background: linear-gradient(90deg, var(--neon-gold), var(--neon-red));">📋 COPY</button>
-        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
+        <button class="btn btn-copy" onclick="copyResult('result-area-rc')">📋 COPY FULL</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
     </div>
 
     <div id="adhar-section" class="container">
-        <h1 style="background: linear-gradient(to right, var(--neon-gold), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ADHAR INFO</h1>
-        <div class="subtitle">UIDAI INTELLIGENCE</div>
-        <div style="display: flex; gap: 5px;">
-            <input type="number" id="adharInput" placeholder="Enter Adhar Number" style="border-color: var(--neon-gold);">
-            <button class="btn btn-search" onclick="searchAdhar()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-gold), #fff);">GO</button>
-        </div>
+        <h1>ADHAR INFO</h1><input type="number" id="adharInput" placeholder="Adhar Number">
+        <button class="btn btn-search" onclick="searchAdhar()">GO</button>
         <div id="result-area-adhar" class="result-area"></div>
-        <button class="btn btn-copy" onclick="copyResult('result-area-adhar')" style="background: linear-gradient(90deg, var(--neon-gold), #fff); color:black;">📋 COPY</button>
-        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
+        <button class="btn btn-copy" onclick="copyResult('result-area-adhar')">📋 COPY FULL</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
     </div>
 
     <div id="mail-section" class="container">
-        <h1 style="background: linear-gradient(to right, var(--neon-green), var(--neon-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MAIL INFO</h1>
-        <div class="subtitle">EMAIL OSINT</div>
-        <div style="display: flex; gap: 5px;">
-            <input type="email" id="mailInput" placeholder="Enter Email" style="border-color: var(--neon-green);">
-            <button class="btn btn-search" onclick="searchMail()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));">GO</button>
-        </div>
+        <h1>MAIL INFO</h1><input type="email" id="mailInput" placeholder="Enter Email">
+        <button class="btn btn-search" onclick="searchMail()">GO</button>
         <div id="result-area-mail" class="result-area"></div>
-        <button class="btn btn-copy" onclick="copyResult('result-area-mail')" style="background: linear-gradient(90deg, var(--neon-green), var(--neon-blue)); color:black;">📋 COPY</button>
-        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
+        <button class="btn btn-copy" onclick="copyResult('result-area-mail')">📋 COPY FULL</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">HOME</button>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const ACCESS_CONFIG = {
-            validUser: "admin",        
-            validPass: "rehan123",     
-            expiryDate: "2026-12-30"   
-        };
-
-        // --- NAVIGATION ---
-        function showSection(sectionId) {
-            document.querySelectorAll('.container').forEach(div => div.style.display = 'none');
-            document.getElementById(sectionId).style.display = 'block';
-        }
-
-        // --- LOGIN LOGIC ---
+        const ACCESS_CONFIG = { validUser: "admin", validPass: "rehan123", expiryDate: "2026-12-30" };
+        function showSection(id) { document.querySelectorAll('.container').forEach(div => div.style.display = 'none'); document.getElementById(id).style.display = 'block'; }
         function handleLogin() {
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-            const errorMsg = document.getElementById('login-error');
-            const today = new Date();
-            const expiry = new Date(ACCESS_CONFIG.expiryDate);
-
-            if (today > expiry) { errorMsg.innerText = "ACCESS EXPIRED. CONTACT ADMIN."; return; }
-
-            if (user === ACCESS_CONFIG.validUser && pass === ACCESS_CONFIG.validPass) {
-                localStorage.setItem('isLoggedIn', 'true');
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('menu-section').style.display = 'block';
-            } else {
-                errorMsg.innerText = "INVALID CREDENTIALS";
-            }
+            const u = document.getElementById('username').value; const p = document.getElementById('password').value;
+            const today = new Date(); const expiry = new Date(ACCESS_CONFIG.expiryDate);
+            if (today > expiry) { document.getElementById('login-error').innerText = "ACCESS EXPIRED."; return; }
+            if (u === ACCESS_CONFIG.validUser && p === ACCESS_CONFIG.validPass) { localStorage.setItem('isLoggedIn', 'true'); showSection('menu-section'); }
+            else { document.getElementById('login-error').innerText = "INVALID CREDENTIALS"; }
         }
-
-        window.onload = function() {
-            if (localStorage.getItem('isLoggedIn') === 'true') { 
-                document.getElementById('login-section').style.display = 'none';
-                document.getElementById('menu-section').style.display = 'block';
-            }
-        }
-
+        window.onload = () => { if(localStorage.getItem('isLoggedIn')==='true') showSection('menu-section'); };
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- VALUE CHECKER (Universal N/A Fixer) ---
+        // --- SUPER VALUE EXTRACTOR (FIXED N/A) ---
         function getVal(item, keys) {
-            if(!item) return "N/A";
-            for (let i = 0; i < keys.length; i++) {
-                let k = keys[i];
-                if (item[k] && item[k] !== "null" && item[k] !== "") { return item[k]; }
+            if (!item) return "N/A";
+            // Check original keys
+            for (let k of keys) {
+                if (item[k] && item[k] !== "null" && item[k] !== "") return item[k];
             }
-            return "N/A"; 
+            // Check Lowercase keys (The Fix for N/A)
+            const lowerItem = {};
+            Object.keys(item).forEach(key => lowerItem[key.toLowerCase()] = item[key]);
+            
+            for (let k of keys) {
+                if (lowerItem[k.toLowerCase()] && lowerItem[k.toLowerCase()] !== "null" && lowerItem[k.toLowerCase()] !== "") return lowerItem[k.toLowerCase()];
+            }
+            return "N/A";
         }
 
-        // --- 3-LAYER ENGINE SYSTEM (Updated for Parsing) ---
-        async function smartFetch(url) {
-            const encodedUrl = encodeURIComponent(url);
-
-            // Engine 1: ThingProxy (Good for text)
-            const engine1 = `https://thingproxy.freeboard.io/fetch/${url}`;
-            // Engine 2: CorsProxy (Fastest)
-            const engine2 = `https://corsproxy.io/?${encodedUrl}`;
-            // Engine 3: AllOrigins (Reliable Backup)
-            const engine3 = `https://api.allorigins.win/get?url=${encodedUrl}`;
-
-            // Try Engine 1
-            try {
-                let res = await fetch(engine1);
-                if(res.ok) return await res.json();
-            } catch(e) { console.log("Engine 1 Failed"); }
-
-            // Try Engine 2
-            try {
-                let res = await fetch(engine2);
-                if(res.ok) return await res.json();
-            } catch(e) { console.log("Engine 2 Failed"); }
-
-            // Try Engine 3 (Includes Parsing Fix)
-            try {
-                let res = await fetch(engine3);
-                if(res.ok) {
-                    let data = await res.json();
-                    if(data.contents) return JSON.parse(data.contents); // FIX FOR ALLORIGINS
-                    return data;
-                }
-            } catch(e) { console.log("Engine 3 Failed"); }
-
-            throw new Error("All Servers Busy. Try again in 10 seconds.");
-        }
-
-        // --- 1. NUMBER SEARCH FUNCTION (UNTOUCHED - WORKING) ---
+        // --- 1. NUMBER SEARCH (Using Direct Vercel Path - No Proxy) ---
         async function searchNumber() {
-            const phone = document.getElementById('phoneInput').value;
-            const resultArea = document.getElementById('result-area-num');
-            
-            if (!phone) { alert("Please enter a number"); return; }
-            
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Database... 📡</p>";
-            const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
-
+            const val = document.getElementById('phoneInput').value;
+            const area = document.getElementById('result-area-num');
+            if(!val) return alert("Enter Number");
+            area.innerHTML = "<p style='color:var(--neon-gold)'>Scanning...</p>";
             try {
-                const data = await smartFetch(targetUrl);
-                resultArea.innerHTML = ""; 
+                // FIXED: Direct call to Vercel Rewrite (Bypasses CORS & Proxy limits)
+                const res = await fetch(`/api/number?num=${val}&key=bronx-api`);
+                const data = await res.json();
+                area.innerHTML = "";
+                let list = Array.isArray(data) ? data : (data.data ? [data.data] : [data]);
+                
+                if(list.length === 0 || !list[0]) throw new Error("No Data");
 
-                let resultsArray = [];
-                if (Array.isArray(data)) { resultsArray = data; }
-                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
-                else if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
-                else if (data.info && Array.isArray(data.info)) { resultsArray = data.info; }
-                else { resultsArray = [data]; }
+                list.forEach((itm, i) => {
+                    // YOUR ORDER
+                    const name = getVal(itm, ["name", "fullname", "consumer_name"]);
+                    const mobile = getVal(itm, ["mobile", "phone", "number"]) || val;
+                    const father = getVal(itm, ["fname", "father", "guardian", "father_name"]);
+                    const address = getVal(itm, ["address", "city", "location"]);
+                    const circle = getVal(itm, ["circle", "state", "region"]);
+                    const id = getVal(itm, ["id", "uid", "consumer_id"]);
+                    const email = getVal(itm, ["email", "mail"]);
 
-                if (!resultsArray || resultsArray.length === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
-                     return;
-                }
-
-                resultsArray.forEach((item, index) => {
-                    if(!item) return; 
-
-                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
-                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
-                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
-                    const address = getVal(item, ["address", "city", "location", "Address"]);
-                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
-                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
-                    const email = getVal(item, ["email", "mail", "Email"]);
-
-                    const record = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+                    const rec = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
 ├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
 ├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
 ├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
 ├─ 🆔 𝗜𝗗: ${id}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
-                    `;
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}`;
                     const div = document.createElement('div');
                     div.className = 'result-card';
-                    div.innerText = record.trim();
-                    resultArea.appendChild(div);
+                    div.innerText = rec.trim();
+                    area.appendChild(div);
                 });
-
-            } catch (error) {
-                console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`;
-            }
+            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found or Server Error</p>`; }
         }
 
-        // --- 2. VEHICLE SEARCH FUNCTION (UNTOUCHED - WORKING) ---
+        // --- 2. VEHICLE SEARCH (Working) ---
         async function searchVehicle() {
-            const rc = document.getElementById('vehicleInput').value.trim();
-            const resultArea = document.getElementById('result-area-rc');
-            
-            if (!rc) { alert("Enter Vehicle Number!"); return; }
-            
-            resultArea.innerHTML = "<p style='color:var(--neon-red)'>Connecting to RTO... 🏎️</p>";
-            const targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${rc}`;
-
+            const val = document.getElementById('vehicleInput').value;
+            const area = document.getElementById('result-area-rc');
+            if(!val) return alert("Enter RC");
+            area.innerHTML = "<p style='color:var(--neon-red)'>Scanning...</p>";
             try {
-                // Using same Smart Fetch so it handles proxy correctly
-                const data = await smartFetch(targetUrl);
-                resultArea.innerHTML = "";
-
-                if (data.status !== "success" || !data.details) {
-                    resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>";
-                    return;
-                }
-
+                const res = await fetch(`/api/vehicle?rc_number=${val}`);
+                const data = await res.json();
+                if(data.status !== "success") throw new Error("Not Found");
                 const d = data.details;
-
-                // SPECIAL FIX: Using getVal with Exact Keys including spaces
-                const owner = getVal(d, ["Owner Name", "Owner", "owner_name"]);
-                const father = getVal(d, ["Father's Name", "Father Name", "father_name"]);
-                const phone = getVal(d, ["Phone", "Mobile", "mobile_no"]);
-                const address = getVal(d, ["Address", "Present Address"]);
-                const city = getVal(d, ["City Name", "city"]);
-                const serial = getVal(d, ["Owner Serial No", "Serial"]);
                 
-                const maker = getVal(d, ["Maker Model", "Model"]);
-                const vClass = getVal(d, ["Vehicle Class", "Class"]);
-                const fuel = getVal(d, ["Fuel Type", "Fuel"]);
-                const regDate = getVal(d, ["Registration Date", "Reg Date"]);
-                const rto = getVal(d, ["Registered RTO", "RTO"]);
-
-                // Legal Keys
+                // YOUR ORDER
+                const owner = getVal(d, ["Owner Name"]);
+                const father = getVal(d, ["Father's Name"]);
+                const phone = getVal(d, ["Phone"]);
+                const address = getVal(d, ["Address"]);
+                const city = getVal(d, ["City Name"]);
+                const serial = getVal(d, ["Owner Serial No"]);
+                const maker = getVal(d, ["Maker Model"]);
+                const vClass = getVal(d, ["Vehicle Class"]);
+                const fuel = getVal(d, ["Fuel Type"]);
+                const regDate = getVal(d, ["Registration Date"]);
+                const rto = getVal(d, ["Registered RTO"]);
                 const insComp = getVal(d, ["Insurance Company"]);
                 const insUpto = getVal(d, ["Insurance Upto"]);
                 const pucUpto = getVal(d, ["PUC Upto"]);
                 const fitness = getVal(d, ["Fitness Upto"]);
                 const tax = getVal(d, ["Tax Upto"]);
 
-                const vipRecord = `
+                const rec = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
-      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
+      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
 ◢◤◢◤◢◤◢◤◢◤◢◤◢◤
 ╔══════════════════════╗
-  🎯 Target RC: ${rc.toUpperCase()}
+  🎯 Target RC: ${val.toUpperCase()}
 ╚══════════════════════╝
-
- ⭐ OWNER DETAILS ⭐
+ ⭐ OWNER DETAILS ⭐
 👤 Owner: ${owner}
 🧑‍🦳 Father: ${father}
 📱 Phone: ${phone}
 🏠 Address: ${address}
 📍 City: ${city}
 🔢 Serial: ${serial}
-
- ⭐ VEHICLE SPECS ⭐
+ ⭐ VEHICLE SPECS ⭐
 🚘 Maker: ${maker}
 🚜 Class: ${vClass}
 ⛽ Fuel: ${fuel}
 🗓️ Reg Date: ${regDate}
 🏛️ RTO: ${rto}
-
- ⭐ LEGAL & VALIDITY ⭐
+ ⭐ LEGAL & VALIDITY ⭐
 🏥 Insurer: ${insComp}
 📅 Ins. Upto: ${insUpto}
 💨 PUC Upto: ${pucUpto}
 🛠️ Fitness: ${fitness}
 💸 Tax Upto: ${tax}
-━━━━━━━━━━━━━━━━━━━━
-                `;
-
-                const div = document.createElement('div');
-                div.className = 'result-card';
-                div.style.borderLeft = "4px solid var(--neon-red)"; 
-                div.style.color = "var(--neon-gold)"; 
-                div.innerText = vipRecord.trim();
-                resultArea.appendChild(div);
-
-            } catch (error) {
-                console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.<br>${error.message}</p>`;
-            }
+━━━━━━━━━━━━━━━━━━━━`;
+                area.innerHTML = `<div class="result-card" style="border-left:4px solid var(--neon-red);color:var(--neon-gold)">${rec}</div>`;
+            } catch(e) { area.innerHTML = `<p style='color:red'>Vehicle Not Found</p>`; }
         }
 
-        // --- 3. ADHAR SEARCH (FIXED ORDER & DEFINITIONS) ---
+        // --- 3. ADHAR SEARCH (FIXED: Regex + Lowercase Match) ---
         async function searchAdhar() {
-            const num = document.getElementById('adharInput').value;
-            const resultArea = document.getElementById('result-area-adhar');
-            if (!num) { alert("Enter Adhar Number"); return; }
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Scanning UIDAI... 🆔</p>";
-            const targetUrl = `https://bronx-adhar-api.vercel.app/aadhar=${num}`;
-
+            const val = document.getElementById('adharInput').value;
+            const area = document.getElementById('result-area-adhar');
+            if(!val) return alert("Enter Adhar");
+            area.innerHTML = "<p style='color:var(--neon-gold)'>Scanning...</p>";
             try {
-                const data = await smartFetch(targetUrl);
-                resultArea.innerHTML = "";
-                let resultsArray = [];
-                if (Array.isArray(data)) { resultsArray = data; }
-                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
-                else { resultsArray = [data]; }
+                // Fetch TEXT directly (Using Vercel Rewrite)
+                const res = await fetch(`/api/adhar/${val}`);
+                const rawText = await res.text();
+                
+                // Regex from Python logic
+                const match = rawText.match(/Results:\s*(\[.*\])/s);
+                let list = [];
 
-                if (!resultsArray || resultsArray.length === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return;
+                if (match && match[1]) {
+                    list = JSON.parse(match[1]);
+                } else {
+                    try { 
+                        const jsonData = JSON.parse(rawText);
+                        list = jsonData.results || (Array.isArray(jsonData) ? jsonData : [jsonData]);
+                    } catch(e) { throw new Error("Parse Fail"); }
                 }
 
-                resultsArray.forEach((item, index) => {
-                    if(!item) return;
-                    
-                    // FIXED: Defining Variables First
-                    const id = getVal(item, ["id", "ID", "uid"]);
-                    const name = getVal(item, ["name", "Name"]);
-                    const father = getVal(item, ["fname", "father", "guardian"]);
-                    const mobile = getVal(item, ["mobile", "phone"]);
-                    const address = getVal(item, ["address", "Address"]);
-                    const email = getVal(item, ["email", "mail"]);
-                    const alt = getVal(item, ["alt", "alt_mobile"]);
+                if(!list || list.length === 0) throw new Error("Empty");
+                area.innerHTML = "";
 
-                    const record = `
+                list.forEach(itm => {
+                    // YOUR ORDER & KEYS
+                    const id = getVal(itm, ["id", "ID", "uid"]);
+                    const name = getVal(itm, ["name", "Name"]);
+                    const father = getVal(itm, ["fname", "father", "guardian"]);
+                    const mobile = getVal(itm, ["mobile", "phone"]);
+                    const address = getVal(itm, ["address", "Address"]);
+                    const email = getVal(itm, ["email", "mail"]);
+                    const alt = getVal(itm, ["alt", "alt_mobile"]);
+
+                    const rec = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
 ├─ 🆔 𝗜𝗗: ${id}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
@@ -525,47 +274,48 @@
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-gold)";
-                    div.innerText = record.trim();
-                    resultArea.appendChild(div);
+                    div.innerText = rec.trim();
+                    area.appendChild(div);
                 });
-            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
         }
 
-        // --- 4. MAIL SEARCH (FIXED ORDER & DEFINITIONS) ---
+        // --- 4. MAIL SEARCH (FIXED: Regex + Lowercase Match) ---
         async function searchMail() {
-            const mail = document.getElementById('mailInput').value;
-            const resultArea = document.getElementById('result-area-mail');
-            if (!mail) { alert("Enter Email"); return; }
-            resultArea.innerHTML = "<p style='color:var(--neon-green)'>Scanning Email... 📧</p>";
-            const targetUrl = `https://bronx-mail-api.vercel.app/mail=${mail}`;
-
+            const val = document.getElementById('mailInput').value;
+            const area = document.getElementById('result-area-mail');
+            if(!val) return alert("Enter Email");
+            area.innerHTML = "<p style='color:var(--neon-green)'>Scanning...</p>";
             try {
-                const data = await smartFetch(targetUrl);
-                resultArea.innerHTML = "";
-                let resultsArray = [];
-                if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
-                else if (Array.isArray(data)) { resultsArray = data; }
-                else { resultsArray = [data]; }
-
-                if (!resultsArray || resultsArray.length === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return;
+                const res = await fetch(`/api/mail/${val}`);
+                const rawText = await res.text();
+                
+                let list = [];
+                // Try JSON first, then Regex
+                try {
+                    const jsonData = JSON.parse(rawText);
+                    list = jsonData.results || (Array.isArray(jsonData) ? jsonData : [jsonData]);
+                } catch(e) {
+                    const match = rawText.match(/Results:\s*(\[.*\])/s);
+                    if (match && match[1]) list = JSON.parse(match[1]);
                 }
 
-                resultsArray.forEach((item, index) => {
-                    if(!item) return;
-                    
-                    // FIXED: Defining Variables First
-                    const emailVal = getVal(item, ["email", "mail"]) || mail;
-                    const name = getVal(item, ["name", "Name"]);
-                    const father = getVal(item, ["fname", "father"]);
-                    const mobile = getVal(item, ["mobile", "phone"]);
-                    const id = getVal(item, ["id", "uid"]);
-                    const address = getVal(item, ["address", "Address"]);
-                    const alt = getVal(item, ["alt", "alt_mobile"]);
+                if(!list || list.length === 0) throw new Error("Empty");
+                area.innerHTML = "";
 
-                    const record = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
-├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${emailVal}
+                list.forEach((itm, i) => {
+                    // YOUR ORDER
+                    const email = getVal(itm, ["email", "mail"]) || val;
+                    const name = getVal(itm, ["name", "Name"]);
+                    const father = getVal(itm, ["fname", "father"]);
+                    const mobile = getVal(itm, ["mobile", "phone"]);
+                    const id = getVal(itm, ["id", "uid"]);
+                    const address = getVal(itm, ["address", "Address"]);
+                    const alt = getVal(itm, ["alt", "alt_mobile"]);
+
+                    const rec = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
 ├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
@@ -576,16 +326,15 @@
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-green)";
-                    div.style.color = "var(--neon-green)";
-                    div.innerText = record.trim();
-                    resultArea.appendChild(div);
+                    div.innerText = rec.trim();
+                    area.appendChild(div);
                 });
-            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
         }
 
-        function copyResult(areaId) {
-            const text = document.getElementById(areaId).innerText;
-            if(!text) { alert("Nothing to copy!"); return; }
+        function copyResult(id) {
+            const text = document.getElementById(id).innerText;
+            if(!text) return alert("Empty");
             navigator.clipboard.writeText(text).then(() => alert("Copied!"));
         }
     </script>
