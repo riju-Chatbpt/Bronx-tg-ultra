@@ -3,427 +3,572 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRONX INTEL SYSTEM</title>
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
-    
+    <title>Bronx Ultra Suite</title>
     <style>
-        /* --- 1. BACKGROUND STYLE (STRIPED LIKE PHOTO) --- */
+        /* --- CSS STYLING (SAME OP LOOK) --- */
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-red: #ff004c;
+            --neon-green: #00ff6a;
+            --neon-gold: #ffd700;
+            --dark-bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
+        
         body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            background-color: #000;
-            /* Creating the diagonal stripes */
-            background-image: repeating-linear-gradient(
-                45deg,
-                #000 0px,
-                #000 10px,
-                #111 10px,
-                #111 20px
-            );
+            background-color: var(--dark-bg);
             color: white;
-            font-family: 'Courier Prime', monospace;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: 
+                linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%);
+            background-size: 40px 40px;
         }
 
-        /* --- 2. CONTAINER (NEON BOX) --- */
+        /* --- CONTAINER CONTROL --- */
         .container {
-            width: 90%;
-            max-width: 380px;
-            background: rgba(0, 0, 0, 0.95);
+            display: none; /* Hidden by default */
+            width: 100%;
+            max-width: 400px;
             padding: 20px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- LOGIN PAGE --- */
+        #login-section {
+            display: block; /* Visible initially */
+            background: var(--glass);
+            padding: 40px;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px var(--neon-blue);
             border-radius: 15px;
-            text-align: center;
-            /* Cyan Neon Border like Screenshot 1 */
-            border: 2px solid cyan;
-            box-shadow: 0 0 25px cyan;
-            position: relative;
-            min-height: 550px;
         }
 
-        /* --- 3. TYPOGRAPHY --- */
-        h1 {
-            color: #ffdd00; /* Yellow Text */
-            text-shadow: 2px 2px 0px #000;
-            font-size: 24px;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 1px dashed #333;
-            padding-bottom: 10px;
-        }
-        
-        h2 { font-size: 18px; margin: 10px 0; text-transform: uppercase; }
-
-        /* --- 4. INPUTS (GREEN BORDER LIKE PHOTO) --- */
-        input {
-            width: 85%;
-            padding: 12px;
-            margin-bottom: 15px;
-            background: #000;
-            border: 2px solid #00ff00; /* Green Border */
-            color: white;
-            font-family: 'Courier Prime', monospace;
-            font-size: 16px;
-            text-align: center;
-            outline: none;
-            box-shadow: 0 0 5px #00ff00;
-        }
-        input::placeholder { color: #555; }
-
-        /* --- 5. BUTTONS --- */
-        
-        /* Login Button (Gradient Blue-Pink) */
-        .btn-login {
-            width: 95%;
-            padding: 12px;
-            background: linear-gradient(90deg, #00f2ff, #ff0055); /* Gradient */
-            border: none;
-            color: black;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 10px;
-            font-family: 'Courier Prime', monospace;
-            text-transform: uppercase;
-        }
-
-        /* Dashboard Buttons (Neon Outlines) */
-        .tool-btn {
-            width: 44%; /* 2 buttons per row */
-            padding: 15px 5px;
-            margin: 5px;
-            background: black;
-            color: white;
-            border: 2px solid;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-block;
-            vertical-align: top;
-            font-size: 11px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
-            transition: 0.2s;
-        }
-        .tool-btn:active { transform: scale(0.95); }
-
-        /* Colors matching Screenshot 2 */
-        .b-cyan { border-color: cyan; color: cyan; box-shadow: 0 0 8px cyan; }
-        .b-red { border-color: #ff0040; color: #ff0040; box-shadow: 0 0 8px #ff0040; }
-        .b-yellow { border-color: #ffdd00; color: #ffdd00; box-shadow: 0 0 8px #ffdd00; }
-        .b-green { border-color: #00ff00; color: #00ff00; box-shadow: 0 0 8px #00ff00; }
-
-        .btn-logout {
-            width: 90%;
+        /* --- MENU GRID --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
             margin-top: 20px;
-            padding: 10px;
-            border: 1px solid red;
-            background: transparent;
-            color: red;
-            cursor: pointer;
-            font-family: 'Courier Prime', monospace;
-            font-weight: bold;
         }
 
-        /* --- 6. RESULT BOX (TELEGRAM STYLE) --- */
-        .result-area {
-            margin-top: 15px;
-            text-align: left;
-            font-size: 12px;
-            color: #ddd;
-            background: #0a0a0a;
-            padding: 15px;
-            border: 1px dashed #555;
-            white-space: pre-wrap;
-            display: none;
-            max-height: 250px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            border-left: 3px solid cyan;
-        }
-        
-        .copy-btn {
-            background: gold;
-            color: black;
-            border: none;
-            padding: 8px;
-            margin-top: 10px;
+        .menu-btn {
+            background: rgba(0,0,0,0.6);
+            border: 2px solid var(--neon-blue);
+            color: white;
+            padding: 20px 10px;
+            border-radius: 10px;
             cursor: pointer;
-            width: 90%;
-            font-weight: bold;
-            display: none;
+            transition: 0.3s;
             text-transform: uppercase;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
         }
 
-        /* Page Management */
-        .page { display: none; }
-        .active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        /* Header Text in Dashboard */
-        .bronx-title {
-            font-size: 26px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 5px;
+        .menu-btn:hover { background: var(--neon-blue); color: black; box-shadow: 0 0 20px var(--neon-blue); }
+        .menu-btn.vehicle { border-color: var(--neon-red); box-shadow: 0 0 10px rgba(255, 0, 76, 0.2); }
+        .menu-btn.vehicle:hover { background: var(--neon-red); color: white; box-shadow: 0 0 20px var(--neon-red); }
+        .menu-btn.adhar { border-color: var(--neon-gold); box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
+        .menu-btn.adhar:hover { background: var(--neon-gold); color: black; box-shadow: 0 0 20px var(--neon-gold); }
+        .menu-btn.mail { border-color: var(--neon-green); box-shadow: 0 0 10px rgba(0, 255, 106, 0.2); }
+        .menu-btn.mail:hover { background: var(--neon-green); color: black; box-shadow: 0 0 20px var(--neon-green); }
+
+
+        .profile-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
         }
-        .text-blue { color: cyan; text-shadow: 0 0 10px cyan; }
-        .text-pink { color: #ff0055; text-shadow: 0 0 10px #ff0055; }
         
         .profile-pic {
-            width: 90px; height: 90px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
-            border: 3px solid cyan;
-            box-shadow: 0 0 20px cyan;
-            background: #222;
-            margin-bottom: 15px;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
             object-fit: cover;
+        }
+
+        h1 {
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 26px; 
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .subtitle { color: #ccc; font-size: 14px; margin-bottom: 30px; }
+
+        input {
+            width: 100%;
+            background: black;
+            border: 2px solid var(--neon-green);
+            color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            outline: none;
+            text-align: center;
+        }
+        input:focus { box-shadow: 0 0 15px var(--neon-green); }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            text-transform: uppercase;
+            color: black;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+        .btn-search { background: linear-gradient(90deg, var(--neon-blue), var(--neon-red)); }
+        .btn-copy { background: linear-gradient(90deg, var(--neon-green), var(--neon-gold)); }
+        .btn-back { background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); margin-top: 15px; }
+        .btn:active { transform: scale(0.98); }
+
+        .info-box {
+            border: 2px solid var(--neon-blue);
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0 0 10px var(--neon-blue);
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .info-highlight { color: var(--neon-red); font-weight: bold; }
+        .info-white { color: white; }
+
+        .result-area { text-align: left; margin-top: 20px; }
+
+        .result-card {
+            background: rgba(20, 20, 20, 0.95);
+            border-left: 4px solid var(--neon-gold);
+            padding: 15px;
+            margin-bottom: 15px;
+            font-family: monospace;
+            white-space: pre-wrap; 
+            color: var(--neon-green);
+            font-size: 13px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            overflow-x: hidden;
         }
     </style>
 </head>
-<body onload="init()">
+<body>
 
-<div class="container">
-
-    <div id="p-login" class="page active">
-        <br><br>
-        <h1>ACCESS CONTROL</h1>
-        <br>
-        <input type="text" id="usr" placeholder="USERNAME">
-        <input type="password" id="pwd" placeholder="PASSWORD">
-        <br><br>
-        <button class="btn-login" onclick="login()">LOGIN SYSTEM</button>
-        <p id="msg" style="color: red; font-size: 12px; margin-top: 15px; font-weight: bold;"></p>
+    <div id="login-section" class="container" style="display: block;">
+        <h2 style="color:var(--neon-gold); margin-bottom:20px;">ACCESS CONTROL</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button class="btn btn-search" onclick="handleLogin()">Login System</button>
+        <p id="login-error" style="color:var(--neon-red); margin-top:10px;"></p>
     </div>
 
-    <div id="p-dashboard" class="page">
-        <img src="https://i.ibb.co/hR5k5jT/profile.jpg" class="profile-pic" alt="IMG">
+    <div id="menu-section" class="container">
+        <div class="profile-container">
+            <img src="https://i.ibb.co/YTjW35Hs/file-000000007b0872069c1067c615adaa48.png" alt="Profile" class="profile-pic">
+        </div>
+        <h1>BRONX ULTRA</h1>
+        <div class="subtitle">CHOOSE YOUR TOOL</div>
+
+        <div class="menu-grid">
+            <div class="menu-btn" onclick="showSection('number-section')">📱<br>Number Info</div>
+            <div class="menu-btn vehicle" onclick="showSection('vehicle-section')">🏎️<br>Vehicle Info</div>
+            <div class="menu-btn adhar" onclick="showSection('adhar-section')">🆔<br>Adhar Info</div>
+            <div class="menu-btn mail" onclick="showSection('mail-section')">📧<br>Mail Info</div>
+        </div>
         
-        <div class="bronx-title">
-            <span class="text-blue">BRONX</span> <span class="text-pink">ULTRA</span>
+        <button onclick="logout()" class="btn btn-back">LOGOUT</button>
+    </div>
+
+    <div id="number-section" class="container">
+        <h1>NUMBER SEARCH</h1>
+        <div class="subtitle">@BRONX_ULTRA</div>
+        <div style="display: flex; gap: 5px;">
+            <input type="number" id="phoneInput" placeholder="Enter Phone Number" style="border-color: var(--neon-green);">
+            <button class="btn btn-search" onclick="searchNumber()" style="width: 40%; margin-bottom: 15px;">SEARCH</button>
         </div>
-        <p style="color: gray; font-size: 10px; margin-bottom: 25px;">CHOOSE YOUR INTELLIGENCE TOOL</p>
+        <div id="result-area-num" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY FULL RESULT</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
+    </div>
 
-        <div>
-            <button class="tool-btn b-cyan" onclick="nav('p-number')">
-                📱<br>NUMBER INFO
-            </button>
-            <button class="tool-btn b-red" onclick="nav('p-vehicle')">
-                🏎️<br>VEHICLE INFO
-            </button>
+    <div id="vehicle-section" class="container">
+        <h1 style="background: linear-gradient(to right, var(--neon-red), var(--neon-gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VEHICLE INFO</h1>
+        <div class="subtitle">RTO INTELLIGENCE</div>
+        <div style="display: flex; gap: 5px;">
+            <input type="text" id="vehicleInput" placeholder="Ex: HR12AQ4000" style="border-color: var(--neon-red); text-transform: uppercase;">
+            <button class="btn btn-search" onclick="searchVehicle()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-red), var(--neon-gold));">GO</button>
         </div>
-        <div>
-            <button class="tool-btn b-yellow" onclick="nav('p-adhar')">
-                🆔<br>ADHAR INFO
-            </button>
-            <button class="tool-btn b-green" onclick="nav('p-mail')">
-                📧<br>MAIL INFO
-            </button>
+        <div id="result-area-rc" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-rc')" style="background: linear-gradient(90deg, var(--neon-gold), var(--neon-red));">📋 COPY</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
+    </div>
+
+    <div id="adhar-section" class="container">
+        <h1 style="background: linear-gradient(to right, var(--neon-gold), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ADHAR INFO</h1>
+        <div class="subtitle">UIDAI INTELLIGENCE</div>
+        <div style="display: flex; gap: 5px;">
+            <input type="number" id="adharInput" placeholder="Enter Adhar Number" style="border-color: var(--neon-gold);">
+            <button class="btn btn-search" onclick="searchAdhar()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-gold), #fff);">GO</button>
         </div>
-
-        <button class="btn-logout" onclick="logout()">LOGOUT</button>
+        <div id="result-area-adhar" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-adhar')" style="background: linear-gradient(90deg, var(--neon-gold), #fff); color:black;">📋 COPY</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
     </div>
 
-    <div id="p-number" class="page">
-        <h2 style="color: cyan;">📱 NUMBER INFO</h2>
-        <p style="font-size:10px; color:#555;">SIM DATABASE V4</p>
-        <br>
-        <input type="number" id="inp-num" placeholder="Enter Mobile Number">
-        <button class="tool-btn b-cyan" style="width:90%" onclick="fetchData('num')">SEARCH DATA 🔍</button>
-        <div id="res-num" class="result-area" style="border-color: cyan;"></div>
-        <button id="cp-num" class="copy-btn" onclick="copy('res-num')">📋 COPY RESULT</button>
-        <br><br>
-        <button class="btn-logout" style="border-color:gray; color:gray;" onclick="nav('p-dashboard')">BACK</button>
+    <div id="mail-section" class="container">
+        <h1 style="background: linear-gradient(to right, var(--neon-green), var(--neon-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MAIL INFO</h1>
+        <div class="subtitle">EMAIL OSINT</div>
+        <div style="display: flex; gap: 5px;">
+            <input type="email" id="mailInput" placeholder="Enter Email" style="border-color: var(--neon-green);">
+            <button class="btn btn-search" onclick="searchMail()" style="width: 40%; margin-bottom: 15px; background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));">GO</button>
+        </div>
+        <div id="result-area-mail" class="result-area"></div>
+        <button class="btn btn-copy" onclick="copyResult('result-area-mail')" style="background: linear-gradient(90deg, var(--neon-green), var(--neon-blue)); color:black;">📋 COPY</button>
+        <button class="btn btn-back" onclick="showSection('menu-section')">🏠 HOME</button>
     </div>
 
-    <div id="p-vehicle" class="page">
-        <h2 style="color: #ff0040;">🏎️ VEHICLE INFO</h2>
-        <p style="font-size:10px; color:#555;">RTO DATABASE V2</p>
-        <br>
-        <input type="text" id="inp-veh" placeholder="Enter RC (HR12AQ4000)">
-        <button class="tool-btn b-red" style="width:90%" onclick="fetchData('veh')">SEARCH DATA 🔍</button>
-        <div id="res-veh" class="result-area" style="border-color: #ff0040;"></div>
-        <button id="cp-veh" class="copy-btn" onclick="copy('res-veh')">📋 COPY RESULT</button>
-        <br><br>
-        <button class="btn-logout" style="border-color:gray; color:gray;" onclick="nav('p-dashboard')">BACK</button>
-    </div>
+    <script>
+        // --- CONFIGURATION ---
+        const ACCESS_CONFIG = {
+            validUser: "admin",        
+            validPass: "rehan123",     
+            expiryDate: "2026-12-30"   
+        };
 
-    <div id="p-adhar" class="page">
-        <h2 style="color: #ffdd00;">🆔 ADHAR INFO</h2>
-        <p style="font-size:10px; color:#555;">UIDAI DATABASE</p>
-        <br>
-        <input type="number" id="inp-adh" placeholder="Enter Adhar Number">
-        <button class="tool-btn b-yellow" style="width:90%" onclick="fetchData('adh')">SEARCH DATA 🔍</button>
-        <div id="res-adh" class="result-area" style="border-color: #ffdd00;"></div>
-        <button id="cp-adh" class="copy-btn" onclick="copy('res-adh')">📋 COPY RESULT</button>
-        <br><br>
-        <button class="btn-logout" style="border-color:gray; color:gray;" onclick="nav('p-dashboard')">BACK</button>
-    </div>
-
-    <div id="p-mail" class="page">
-        <h2 style="color: #00ff00;">📧 MAIL INFO</h2>
-        <p style="font-size:10px; color:#555;">EMAIL OSINT</p>
-        <br>
-        <input type="email" id="inp-mail" placeholder="Enter Email Address">
-        <button class="tool-btn b-green" style="width:90%" onclick="fetchData('mail')">SEARCH DATA 🔍</button>
-        <div id="res-mail" class="result-area" style="border-color: #00ff00;"></div>
-        <button id="cp-mail" class="copy-btn" onclick="copy('res-mail')">📋 COPY RESULT</button>
-        <br><br>
-        <button class="btn-logout" style="border-color:gray; color:gray;" onclick="nav('p-dashboard')">BACK</button>
-    </div>
-
-</div>
-
-<script>
-    // --- USER SETTINGS ---
-    const CONFIG = {
-        user: "REHAN",
-        pass: "123",
-        expiry: "2026-12-30"
-    };
-
-    // --- HELPER TO PREVENT 'UNDEFINED' ---
-    function get(obj, keys) {
-        if (!obj) return "N/A";
-        for (let k of keys) {
-            if (obj[k] && obj[k] !== "null" && obj[k] !== "") return obj[k];
-        }
-        return "N/A";
-    }
-
-    // --- NAVIGATION ---
-    function init() {
-        if(localStorage.getItem("logged")) nav('p-dashboard');
-    }
-    function nav(id) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    // --- LOGIN ---
-    function login() {
-        const u = document.getElementById('usr').value;
-        const p = document.getElementById('pwd').value;
-        const msg = document.getElementById('msg');
-        
-        if (new Date() > new Date(CONFIG.expiry)) {
-            msg.innerText = "⛔ ACCOUNT EXPIRED!"; return;
-        }
-        if (u === CONFIG.user && p === CONFIG.pass) {
-            localStorage.setItem("logged", "true");
-            nav('p-dashboard');
-        } else {
-            msg.innerText = "❌ WRONG PASSWORD/USERNAME";
-        }
-    }
-    function logout() {
-        localStorage.clear();
-        location.reload();
-    }
-    function copy(id) {
-        const txt = document.getElementById(id).innerText;
-        navigator.clipboard.writeText(txt).then(() => alert("COPIED! ✅"));
-    }
-
-    // --- MAIN API HANDLER WITH PROXY FIX ---
-    async function fetchData(type) {
-        let targetUrl = "", inp = "", resBox, cpBtn;
-
-        if (type === 'num') {
-            inp = document.getElementById('inp-num').value;
-            resBox = document.getElementById('res-num');
-            cpBtn = document.getElementById('cp-num');
-            targetUrl = `https://bronx-api-sable.vercel.app/search?num=${inp}&key=bronx-api`;
-        } else if (type === 'veh') {
-            inp = document.getElementById('inp-veh').value;
-            resBox = document.getElementById('res-veh');
-            cpBtn = document.getElementById('cp-veh');
-            targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${inp}`;
-        } else if (type === 'adh') {
-            inp = document.getElementById('inp-adh').value;
-            resBox = document.getElementById('res-adh');
-            cpBtn = document.getElementById('cp-adh');
-            targetUrl = `https://bronx-adhar-api.vercel.app/aadhar=${inp}`;
-        } else if (type === 'mail') {
-            inp = document.getElementById('inp-mail').value;
-            resBox = document.getElementById('res-mail');
-            cpBtn = document.getElementById('cp-mail');
-            targetUrl = `https://bronx-mail-api.vercel.app/mail=${inp}`;
+        // --- NAVIGATION ---
+        function showSection(sectionId) {
+            document.querySelectorAll('.container').forEach(div => div.style.display = 'none');
+            document.getElementById(sectionId).style.display = 'block';
         }
 
-        if (!inp) { alert("Please enter input!"); return; }
+        // --- LOGIN LOGIC ---
+        function handleLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorMsg = document.getElementById('login-error');
+            const today = new Date();
+            const expiry = new Date(ACCESS_CONFIG.expiryDate);
 
-        resBox.style.display = "block";
-        resBox.innerText = "⏳ BYPASSING SERVER & FETCHING DATA...";
-        cpBtn.style.display = "none";
+            if (today > expiry) { errorMsg.innerText = "ACCESS EXPIRED. CONTACT ADMIN."; return; }
 
-        try {
-            // PROXY MAGIC: Isse Browser block nahi karega
-            // We use allorigins.win to bypass CORS
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-            
-            const req = await fetch(proxyUrl);
-            const responseWrap = await req.json();
-            
-            // The real data is inside .contents (string format)
-            if(!responseWrap.contents) throw new Error("Proxy Error");
-            const data = JSON.parse(responseWrap.contents);
-
-            let output = "";
-
-            if (type === 'num') {
-                output = `🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗\n` +
-                `├─ 👤 𝗡𝗮𝗺𝗲: ${get(data, ["name", "fullname", "consumer_name"])}\n` +
-                `├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${get(data, ["mobile", "phone"]) || inp}\n` +
-                `├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${get(data, ["fname", "father_name"])}\n` +
-                `├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${get(data, ["address", "location"])}\n` +
-                `├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${get(data, ["circle", "state"])}\n` +
-                `└─ 🆔 𝗜𝗗: ${get(data, ["id", "uid"])}\n━━━━━━━━━━━━━━━━━━━━`;
-            } 
-            else if (type === 'veh') {
-                if(data.status === "success" && data.details) {
-                    const d = data.details;
-                    output = `🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣\nTarget: ${inp}\n\n` +
-                    `👤 Owner: ${d["Owner Name"]}\n` +
-                    `🧑‍🦳 Father: ${d["Father's Name"]}\n` +
-                    `📱 Phone: ${d["Phone"]}\n` +
-                    `🚘 Car: ${d["Maker Model"]}\n` +
-                    `🗓️ Date: ${d["Registration Date"]}\n` +
-                    `🏛️ RTO: ${d["Registered RTO"]}\n━━━━━━━━━━━━━━━━━━━━`;
-                } else { throw new Error("No Vehicle Data"); }
+            if (user === ACCESS_CONFIG.validUser && pass === ACCESS_CONFIG.validPass) {
+                localStorage.setItem('isLoggedIn', 'true');
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('menu-section').style.display = 'block';
+            } else {
+                errorMsg.innerText = "INVALID CREDENTIALS";
             }
-            else if (type === 'adh') {
-                output = `🆔 𝗔𝗗𝗛𝗔𝗥 𝗜𝗡𝗙𝗢\n` +
-                `├─ 🆔 𝗜𝗗: ${get(data, ["id"]) || inp}\n` +
-                `├─ 👤 𝗡𝗮𝗺𝗲: ${get(data, ["name"])}\n` +
-                `├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${get(data, ["fname"])}\n` +
-                `├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${get(data, ["mobile"])}\n` +
-                `└─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${get(data, ["address"])}\n━━━━━━━━━━━━━━━━━━━━`;
+        }
+
+        window.onload = function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') { 
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('menu-section').style.display = 'block';
             }
-            else if (type === 'mail') {
-                // Handle Array or Object
-                let d = data;
-                if(data.results && data.results.length > 0) d = data.results[0];
+        }
+
+        function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
+
+        // --- VALUE CHECKER (Universal N/A Fixer) ---
+        function getVal(item, keys) {
+            if(!item) return "N/A";
+            for (let i = 0; i < keys.length; i++) {
+                let k = keys[i];
+                if (item[k] && item[k] !== "null" && item[k] !== "") { return item[k]; }
+            }
+            return "N/A"; 
+        }
+
+        // --- 3-LAYER ENGINE SYSTEM (Updated for Parsing) ---
+        async function smartFetch(url) {
+            const encodedUrl = encodeURIComponent(url);
+
+            // Engine 1: ThingProxy (Good for text)
+            const engine1 = `https://thingproxy.freeboard.io/fetch/${url}`;
+            // Engine 2: CorsProxy (Fastest)
+            const engine2 = `https://corsproxy.io/?${encodedUrl}`;
+            // Engine 3: AllOrigins (Reliable Backup)
+            const engine3 = `https://api.allorigins.win/get?url=${encodedUrl}`;
+
+            // Try Engine 1
+            try {
+                let res = await fetch(engine1);
+                if(res.ok) return await res.json();
+            } catch(e) { console.log("Engine 1 Failed"); }
+
+            // Try Engine 2
+            try {
+                let res = await fetch(engine2);
+                if(res.ok) return await res.json();
+            } catch(e) { console.log("Engine 2 Failed"); }
+
+            // Try Engine 3 (Includes Parsing Fix)
+            try {
+                let res = await fetch(engine3);
+                if(res.ok) {
+                    let data = await res.json();
+                    if(data.contents) return JSON.parse(data.contents); // FIX FOR ALLORIGINS
+                    return data;
+                }
+            } catch(e) { console.log("Engine 3 Failed"); }
+
+            throw new Error("All Servers Busy. Try again in 10 seconds.");
+        }
+
+        // --- 1. NUMBER SEARCH FUNCTION ---
+        async function searchNumber() {
+            const phone = document.getElementById('phoneInput').value;
+            const resultArea = document.getElementById('result-area-num');
+            
+            if (!phone) { alert("Please enter a number"); return; }
+            
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Database... 📡</p>";
+            const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=bronx-api`;
+
+            try {
+                const data = await smartFetch(targetUrl);
+                resultArea.innerHTML = ""; 
+
+                let resultsArray = [];
+                if (Array.isArray(data)) { resultsArray = data; }
+                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
+                else if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
+                else if (data.info && Array.isArray(data.info)) { resultsArray = data.info; }
+                else { resultsArray = [data]; }
+
+                if (!resultsArray || resultsArray.length === 0) {
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>";
+                     return;
+                }
+
+                resultsArray.forEach((item, index) => {
+                    if(!item) return; 
+
+                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
+                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
+                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
+                    const address = getVal(item, ["address", "city", "location", "Address"]);
+                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
+                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
+                    const email = getVal(item, ["email", "mail", "Email"]);
+
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
+├─ 🆔 𝗜𝗗: ${id}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
+                    `;
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.innerText = record.trim();
+                    resultArea.appendChild(div);
+                });
+
+            } catch (error) {
+                console.error(error);
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`;
+            }
+        }
+
+        // --- 2. VEHICLE SEARCH FUNCTION ---
+        async function searchVehicle() {
+            const rc = document.getElementById('vehicleInput').value.trim();
+            const resultArea = document.getElementById('result-area-rc');
+            
+            if (!rc) { alert("Enter Vehicle Number!"); return; }
+            
+            resultArea.innerHTML = "<p style='color:var(--neon-red)'>Connecting to RTO... 🏎️</p>";
+            const targetUrl = `https://bronx-rc-api.vercel.app/?rc_number=${rc}`;
+
+            try {
+                // Using same Smart Fetch so it handles proxy correctly
+                const data = await smartFetch(targetUrl);
+                resultArea.innerHTML = "";
+
+                if (data.status !== "success" || !data.details) {
+                    resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>";
+                    return;
+                }
+
+                const d = data.details;
+
+                // SPECIAL FIX: Using getVal with Exact Keys including spaces
+                const owner = getVal(d, ["Owner Name", "Owner", "owner_name"]);
+                const father = getVal(d, ["Father's Name", "Father Name", "father_name"]);
+                const phone = getVal(d, ["Phone", "Mobile", "mobile_no"]);
+                const address = getVal(d, ["Address", "Present Address"]);
+                const city = getVal(d, ["City Name", "city"]);
+                const serial = getVal(d, ["Owner Serial No", "Serial"]);
                 
-                output = `📧 𝗠𝗔𝗜𝗟 𝗜𝗡𝗙𝗢\n` +
-                `├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${get(d, ["email"]) || inp}\n` +
-                `├─ 👤 𝗡𝗮𝗺𝗲: ${get(d, ["name"])}\n` +
-                `├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${get(d, ["mobile"])}\n` +
-                `└─ 🆔 𝗜𝗗: ${get(d, ["id"])}\n━━━━━━━━━━━━━━━━━━━━`;
+                const maker = getVal(d, ["Maker Model", "Model"]);
+                const vClass = getVal(d, ["Vehicle Class", "Class"]);
+                const fuel = getVal(d, ["Fuel Type", "Fuel"]);
+                const regDate = getVal(d, ["Registration Date", "Reg Date"]);
+                const rto = getVal(d, ["Registered RTO", "RTO"]);
+
+                // Legal Keys
+                const insComp = getVal(d, ["Insurance Company"]);
+                const insUpto = getVal(d, ["Insurance Upto"]);
+                const pucUpto = getVal(d, ["PUC Upto"]);
+                const fitness = getVal(d, ["Fitness Upto"]);
+                const tax = getVal(d, ["Tax Upto"]);
+
+                const vipRecord = `
+◤━━━━━━━━━━━━━━━━━━━━◥
+      🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
+◢◤◢◤◢◤◢◤◢◤◢◤◢◤
+╔══════════════════════╗
+  🎯 Target RC: ${rc.toUpperCase()}
+╚══════════════════════╝
+
+ ⭐ OWNER DETAILS ⭐
+👤 Owner: ${owner}
+🧑‍🦳 Father: ${father}
+📱 Phone: ${phone}
+🏠 Address: ${address}
+📍 City: ${city}
+🔢 Serial: ${serial}
+
+ ⭐ VEHICLE SPECS ⭐
+🚘 Maker: ${maker}
+🚜 Class: ${vClass}
+⛽ Fuel: ${fuel}
+🗓️ Reg Date: ${regDate}
+🏛️ RTO: ${rto}
+
+ ⭐ LEGAL & VALIDITY ⭐
+🏥 Insurer: ${insComp}
+📅 Ins. Upto: ${insUpto}
+💨 PUC Upto: ${pucUpto}
+🛠️ Fitness: ${fitness}
+💸 Tax Upto: ${tax}
+━━━━━━━━━━━━━━━━━━━━
+                `;
+
+                const div = document.createElement('div');
+                div.className = 'result-card';
+                div.style.borderLeft = "4px solid var(--neon-red)"; 
+                div.style.color = "var(--neon-gold)"; 
+                div.innerText = vipRecord.trim();
+                resultArea.appendChild(div);
+
+            } catch (error) {
+                console.error(error);
+                resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.<br>${error.message}</p>`;
             }
-
-            resBox.innerText = output;
-            cpBtn.style.display = "block";
-
-        } catch (e) {
-            console.log(e);
-            resBox.innerText = "❌ FAILED: API is Down or Data Invalid.\nTechnical: " + e.message;
         }
-    }
-</script>
 
+        // --- 3. ADHAR SEARCH (New & Integrated) ---
+        async function searchAdhar() {
+            const num = document.getElementById('adharInput').value;
+            const resultArea = document.getElementById('result-area-adhar');
+            if (!num) { alert("Enter Adhar Number"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Scanning UIDAI... 🆔</p>";
+            const targetUrl = `https://bronx-adhar-api.vercel.app/aadhar=${num}`;
+
+            try {
+                const data = await smartFetch(targetUrl);
+                resultArea.innerHTML = "";
+                let resultsArray = [];
+                if (Array.isArray(data)) { resultsArray = data; }
+                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
+                else { resultsArray = [data]; }
+
+                if (!resultsArray || resultsArray.length === 0) {
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return;
+                }
+
+                resultsArray.forEach((item) => {
+                    if(!item) return;
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
+├─ 🆔 𝗜𝗗: ${getVal(item, ["id", "ID", "uid"])}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item, ["name", "Name"])}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item, ["fname", "father", "guardian"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "phone"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item, ["address", "Address"])}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item, ["email", "mail"])}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(item, ["alt", "alt_mobile"])}
+━━━━━━━━━━━━━━━━━━━━`;
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.style.borderLeft = "4px solid var(--neon-gold)";
+                    div.innerText = record.trim();
+                    resultArea.appendChild(div);
+                });
+            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+        }
+
+        // --- 4. MAIL SEARCH (New & Integrated) ---
+        async function searchMail() {
+            const mail = document.getElementById('mailInput').value;
+            const resultArea = document.getElementById('result-area-mail');
+            if (!mail) { alert("Enter Email"); return; }
+            resultArea.innerHTML = "<p style='color:var(--neon-green)'>Scanning Email... 📧</p>";
+            const targetUrl = `https://bronx-mail-api.vercel.app/mail=${mail}`;
+
+            try {
+                const data = await smartFetch(targetUrl);
+                resultArea.innerHTML = "";
+                let resultsArray = [];
+                // Check if result is inside "results" array (common in mail apis)
+                if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
+                else if (Array.isArray(data)) { resultsArray = data; }
+                else { resultsArray = [data]; }
+
+                if (!resultsArray || resultsArray.length === 0) {
+                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return;
+                }
+
+                resultsArray.forEach((item, index) => {
+                    if(!item) return;
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(item, ["email", "mail"]) || mail}
+├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(item, ["name", "Name"])}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(item, ["fname", "father"])}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(item, ["mobile", "phone"])}
+├─ 🆔 𝗜𝗗: ${getVal(item, ["id", "uid"])}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(item, ["address", "Address"])}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(item, ["alt", "alt_mobile"])}
+━━━━━━━━━━━━━━━━━━━━`;
+                    const div = document.createElement('div');
+                    div.className = 'result-card';
+                    div.style.borderLeft = "4px solid var(--neon-green)";
+                    div.style.color = "var(--neon-green)";
+                    div.innerText = record.trim();
+                    resultArea.appendChild(div);
+                });
+            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+        }
+
+        function copyResult(areaId) {
+            const text = document.getElementById(areaId).innerText;
+            if(!text) { alert("Nothing to copy!"); return; }
+            navigator.clipboard.writeText(text).then(() => alert("Copied!"));
+        }
+    </script>
 </body>
 </html>
