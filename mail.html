@@ -1,25 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mail Info</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mail Info VIP</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Special Gold Glow for Mail Page */
+        .container {
+            border-color: gold;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        h2 { text-shadow: 0 0 10px gold; }
+    </style>
 </head>
-<body onload="checkLogin()">
-    <div class="container" style="border-color: gold; box-shadow: 0 0 15px rgba(255,215,0,0.3);">
+<body onload="checkLogin()"> 
+    <div class="container">
         <h2 style="color: gold;">📧 MAIL INFO</h2>
-        <p style="color:gray; font-size:12px;">EMAIL OSINT SEARCH</p>
-        
-        <input type="text" id="inp" placeholder="Enter Email Address">
-        
-        <button id="sBtn" class="op-btn theme-gold" onclick="fetchMail()">SEARCH 🔍</button>
-        
-        <div id="resultArea" style="border-color: gold; color: gold;"></div>
-        
-        <button id="cpBtn" class="op-btn theme-blue" style="display:none; margin-top:10px;" onclick="copyText()">📋 COPY</button>
-        
-        <button class="op-btn" style="margin-top:20px; border:none; color: #555;" onclick="location.href='dashboard.html'">🔙 BACK</button>
+        <p style="color: #888; font-size: 12px; margin-bottom: 20px;">
+            OSINT EMAIL INTELLIGENCE
+        </p>
+
+        <input type="email" id="inp" placeholder="Enter Email (e.g. name@gmail.com)" 
+               style="border-color: gold; color: gold;">
+
+        <button id="sBtn" class="op-btn theme-gold" onclick="fetchMail()">
+            SEARCH DATABASE 🔍
+        </button>
+
+        <div id="resultArea" style="border-color: gold; color: #fff8dc;"></div>
+
+        <button id="cpBtn" class="op-btn theme-blue" style="display: none; margin-top: 15px;" onclick="copyText()">
+            📋 COPY RESULT
+        </button>
+
+        <br><br>
+        <button class="op-btn" style="background: transparent; border: 1px solid #333; color: #777;" 
+                onclick="location.href='dashboard.html'">
+            🔙 BACK TO MENU
+        </button>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
