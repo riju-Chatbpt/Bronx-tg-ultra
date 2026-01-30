@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Info</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkLogin()">
+    <div class="container" style="border-color: red; box-shadow: 0 0 15px rgba(255,0,0,0.3);">
+        <h2 style="color: red;">🏎️ VEHICLE INFO</h2>
+        <p style="color:gray; font-size:12px;">RTO DATABASE SEARCH</p>
+        
+        <input type="text" id="inp" placeholder="Enter RC (HR12AQ4000)">
+        
+        <button id="sBtn" class="op-btn theme-red" onclick="fetchVehicle()">SEARCH 🔍</button>
+        
+        <div id="resultArea" style="border-color: red; color: #ff9999;"></div>
+        
+        <button id="cpBtn" class="op-btn theme-gold" style="display:none; margin-top:10px;" onclick="copyText()">📋 COPY</button>
+        
+        <button class="op-btn" style="margin-top:20px; border:none; color: #555;" onclick="location.href='dashboard.html'">🔙 BACK</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
