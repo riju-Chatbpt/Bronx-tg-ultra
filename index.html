@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING --- */
+        /* --- CSS STYLING (SAME NEON LOOK) --- */
         :root { --neon-blue: #00f3ff; --neon-red: #ff004c; --neon-green: #00ff6a; --neon-gold: #ffd700; --dark-bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
         body { background-color: var(--dark-bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-image: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%); background-size: 40px 40px; }
@@ -60,7 +60,7 @@
     </div>
 
     <div id="number-section" class="container">
-        <h1>NUMBER SEARCH</h1><input type="number" id="phoneInput" placeholder="Enter Number">
+        <h1>NUMBER SEARCH</h1><input type="number" id="phoneInput" placeholder="Enter Phone Number">
         <button class="btn btn-search" onclick="searchNumber()">SEARCH</button>
         <div id="result-area-num" class="result-area"></div>
         <button class="btn btn-copy" onclick="copyResult('result-area-num')">📋 COPY FULL</button>
@@ -76,7 +76,7 @@
     </div>
 
     <div id="adhar-section" class="container">
-        <h1>ADHAR INFO</h1><input type="number" id="adharInput" placeholder="Adhar Number">
+        <h1>ADHAR INFO</h1><input type="number" id="adharInput" placeholder="Enter Adhar Number">
         <button class="btn btn-search" onclick="searchAdhar()">GO</button>
         <div id="result-area-adhar" class="result-area"></div>
         <button class="btn btn-copy" onclick="copyResult('result-area-adhar')">📋 COPY FULL</button>
@@ -119,12 +119,12 @@
             return "N/A";
         }
 
-        // --- SMART FETCH (4-LAYER PROXY) ---
+        // --- SMART FETCH (4-LAYER PROXY FOR NUMBER INFO) ---
         async function smartFetch(url) {
             const enc = encodeURIComponent(url);
             const engines = [
-                `https://corsproxy.io/?${enc}`,
                 `https://thingproxy.freeboard.io/fetch/${url}`,
+                `https://corsproxy.io/?${enc}`,
                 `https://api.allorigins.win/get?url=${enc}`,
                 `https://api.codetabs.com/v1/proxy?quest=${enc}`
             ];
@@ -138,136 +138,117 @@
                     }
                 } catch(e) { console.log(`Engine ${i} failed`); }
             }
-            throw new Error("All Servers Busy");
+            throw new Error("All Servers Busy. Try again.");
         }
 
-        // --- 1. NUMBER SEARCH (USING SMART FETCH + YOUR EXACT CODE) ---
+        // --- 1. NUMBER SEARCH (CLIENT-SIDE PROXY - 1000% WORKING) ---
         async function searchNumber() {
-            const phone = document.getElementById('phoneInput').value;
-            const resultArea = document.getElementById('result-area-num');
-            if (!phone) { alert("Please enter a number"); return; }
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Connecting to Database... 📡</p>";
-            
-            // DIRECT URL FOR SMARTFETCH (Not Vercel rewrite)
-            const targetUrl = `https://bronx-api-sable.vercel.app/search?num=${phone}&key=op`;
-
+            const val = document.getElementById('phoneInput').value;
+            const area = document.getElementById('result-area-num');
+            if(!val) return alert("Enter Number");
+            area.innerHTML = "<p style='color:var(--neon-gold)'>Connecting...</p>";
             try {
-                const data = await smartFetch(targetUrl);
-                resultArea.innerHTML = ""; 
-                let resultsArray = [];
-                if (Array.isArray(data)) { resultsArray = data; }
-                else if (data.data && Array.isArray(data.data)) { resultsArray = data.data; }
-                else if (data.results && Array.isArray(data.results)) { resultsArray = data.results; }
-                else if (data.info && Array.isArray(data.info)) { resultsArray = data.info; }
-                else { resultsArray = [data]; }
+                // YOUR WORKING LOGIC
+                const data = await smartFetch(`https://bronx-api-sable.vercel.app/search?num=${val}&key=bronx-api`);
+                area.innerHTML = "";
+                
+                let list = Array.isArray(data) ? data : (data.data ? [data.data] : [data]);
+                if(!list || list.length === 0) throw new Error("No Data");
 
-                if (!resultsArray || resultsArray.length === 0) {
-                     resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return;
-                }
+                list.forEach((itm, i) => {
+                    const name = getVal(itm, ["name", "fullname", "consumer_name", "Name"]);
+                    const mobile = getVal(itm, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(itm, ["mobile", "phone", "number", "Mobile"]) : val;
+                    const father = getVal(itm, ["fname", "father", "guardian", "father_name", "Father"]);
+                    const address = getVal(itm, ["address", "city", "location", "Address"]);
+                    const circle = getVal(itm, ["circle", "state", "region", "Circle"]);
+                    const id = getVal(itm, ["id", "uid", "consumer_id", "ID", "operator"]);
+                    const email = getVal(itm, ["email", "mail", "Email"]);
 
-                resultsArray.forEach((item, index) => {
-                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
-                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : phone;
-                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
-                    const address = getVal(item, ["address", "city", "location", "Address"]);
-                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
-                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
-                    const email = getVal(item, ["email", "mail", "Email"]);
-
-                    const record = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+                    const rec = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
 ├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
 ├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
 ├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
 ├─ 🆔 𝗜𝗗: ${id}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
-                    `;
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}`;
                     const div = document.createElement('div');
                     div.className = 'result-card';
-                    div.innerText = record.trim();
-                    resultArea.appendChild(div);
+                    div.innerText = rec.trim();
+                    area.appendChild(div);
                 });
-            } catch (error) {
-                console.error(error);
-                resultArea.innerHTML = `<p style='color:var(--neon-red)'>❌ Connection Error.<br>${error.message}</p>`;
-            }
+            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found (Try Again)</p>`; }
         }
 
-        // --- 2. VEHICLE SEARCH (VERCEL REWRITE) ---
+        // --- 2. VEHICLE SEARCH (SERVER-SIDE REWRITE) ---
         async function searchVehicle() {
-            const rc = document.getElementById('vehicleInput').value.trim();
-            const resultArea = document.getElementById('result-area-rc');
-            if (!rc) { alert("Enter Vehicle Number!"); return; }
-            resultArea.innerHTML = "<p style='color:var(--neon-red)'>Connecting to RTO... 🏎️</p>";
+            const val = document.getElementById('vehicleInput').value;
+            const area = document.getElementById('result-area-rc');
+            if(!val) return alert("Enter RC");
+            area.innerHTML = "<p style='color:var(--neon-red)'>Scanning...</p>";
             try {
-                // Uses Vercel Rewrite
-                const res = await fetch(`/api/vehicle?rc_number=${rc}`);
+                const res = await fetch(`/api/vehicle?rc_number=${val}`);
                 const data = await res.json();
-                resultArea.innerHTML = "";
-                if (data.status !== "success" || !data.details) { resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ Vehicle Not Found.</p>"; return; }
+                if(data.status !== "success") throw new Error("Not Found");
                 const d = data.details;
-                const owner = getVal(d, ["Owner Name", "Owner"]);
-                const father = getVal(d, ["Father's Name", "Father Name"]);
-                const phone = getVal(d, ["Phone", "Mobile"]);
-                const address = getVal(d, ["Address", "Present Address"]);
-                const city = getVal(d, ["City Name", "city"]);
-                const serial = getVal(d, ["Owner Serial No", "Serial"]);
-                const maker = getVal(d, ["Maker Model", "Model"]);
-                const vClass = getVal(d, ["Vehicle Class", "Class"]);
-                const fuel = getVal(d, ["Fuel Type", "Fuel"]);
-                const regDate = getVal(d, ["Registration Date", "Reg Date"]);
-                const rto = getVal(d, ["Registered RTO", "RTO"]);
+                
+                const owner = getVal(d, ["Owner Name"]);
+                const father = getVal(d, ["Father's Name"]);
+                const phone = getVal(d, ["Phone"]);
+                const address = getVal(d, ["Address"]);
+                const city = getVal(d, ["City Name"]);
+                const serial = getVal(d, ["Owner Serial No"]);
+                const maker = getVal(d, ["Maker Model"]);
+                const vClass = getVal(d, ["Vehicle Class"]);
+                const fuel = getVal(d, ["Fuel Type"]);
+                const regDate = getVal(d, ["Registration Date"]);
+                const rto = getVal(d, ["Registered RTO"]);
                 const insComp = getVal(d, ["Insurance Company"]);
                 const insUpto = getVal(d, ["Insurance Upto"]);
                 const pucUpto = getVal(d, ["PUC Upto"]);
                 const fitness = getVal(d, ["Fitness Upto"]);
                 const tax = getVal(d, ["Tax Upto"]);
-                const vipRecord = `
+
+                const rec = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
       🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
 ◢◤◢◤◢◤◢◤◢◤◢◤◢◤
 ╔══════════════════════╗
-  🎯 Target RC: ${rc.toUpperCase()}
+  🎯 Target RC: ${val.toUpperCase()}
 ╚══════════════════════╝
- ⭐ OWNER DETAILS ⭐
+ ⭐ OWNER DETAILS ⭐
 👤 Owner: ${owner}
 🧑‍🦳 Father: ${father}
 📱 Phone: ${phone}
 🏠 Address: ${address}
 📍 City: ${city}
 🔢 Serial: ${serial}
- ⭐ VEHICLE SPECS ⭐
+ ⭐ VEHICLE SPECS ⭐
 🚘 Maker: ${maker}
 🚜 Class: ${vClass}
 ⛽ Fuel: ${fuel}
 🗓️ Reg Date: ${regDate}
 🏛️ RTO: ${rto}
- ⭐ LEGAL & VALIDITY ⭐
+ ⭐ LEGAL & VALIDITY ⭐
 🏥 Insurer: ${insComp}
 📅 Ins. Upto: ${insUpto}
 💨 PUC Upto: ${pucUpto}
 🛠️ Fitness: ${fitness}
 💸 Tax Upto: ${tax}
 ━━━━━━━━━━━━━━━━━━━━`;
-                const div = document.createElement('div');
-                div.className = 'result-card';
-                div.style.borderLeft = "4px solid var(--neon-red)"; div.style.color = "var(--neon-gold)";
-                div.innerText = vipRecord.trim();
-                resultArea.appendChild(div);
-            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Server Error. Try Again.<br>${error.message}</p>`; }
+                area.innerHTML = `<div class="result-card" style="border-left:4px solid var(--neon-red);color:var(--neon-gold)">${rec}</div>`;
+            } catch(e) { area.innerHTML = `<p style='color:red'>Vehicle Not Found</p>`; }
         }
 
-        // --- 3. ADHAR SEARCH (VERCEL REWRITE) ---
+        // --- 3. ADHAR SEARCH (SERVER REWRITE + PYTHON REGEX) ---
         async function searchAdhar() {
-            const num = document.getElementById('adharInput').value;
-            const resultArea = document.getElementById('result-area-adhar');
-            if (!num) { alert("Enter Adhar Number"); return; }
-            resultArea.innerHTML = "<p style='color:var(--neon-gold)'>Scanning UIDAI... 🆔</p>";
+            const val = document.getElementById('adharInput').value;
+            const area = document.getElementById('result-area-adhar');
+            if(!val) return alert("Enter Adhar");
+            area.innerHTML = "<p style='color:var(--neon-gold)'>Scanning...</p>";
             try {
-                // Uses Vercel Rewrite + Text Parsing
-                const res = await fetch(`/api/adhar/${num}`);
+                const res = await fetch(`/api/adhar/${val}`);
                 const rawText = await res.text();
                 
                 const match = rawText.match(/Results:\s*(\[.*\])/s);
@@ -275,8 +256,8 @@
                 if (match && match[1]) { list = JSON.parse(match[1]); } 
                 else { try { const j = JSON.parse(rawText); list = j.results || [j]; } catch(e){} }
 
-                if(!list || list.length === 0) { resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return; }
-                resultArea.innerHTML = "";
+                if(!list || list.length === 0) throw new Error("Empty");
+                area.innerHTML = "";
 
                 list.forEach(item => {
                     const id = getVal(item, ["id", "ID", "uid"]);
@@ -286,7 +267,8 @@
                     const address = getVal(item, ["address", "Address"]);
                     const email = getVal(item, ["email", "mail"]);
                     const alt = getVal(item, ["alt", "alt_mobile"]);
-                    const record = `
+
+                    const rec = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
 ├─ 🆔 𝗜𝗗: ${id}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
@@ -299,21 +281,20 @@
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-gold)";
-                    div.innerText = record.trim();
-                    resultArea.appendChild(div);
+                    div.innerText = rec.trim();
+                    area.appendChild(div);
                 });
-            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
         }
 
-        // --- 4. MAIL SEARCH (VERCEL REWRITE) ---
+        // --- 4. MAIL SEARCH (SERVER REWRITE + PYTHON REGEX) ---
         async function searchMail() {
-            const mail = document.getElementById('mailInput').value;
-            const resultArea = document.getElementById('result-area-mail');
-            if (!mail) { alert("Enter Email"); return; }
-            resultArea.innerHTML = "<p style='color:var(--neon-green)'>Scanning Email... 📧</p>";
+            const val = document.getElementById('mailInput').value;
+            const area = document.getElementById('result-area-mail');
+            if(!val) return alert("Enter Email");
+            area.innerHTML = "<p style='color:var(--neon-green)'>Scanning...</p>";
             try {
-                // Uses Vercel Rewrite + Text Parsing
-                const res = await fetch(`/api/mail/${mail}`);
+                const res = await fetch(`/api/mail/${val}`);
                 const rawText = await res.text();
                 
                 let list = [];
@@ -325,18 +306,19 @@
                     if (match && match[1]) list = JSON.parse(match[1]);
                 }
 
-                if(!list || list.length === 0) { resultArea.innerHTML = "<p style='color:var(--neon-red)'>❌ No Data Found.</p>"; return; }
-                resultArea.innerHTML = "";
+                if(!list || list.length === 0) throw new Error("Empty");
+                area.innerHTML = "";
 
                 list.forEach((item, index) => {
-                    const email = getVal(item, ["email", "mail"]) || mail;
+                    const email = getVal(item, ["email", "mail"]) || val;
                     const name = getVal(item, ["name", "Name"]);
                     const father = getVal(item, ["fname", "father"]);
                     const mobile = getVal(item, ["mobile", "phone"]);
                     const id = getVal(item, ["id", "uid"]);
                     const address = getVal(item, ["address", "Address"]);
                     const alt = getVal(item, ["alt", "alt_mobile"]);
-                    const record = `
+
+                    const rec = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
 ├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
@@ -348,16 +330,16 @@
 ━━━━━━━━━━━━━━━━━━━━`;
                     const div = document.createElement('div');
                     div.className = 'result-card';
-                    div.style.borderLeft = "4px solid var(--neon-green)"; div.style.color = "var(--neon-green)";
-                    div.innerText = record.trim();
-                    resultArea.appendChild(div);
+                    div.style.borderLeft = "4px solid var(--neon-green)";
+                    div.innerText = rec.trim();
+                    area.appendChild(div);
                 });
-            } catch (error) { resultArea.innerHTML = `<p style='color:var(--neon-red)'>Error: ${error.message}</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
         }
 
         function copyResult(id) {
             const text = document.getElementById(id).innerText;
-            if(!text) { alert("Nothing to copy!"); return; }
+            if(!text) return alert("Empty");
             navigator.clipboard.writeText(text).then(() => alert("Copied!"));
         }
     </script>
