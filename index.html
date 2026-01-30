@@ -140,7 +140,7 @@
             area.innerHTML = "<p style='color:var(--neon-gold)'>Connecting...</p>";
             try {
                 // FIXED: Direct params for Vercel (No Proxy Needed)
-                const res = await fetch(`/api/number?num=${val}&key=op`);
+                const res = await fetch(`/api/number?num=${val}`);
                 const data = await res.json();
                 area.innerHTML = "";
                 
