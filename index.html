@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING (SAME OP LOOK) --- */
+        /* --- CSS STYLING --- */
         :root { --neon-blue: #00f3ff; --neon-red: #ff004c; --neon-green: #00ff6a; --neon-gold: #ffd700; --dark-bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
         body { background-color: var(--dark-bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-image: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%); background-size: 40px 40px; }
@@ -38,7 +38,7 @@
 </head>
 <body>
 
-    <div id="login-section" class="container" style="display: block;">
+    <div id="login-section" class="container">
         <h2 style="color:var(--neon-gold); margin-bottom:20px;">ACCESS CONTROL</h2>
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
@@ -120,7 +120,6 @@
             if(!val) return alert("Enter Number");
             area.innerHTML = "<p style='color:var(--neon-gold)'>Connecting...</p>";
             try {
-                // Uses Vercel Rewrite
                 const res = await fetch(`/api/number?num=${val}&key=bronx-api`);
                 const data = await res.json();
                 area.innerHTML = "";
@@ -128,19 +127,29 @@
                 
                 if(!list || list.length === 0) throw new Error("No Data");
 
-                list.forEach((itm, i) => {
-                    const rec = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, ["name", "fullname", "consumer_name", "Name"])}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, ["mobile", "phone", "number"]) || val}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, ["fname", "father", "guardian", "father_name"])}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, ["address", "city", "location"])}
-├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${getVal(itm, ["circle", "state", "region"])}
-├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "uid", "consumer_id"])}
-└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, ["email", "mail"])}`;
+                list.forEach((item, index) => {
+                    // YOUR EXACT STRUCTURE
+                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
+                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : val;
+                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
+                    const address = getVal(item, ["address", "city", "location", "Address"]);
+                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
+                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
+                    const email = getVal(item, ["email", "mail", "Email"]);
+
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+├─ 🌍 𝗖𝗶𝗿𝗰𝗹𝗲: ${circle}
+├─ 🆔 𝗜𝗗: ${id}
+└─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
+                    `;
                     const div = document.createElement('div');
                     div.className = 'result-card';
-                    div.innerText = rec.trim();
+                    div.innerText = record.trim();
                     area.appendChild(div);
                 });
             } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
@@ -155,126 +164,160 @@
             try {
                 const res = await fetch(`/api/vehicle?rc_number=${val}`);
                 const data = await res.json();
-                
                 if(data.status !== "success") throw new Error("Not Found");
                 const d = data.details;
                 
-                const rec = `
+                // YOUR EXACT STRUCTURE
+                const owner = getVal(d, ["Owner Name", "Owner", "owner_name"]);
+                const father = getVal(d, ["Father's Name", "Father Name", "father_name"]);
+                const phone = getVal(d, ["Phone", "Mobile", "mobile_no"]);
+                const address = getVal(d, ["Address", "Present Address"]);
+                const city = getVal(d, ["City Name", "city"]);
+                const serial = getVal(d, ["Owner Serial No", "Serial"]);
+                const maker = getVal(d, ["Maker Model", "Model"]);
+                const vClass = getVal(d, ["Vehicle Class", "Class"]);
+                const fuel = getVal(d, ["Fuel Type", "Fuel"]);
+                const regDate = getVal(d, ["Registration Date", "Reg Date"]);
+                const rto = getVal(d, ["Registered RTO", "RTO"]);
+                const insComp = getVal(d, ["Insurance Company"]);
+                const insUpto = getVal(d, ["Insurance Upto"]);
+                const pucUpto = getVal(d, ["PUC Upto"]);
+                const fitness = getVal(d, ["Fitness Upto"]);
+                const tax = getVal(d, ["Tax Upto"]);
+
+                const vipRecord = `
 ◤━━━━━━━━━━━━━━━━━━━━◥
       🏎️ 𝗩𝗘𝗛𝗜𝗖𝗟𝗘 𝗜𝗡𝗙𝗢 𝗩𝗜𝗣 ⚡
 ◢◤◢◤◢◤◢◤◢◤◢◤◢◤
 ╔══════════════════════╗
   🎯 Target RC: ${val.toUpperCase()}
 ╚══════════════════════╝
- ⭐ OWNER DETAILS ⭐
-👤 Owner: ${getVal(d["Owner Name"])}
-🧑‍🦳 Father: ${getVal(d["Father's Name"])}
-📱 Phone: ${getVal(d["Phone"])}
-🏠 Address: ${getVal(d["Address"])}
-📍 City: ${getVal(d["City Name"])}
-🔢 Serial: ${getVal(d["Owner Serial No"])}
- ⭐ VEHICLE SPECS ⭐
-🚘 Maker: ${getVal(d["Maker Model"])}
-🚜 Class: ${getVal(d["Vehicle Class"])}
-⛽ Fuel: ${getVal(d["Fuel Type"])}
-🗓️ Reg Date: ${getVal(d["Registration Date"])}
-🏛️ RTO: ${getVal(d["Registered RTO"])}
- ⭐ LEGAL & VALIDITY ⭐
-🏥 Insurer: ${getVal(d["Insurance Company"])}
-📅 Ins. Upto: ${getVal(d["Insurance Upto"])}
-💨 PUC Upto: ${getVal(d["PUC Upto"])}
-🛠️ Fitness: ${getVal(d["Fitness Upto"])}
-💸 Tax Upto: ${getVal(d["Tax Upto"])}
+
+ ⭐ OWNER DETAILS ⭐
+👤 Owner: ${owner}
+🧑‍🦳 Father: ${father}
+📱 Phone: ${phone}
+🏠 Address: ${address}
+📍 City: ${city}
+🔢 Serial: ${serial}
+
+ ⭐ VEHICLE SPECS ⭐
+🚘 Maker: ${maker}
+🚜 Class: ${vClass}
+⛽ Fuel: ${fuel}
+🗓️ Reg Date: ${regDate}
+🏛️ RTO: ${rto}
+
+ ⭐ LEGAL & VALIDITY ⭐
+🏥 Insurer: ${insComp}
+📅 Ins. Upto: ${insUpto}
+💨 PUC Upto: ${pucUpto}
+🛠️ Fitness: ${fitness}
+💸 Tax Upto: ${tax}
 ━━━━━━━━━━━━━━━━━━━━`;
-                area.innerHTML = `<div class="result-card" style="border-left:4px solid var(--neon-red);color:var(--neon-gold)">${rec}</div>`;
+                
+                const div = document.createElement('div');
+                div.className = 'result-card';
+                div.style.borderLeft = "4px solid var(--neon-red)";
+                div.style.color = "var(--neon-gold)";
+                div.innerText = vipRecord.trim();
+                area.appendChild(div);
             } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
         }
 
-        // --- 3. ADHAR SEARCH (PYTHON LOGIC APPLIED) ---
+        // --- 3. ADHAR SEARCH ---
         async function searchAdhar() {
             const val = document.getElementById('adharInput').value;
             const area = document.getElementById('result-area-adhar');
             if(!val) return alert("Enter Adhar");
             area.innerHTML = "<p style='color:var(--neon-gold)'>Scanning...</p>";
             try {
-                // Using Vercel Rewrite to fetch DATA
-                const res = await fetch(`/api/adhar/aadhar=${val}`);
-                
-                // PYTHON LOGIC: Handle text response if JSON fails
+                const res = await fetch(`/api/adhar/${val}`);
                 const rawText = await res.text();
+                
+                const match = rawText.match(/Results:\s*(\[.*\])/s);
                 let list = [];
-
-                try {
-                    const jsonData = JSON.parse(rawText);
-                    list = jsonData.results || (Array.isArray(jsonData) ? jsonData : [jsonData]);
-                } catch(e) {
-                    // Fallback: Regex Search (Like Python)
-                    const match = rawText.match(/Results:\s*(\[.*\])/s);
-                    if (match && match[1]) {
-                        list = JSON.parse(match[1]);
-                    }
-                }
+                if (match && match[1]) list = JSON.parse(match[1]);
+                else { try { const j = JSON.parse(rawText); list = j.results || [j]; } catch(e){} }
 
                 if(!list || list.length === 0) throw new Error("Empty");
-                
                 area.innerHTML = "";
-                list.forEach(itm => {
-                    const rec = `
+
+                list.forEach((item) => {
+                    // YOUR EXACT STRUCTURE
+                    const id = getVal(item, ["id", "ID", "uid"]);
+                    const name = getVal(item, ["name", "Name"]);
+                    const father = getVal(item, ["fname", "father", "guardian"]);
+                    const mobile = getVal(item, ["mobile", "phone"]);
+                    const address = getVal(item, ["address", "Address"]);
+                    const email = getVal(item, ["email", "mail"]);
+                    const alt = getVal(item, ["alt", "alt_mobile"]);
+
+                    const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
-├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "ID"])}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, ["name", "Name"])}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, ["fname", "father"])}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, ["mobile", "phone"])}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, ["address", "Address"])}
-├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, ["email", "mail"])}
-└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(itm, ["alt", "alt_mobile"])}
+├─ 🆔 𝗜𝗗: ${id}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${alt}
 ━━━━━━━━━━━━━━━━━━━━`;
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-gold)";
-                    div.innerText = rec.trim();
+                    div.innerText = record.trim();
                     area.appendChild(div);
                 });
             } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
         }
 
-        // --- 4. MAIL SEARCH (PYTHON LOGIC APPLIED) ---
+        // --- 4. MAIL SEARCH ---
         async function searchMail() {
             const val = document.getElementById('mailInput').value;
             const area = document.getElementById('result-area-mail');
             if(!val) return alert("Enter Email");
             area.innerHTML = "<p style='color:var(--neon-green)'>Scanning...</p>";
             try {
-                const res = await fetch(`/api/mail/mail=${val}`);
+                const res = await fetch(`/api/mail/${val}`);
                 const rawText = await res.text();
                 
                 let list = [];
                 try {
-                    const jsonData = JSON.parse(rawText);
-                    list = jsonData.results || (Array.isArray(jsonData) ? jsonData : [jsonData]);
+                    const j = JSON.parse(rawText);
+                    list = j.results || (Array.isArray(j) ? j : [j]);
                 } catch(e) {
                     const match = rawText.match(/Results:\s*(\[.*\])/s);
                     if (match && match[1]) list = JSON.parse(match[1]);
                 }
 
                 if(!list || list.length === 0) throw new Error("Empty");
-
                 area.innerHTML = "";
-                list.forEach(itm => {
-                    const rec = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗
-├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${getVal(itm, ["email", "mail"])}
-├─ 👤 𝗡𝗮𝗺𝗲: ${getVal(itm, ["name", "Name"])}
-├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${getVal(itm, ["fname", "father"])}
-├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${getVal(itm, ["mobile", "phone"])}
-├─ 🆔 𝗜𝗗: ${getVal(itm, ["id", "uid"])}
-├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${getVal(itm, ["address", "Address"])}
-└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${getVal(itm, ["alt", "alt_mobile"])}
+
+                list.forEach((item, index) => {
+                    // YOUR EXACT STRUCTURE
+                    const email = getVal(item, ["email", "mail"]) || val;
+                    const name = getVal(item, ["name", "Name"]);
+                    const father = getVal(item, ["fname", "father"]);
+                    const mobile = getVal(item, ["mobile", "phone"]);
+                    const id = getVal(item, ["id", "uid"]);
+                    const address = getVal(item, ["address", "Address"]);
+                    const alt = getVal(item, ["alt", "alt_mobile"]);
+
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
+├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
+├─ 👤 𝗡𝗮𝗺𝗲: ${name}
+├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
+├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
+├─ 🆔 𝗜𝗗: ${id}
+├─ 🏠 𝗔𝗱𝗱𝗿𝗲𝘀𝘀: ${address}
+└─ 🔄 𝗔𝗹𝘁 𝗡𝘂𝗺: ${alt}
 ━━━━━━━━━━━━━━━━━━━━`;
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-green)";
-                    div.innerText = rec.trim();
+                    div.innerText = record.trim();
                     area.appendChild(div);
                 });
             } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
