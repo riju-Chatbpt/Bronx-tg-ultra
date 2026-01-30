@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adhar Info</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkLogin()">
+    <div class="container" style="border-color: lime; box-shadow: 0 0 15px rgba(0,255,0,0.3);">
+        <h2 style="color: lime;">🆔 ADHAR INFO</h2>
+        <p style="color:gray; font-size:12px;">UIDAI SEARCH</p>
+        
+        <input type="number" id="inp" placeholder="Enter Adhar Number">
+        
+        <button id="sBtn" class="op-btn theme-green" onclick="fetchAdhar()">SEARCH 🔍</button>
+        
+        <div id="resultArea" style="border-color: lime; color: lime;"></div>
+        
+        <button id="cpBtn" class="op-btn theme-gold" style="display:none; margin-top:10px;" onclick="copyText()">📋 COPY</button>
+        
+        <button class="op-btn" style="margin-top:20px; border:none; color: #555;" onclick="location.href='dashboard.html'">🔙 BACK</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
