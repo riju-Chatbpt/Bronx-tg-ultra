@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bronx Ultra Suite</title>
     <style>
-        /* --- CSS STYLING (THEME: NEON DARK) --- */
+        /* --- CSS STYLING (UNCHANGED) --- */
         :root { --neon-blue: #00f3ff; --neon-red: #ff004c; --neon-green: #00ff6a; --neon-gold: #ffd700; --dark-bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
         body { background-color: var(--dark-bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; background-image: linear-gradient(45deg, #000000 25%, #1a1a1a 25%, #1a1a1a 50%, #000000 50%, #000000 75%, #1a1a1a 75%, #1a1a1a 100%); background-size: 40px 40px; }
@@ -38,7 +38,7 @@
 </head>
 <body>
 
-    <div id="login-section" class="container">
+    <div id="login-section" class="container" style="display: block;">
         <h2 style="color:var(--neon-gold); margin-bottom:20px;">ACCESS CONTROL</h2>
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
@@ -104,15 +104,14 @@
         window.onload = () => { if(localStorage.getItem('isLoggedIn')==='true') showSection('menu-section'); };
         function logout() { localStorage.removeItem('isLoggedIn'); location.reload(); }
 
-        // --- SUPER VALUE EXTRACTOR ---
+        // --- SUPER VALUE EXTRACTOR (Fixes N/A) ---
         function getVal(item, keys) {
             if (!item) return "N/A";
-            if (!Array.isArray(keys)) keys = [keys];
             // Check Exact Match
             for (let k of keys) {
                 if (item[k] && item[k] !== "null" && item[k] !== "") return item[k];
             }
-            // Check Lowercase Match (Fix for N/A issues)
+            // Check Lowercase Match
             let lowerKeys = Object.keys(item).map(k => k.toLowerCase());
             let lowerValues = Object.values(item);
             for (let k of keys) {
@@ -124,38 +123,37 @@
             return "N/A";
         }
 
-        // --- 1. NUMBER SEARCH (FIXED) ---
+        // --- 1. NUMBER SEARCH (FIXED: Handles Query Param) ---
         async function searchNumber() {
             const val = document.getElementById('phoneInput').value;
             const area = document.getElementById('result-area-num');
             if(!val) return alert("Enter Number");
             area.innerHTML = "<p style='color:var(--neon-gold)'>Connecting...</p>";
             try {
-                // IMPORTANT: Using ?num= in the rewrite path
+                // FIXED: Direct params for Vercel
                 const res = await fetch(`/api/number?num=${val}&key=bronx-api`);
                 const data = await res.json();
                 area.innerHTML = "";
                 
-                // Handle different array structures
                 let list = [];
                 if (Array.isArray(data)) list = data;
                 else if (data.data) list = Array.isArray(data.data) ? data.data : [data.data];
                 else list = [data];
 
-                if(list.length === 0 || !list[0]) throw new Error("No Data");
+                if(list.length === 0) throw new Error("No Data");
 
-                list.forEach((itm, i) => {
-                    // EXACT KEYS YOU GAVE
-                    const name = getVal(itm, ["name", "fullname", "consumer_name", "Name"]);
-                    const mobile = getVal(itm, ["mobile", "phone", "number", "Mobile"]) || val;
-                    const father = getVal(itm, ["fname", "father", "guardian", "father_name", "Father"]);
-                    const address = getVal(itm, ["address", "city", "location", "Address"]);
-                    const circle = getVal(itm, ["circle", "state", "region", "Circle"]);
-                    const id = getVal(itm, ["id", "uid", "consumer_id", "ID", "operator"]);
-                    const email = getVal(itm, ["email", "mail", "Email"]);
+                list.forEach((item, index) => {
+                    // YOUR STRUCTURE
+                    const name = getVal(item, ["name", "fullname", "consumer_name", "Name"]);
+                    const mobile = getVal(item, ["mobile", "phone", "number", "Mobile"]) !== "N/A" ? getVal(item, ["mobile", "phone", "number", "Mobile"]) : val;
+                    const father = getVal(item, ["fname", "father", "guardian", "father_name", "Father"]);
+                    const address = getVal(item, ["address", "city", "location", "Address"]);
+                    const circle = getVal(item, ["circle", "state", "region", "Circle"]);
+                    const id = getVal(item, ["id", "uid", "consumer_id", "ID", "operator"]);
+                    const email = getVal(item, ["email", "mail", "Email"]);
 
-                    const rec = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
 ├─ 📱 𝗠𝗼𝗯𝗶𝗹𝗲: ${mobile}
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
@@ -165,10 +163,10 @@
 └─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}`;
                     const div = document.createElement('div');
                     div.className = 'result-card';
-                    div.innerText = rec.trim();
+                    div.innerText = record.trim();
                     area.appendChild(div);
                 });
-            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found or Server Error</p>`; }
         }
 
         // --- 2. VEHICLE SEARCH (ALREADY WORKING) ---
@@ -228,17 +226,18 @@
 💸 Tax Upto: ${tax}
 ━━━━━━━━━━━━━━━━━━━━`;
                 area.innerHTML = `<div class="result-card" style="border-left:4px solid var(--neon-red);color:var(--neon-gold)">${rec}</div>`;
-            } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
+            } catch(e) { area.innerHTML = `<p style='color:red'>Vehicle Not Found</p>`; }
         }
 
-        // --- 3. ADHAR SEARCH (ALREADY WORKING) ---
+        // --- 3. ADHAR SEARCH (WORKING) ---
         async function searchAdhar() {
             const val = document.getElementById('adharInput').value;
             const area = document.getElementById('result-area-adhar');
             if(!val) return alert("Enter Adhar");
             area.innerHTML = "<p style='color:var(--neon-gold)'>Scanning...</p>";
             try {
-                const res = await fetch(`/api/adhar/aadhar=${val}`);
+                // FIXED: Fetch using /api/adhar/NUM (Vercel rewrite handles rest)
+                const res = await fetch(`/api/adhar/${val}`);
                 const rawText = await res.text();
                 
                 const match = rawText.match(/Results:\s*(\[.*\])/s);
@@ -249,17 +248,16 @@
                 if(!list || list.length === 0) throw new Error("Empty");
                 area.innerHTML = "";
 
-                list.forEach(itm => {
-                    // YOUR EXACT KEYS
-                    const id = getVal(itm, ["id", "ID", "uid"]);
-                    const name = getVal(itm, ["name", "Name"]);
-                    const father = getVal(itm, ["fname", "father", "guardian"]);
-                    const mobile = getVal(itm, ["mobile", "phone"]);
-                    const address = getVal(itm, ["address", "Address"]);
-                    const email = getVal(itm, ["email", "mail"]);
-                    const alt = getVal(itm, ["alt", "alt_mobile"]);
+                list.forEach(item => {
+                    const id = getVal(item, ["id", "ID", "uid"]);
+                    const name = getVal(item, ["name", "Name"]);
+                    const father = getVal(item, ["fname", "father", "guardian"]);
+                    const mobile = getVal(item, ["mobile", "phone"]);
+                    const address = getVal(item, ["address", "Address"]);
+                    const email = getVal(item, ["email", "mail"]);
+                    const alt = getVal(item, ["alt", "alt_mobile"]);
 
-                    const rec = `
+                    const record = `
 🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 
 ├─ 🆔 𝗜𝗗: ${id}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
@@ -272,20 +270,21 @@
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-gold)";
-                    div.innerText = rec.trim();
+                    div.innerText = record.trim();
                     area.appendChild(div);
                 });
             } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
         }
 
-        // --- 4. MAIL SEARCH (ALREADY WORKING) ---
+        // --- 4. MAIL SEARCH (FIXED URL) ---
         async function searchMail() {
             const val = document.getElementById('mailInput').value;
             const area = document.getElementById('result-area-mail');
             if(!val) return alert("Enter Email");
             area.innerHTML = "<p style='color:var(--neon-green)'>Scanning...</p>";
             try {
-                const res = await fetch(`/api/mail/mail=${val}`);
+                // FIXED: Fetch using /api/mail/EMAIL
+                const res = await fetch(`/api/mail/${val}`);
                 const rawText = await res.text();
                 
                 let list = [];
@@ -300,18 +299,17 @@
                 if(!list || list.length === 0) throw new Error("Empty");
                 area.innerHTML = "";
 
-                list.forEach((itm, i) => {
-                    // YOUR EXACT KEYS
-                    const email = getVal(itm, ["email", "mail"]) || val;
-                    const name = getVal(itm, ["name", "Name"]);
-                    const father = getVal(itm, ["fname", "father"]);
-                    const mobile = getVal(itm, ["mobile", "phone"]);
-                    const id = getVal(itm, ["id", "uid"]);
-                    const address = getVal(itm, ["address", "Address"]);
-                    const alt = getVal(itm, ["alt", "alt_mobile"]);
+                list.forEach((item, index) => {
+                    const email = getVal(item, ["email", "mail"]) || val;
+                    const name = getVal(item, ["name", "Name"]);
+                    const father = getVal(item, ["fname", "father"]);
+                    const mobile = getVal(item, ["mobile", "phone"]);
+                    const id = getVal(item, ["id", "uid"]);
+                    const address = getVal(item, ["address", "Address"]);
+                    const alt = getVal(item, ["alt", "alt_mobile"]);
 
-                    const rec = `
-🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${i+1}
+                    const record = `
+🔍...... 𝗥𝗘𝗖𝗢𝗥𝗗 #${index + 1}
 ├─ 📧 𝗘𝗺𝗮𝗶𝗹: ${email}
 ├─ 👤 𝗡𝗮𝗺𝗲: ${name}
 ├─ 🧑‍🦳 𝗙𝗮𝘁𝗵𝗲𝗿: ${father}
@@ -323,7 +321,7 @@
                     const div = document.createElement('div');
                     div.className = 'result-card';
                     div.style.borderLeft = "4px solid var(--neon-green)";
-                    div.innerText = rec.trim();
+                    div.innerText = record.trim();
                     area.appendChild(div);
                 });
             } catch(e) { area.innerHTML = `<p style='color:red'>Not Found</p>`; }
