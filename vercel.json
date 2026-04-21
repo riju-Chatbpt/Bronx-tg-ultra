@@ -1,17 +1,15 @@
 {
   "version": 2,
-  "rewrites": [
-    { 
-      "source": "/api/vehicle", 
-      "destination": "https://bronx-rc-api.vercel.app/" 
-    },
-    { 
-      "source": "/api/adhar/:val", 
-      "destination": "https://bronx-adhar-api.vercel.app/aadhar=:val" 
-    },
-    { 
-      "source": "/api/mail/:val", 
-      "destination": "https://bronx-mail-api.vercel.app/mail=:val" 
+  "builds": [
+    {
+      "src": "app.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app.py"
     }
   ]
 }
