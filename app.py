@@ -10,8 +10,8 @@ CREDIT = "BRONX_ULTRA"
 DEVELOPER = "BRONX_ULTRA"
 
 # APIs
-CHATID_API = "https://bronx-ultra-api2.onrender.com/chatid"  # Tumhari Render API
-TG_BACKEND = "http://45.91.248.51:3000/api/tgnum"  # Hidden OSINT API
+CHATID_API = "https://bronx-ultra-api2.onrender.com/chatid"
+TG_BACKEND = "http://45.91.248.51:3000/api/tgnum"
 
 # --- DASHBOARD HTML ---
 DASHBOARD_HTML = """
@@ -28,7 +28,6 @@ DASHBOARD_HTML = """
         .status { color: #fff; background: linear-gradient(135deg, #bf00ff, #ff0066); padding: 5px 15px; border-radius: 30px; font-weight: bold; display: inline-block; }
         .info { color: #ccc; font-size: 14px; margin: 20px 0; }
         .url { background: #111; padding: 15px; border-radius: 10px; color: #00ff88; word-break: break-all; font-size: 13px; border: 1px solid #333; margin: 10px 0; }
-        .badge { display: inline-block; background: #333; padding: 3px 10px; border-radius: 20px; font-size: 11px; margin: 5px; }
         footer { margin-top: 20px; font-size: 12px; color: #555; }
     </style>
 </head>
@@ -47,19 +46,21 @@ DASHBOARD_HTML = """
             /tg?id=7530266953
         </div>
         
-        <p>
-            <span class="badge">🔥 Chat ID</span>
-            <span class="badge">📱 Phone</span>
-            <span class="badge">💬 Messages</span>
-            <span class="badge">👥 Groups</span>
-            <span class="badge">⭐ Premium</span>
-        </p>
-        
         <footer>Developed by {{ owner }} | GOD LEVEL API</footer>
     </div>
 </body>
 </html>
 """
+
+def is_numeric_id(value):
+    """Check if value is numeric ID or username"""
+    clean = value.replace("@", "").strip()
+    # Telegram IDs are numbers, can be negative for groups
+    try:
+        int(clean)
+        return True
+    except:
+        return False
 
 def get_chat_id_from_username(username):
     """Username se Chat ID nikalo"""
@@ -70,12 +71,13 @@ def get_chat_id_from_username(username):
         data = resp.json()
         
         if data.get("status") == "success":
-            return data.get("chat_id")
+            return str(data.get("chat_id"))
         return None
-    except:
+    except Exception as e:
+        print(f"Chat ID API Error: {e}")
         return None
 
-def get_full_info_from_id(user_id):
+def get_full_info_from_backend(user_id):
     """ID se Full OSINT nikalo"""
     try:
         url = f"{TG_BACKEND}?id={user_id}"
@@ -90,35 +92,38 @@ def get_full_info_from_id(user_id):
             number = result.get("NUMBER_INFO", {})
             
             return {
-                "status": "success",
-                "basic_info": {
-                    "id": basic.get("ID"),
-                    "first_name": basic.get("FIRST_NAME"),
-                    "last_name": basic.get("LAST_NAME"),
-                    "usernames_count": basic.get("USERNAMES_COUNT", 0),
-                    "names_count": basic.get("NAMES_COUNT", 0)
-                },
-                "status_info": {
-                    "is_bot": status.get("IS_BOT", False),
-                    "is_active": status.get("IS_ACTIVE", False)
-                },
-                "activity_info": {
-                    "first_msg_date": activity.get("FIRST_MSG_DATE"),
-                    "last_msg_date": activity.get("LAST_MSG_DATE"),
-                    "total_msg_count": activity.get("TOTAL_MSG_COUNT", 0),
-                    "msg_in_groups_count": activity.get("MSG_IN_GROUPS_COUNT", 0),
-                    "admin_in_groups": activity.get("ADM_IN_GROUPS", 0),
-                    "total_groups": activity.get("TOTAL_GROUPS", 0)
-                },
-                "number_info": {
-                    "number": number.get("NUMBER"),
-                    "country_code": number.get("COUNTRY_CODE"),
-                    "country": number.get("COUNTRY")
+                "success": True,
+                "data": {
+                    "basic_info": {
+                        "id": basic.get("ID"),
+                        "first_name": basic.get("FIRST_NAME"),
+                        "last_name": basic.get("LAST_NAME"),
+                        "usernames_count": basic.get("USERNAMES_COUNT", 0),
+                        "names_count": basic.get("NAMES_COUNT", 0)
+                    },
+                    "status_info": {
+                        "is_bot": status.get("IS_BOT", False),
+                        "is_active": status.get("IS_ACTIVE", False)
+                    },
+                    "activity_info": {
+                        "first_msg_date": activity.get("FIRST_MSG_DATE"),
+                        "last_msg_date": activity.get("LAST_MSG_DATE"),
+                        "total_msg_count": activity.get("TOTAL_MSG_COUNT", 0),
+                        "msg_in_groups_count": activity.get("MSG_IN_GROUPS_COUNT", 0),
+                        "admin_in_groups": activity.get("ADM_IN_GROUPS", 0),
+                        "total_groups": activity.get("TOTAL_GROUPS", 0)
+                    },
+                    "number_info": {
+                        "number": number.get("NUMBER"),
+                        "country_code": number.get("COUNTRY_CODE"),
+                        "country": number.get("COUNTRY")
+                    }
                 }
             }
-        return None
-    except:
-        return None
+        return {"success": False, "message": "No data found"}
+    except Exception as e:
+        print(f"Backend API Error: {e}")
+        return {"success": False, "message": str(e)}
 
 @app.route('/')
 def home():
@@ -128,11 +133,10 @@ def home():
 def god_lookup():
     start_time = time.time()
     
-    # Check input
     username = request.args.get('username', '').strip()
     user_id = request.args.get('id', '').strip()
     
-    # Determine what we have
+    # Agar kuch nahi diya
     if not username and not user_id:
         return jsonify({
             "status": "error",
@@ -143,50 +147,65 @@ def god_lookup():
     try:
         final_id = None
         method = None
+        query_input = None
         
-        # If ID directly provided
+        # CASE 1: ID directly provided
         if user_id:
-            # Clean ID (remove @ if accidentally added)
-            final_id = user_id.replace("@", "").strip()
-            method = "direct_id"
-        
-        # If username provided, get Chat ID first
-        elif username:
-            final_id = get_chat_id_from_username(username)
-            if not final_id:
-                return jsonify({
-                    "status": "error",
-                    "message": f"Could not find Chat ID for: {username}",
-                    "credit": CREDIT
-                }), 404
-            method = "username_to_id"
-        
-        # Now get full info using ID
-        if final_id:
-            full_info = get_full_info_from_id(final_id)
+            query_input = user_id
+            clean = user_id.replace("@", "").strip()
             
-            if full_info:
-                return jsonify({
-                    "status": "success",
-                    "credit": CREDIT,
-                    "developer": DEVELOPER,
-                    "method": method,
-                    "query_id": final_id,
-                    "query_time_ms": round((time.time() - start_time) * 1000, 2),
-                    "data": full_info
-                })
+            # Check if it's numeric ID
+            if is_numeric_id(clean):
+                final_id = clean
+                method = "direct_id"
             else:
-                return jsonify({
-                    "status": "error",
-                    "message": f"No OSINT data found for ID: {final_id}",
-                    "credit": CREDIT
-                }), 404
+                # It's actually a username in 'id' parameter
+                final_id = get_chat_id_from_username(clean)
+                method = "username_in_id_param"
+        
+        # CASE 2: Username provided
+        elif username:
+            query_input = username
+            clean = username.replace("@", "").strip()
+            
+            if is_numeric_id(clean):
+                # It's actually an ID in 'username' parameter
+                final_id = clean
+                method = "id_in_username_param"
+            else:
+                # It's a username
+                final_id = get_chat_id_from_username(clean)
+                method = "username"
+        
+        # Check if we got an ID
+        if not final_id:
+            return jsonify({
+                "status": "error",
+                "message": f"Could not resolve Chat ID for: {query_input}",
+                "credit": CREDIT
+            }), 404
+        
+        # Get full info from backend
+        backend_result = get_full_info_from_backend(final_id)
+        
+        if backend_result.get("success"):
+            return jsonify({
+                "status": "success",
+                "credit": CREDIT,
+                "developer": DEVELOPER,
+                "method": method,
+                "resolved_id": final_id,
+                "query_input": query_input,
+                "query_time_ms": round((time.time() - start_time) * 1000, 2),
+                "data": backend_result.get("data")
+            })
         else:
             return jsonify({
                 "status": "error",
-                "message": "Could not process request",
+                "message": backend_result.get("message", "No OSINT data found"),
+                "resolved_id": final_id,
                 "credit": CREDIT
-            }), 500
+            }), 404
             
     except Exception as e:
         return jsonify({
@@ -203,6 +222,11 @@ def health():
         "chatid_api": CHATID_API,
         "backend_api": TG_BACKEND
     })
+
+# Alternative route
+@app.route('/api/tgnum')
+def telegram_lookup_alt():
+    return god_lookup()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
