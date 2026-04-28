@@ -43,7 +43,7 @@ DASHBOARD_HTML = """
         </div>
         <div class="url">
             📌 <b>ID Se:</b><br>
-            /tg?id=7530266953
+            /?id=7530266953
         </div>
         
         <footer>Developed by {{ owner }} | GOD LEVEL API</footer>
