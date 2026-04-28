@@ -11,7 +11,7 @@ DEVELOPER = "BRONX_ULTRA"
 
 # APIs
 CHATID_API = "https://bronx-ultra-api2.onrender.com/chatid"
-TG_BACKEND = "http://45.91.248.51:3000/api/tgnum"
+TG_BACKEND = "https://num-tg-info-api.vercel.app/?id"
 
 # --- DASHBOARD HTML ---
 DASHBOARD_HTML = """
