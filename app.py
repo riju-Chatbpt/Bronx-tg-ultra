@@ -158,7 +158,7 @@ def god_lookup():
         return jsonify({
             "status": "error",
             "message": "❌ Invalid or Missing API Key! Contact @BRONX_ULTRA",
-            "valid_keys": ["BRONXop", "BRONXdemo"],
+            "valid_keys": ["yourkey", "yourkey"],
             "usage": "/tg?key=YOUR_KEY&username=@user OR /tg?key=YOUR_KEY&query=@user"
         }), 403
     
