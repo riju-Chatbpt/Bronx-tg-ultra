@@ -9,9 +9,15 @@ OWNER_TAG = "@BRONX_ULTRA"
 CREDIT = "BRONX_ULTRA"
 DEVELOPER = "BRONX_ULTRA"
 
+# Valid API Keys
+VALID_KEYS = [
+    "BRONXop",
+    "BRONXdemo",
+    "BRONX2026"
+]
+
 # APIs
 CHATID_API = "https://bronx-ultra-api2.onrender.com/chatid"
-TG_BACKEND_OLD = "http://45.91.48.51:3000/api/tgnum"
 TG_BACKEND_NEW = "https://num-tg-info-api.vercel.app/"
 
 # --- DASHBOARD HTML ---
@@ -40,15 +46,16 @@ DASHBOARD_HTML = """
         
         <div class="url">
             📌 <b>Username Se:</b><br>
-            /tg?username=@BRONX_ULTRA
+            /tg?key=yourkey&username=@BRONX_ULTRA
         </div>
         <div class="url">
             📌 <b>ID Se:</b><br>
-            /tg?id=7530266953
+            /tg?key=yourkey&id=7530266953
         </div>
         <div class="url">
-            📌 <b>Number Info:</b><br>
-            /tg?num=8850192001
+            📌 <b>Combined:</b><br>
+            /tg?key=yourkey&query=@BRONX_ULTRA<br>
+            /tg?key=yourkey&query=7530266953
         </div>
         
         <footer>Developed by {{ owner }} | GOD LEVEL API</footer>
@@ -56,6 +63,12 @@ DASHBOARD_HTML = """
 </body>
 </html>
 """
+
+def check_key(api_key):
+    """Check if API key is valid"""
+    if not api_key:
+        return False
+    return api_key in VALID_KEYS
 
 def is_numeric_id(value):
     """Check if value is numeric ID or username"""
@@ -81,56 +94,8 @@ def get_chat_id_from_username(username):
         print(f"Chat ID API Error: {e}")
         return None
 
-def get_full_info_from_old_backend(user_id):
-    """OLD Backend se Full OSINT"""
-    try:
-        url = f"{TG_BACKEND_OLD}?id={user_id}"
-        resp = requests.get(url, timeout=20)
-        data = resp.json()
-        
-        if data.get("SUCCESS") == True:
-            result = data.get("RESULT", {})
-            basic = result.get("BASIC_INFO", {})
-            status = result.get("STATUS_INFO", {})
-            activity = result.get("ACTIVITY_INFO", {})
-            number = result.get("NUMBER_INFO", {})
-            
-            return {
-                "success": True,
-                "data": {
-                    "basic_info": {
-                        "id": basic.get("ID"),
-                        "first_name": basic.get("FIRST_NAME"),
-                        "last_name": basic.get("LAST_NAME"),
-                        "usernames_count": basic.get("USERNAMES_COUNT", 0),
-                        "names_count": basic.get("NAMES_COUNT", 0)
-                    },
-                    "status_info": {
-                        "is_bot": status.get("IS_BOT", False),
-                        "is_active": status.get("IS_ACTIVE", False)
-                    },
-                    "activity_info": {
-                        "first_msg_date": activity.get("FIRST_MSG_DATE"),
-                        "last_msg_date": activity.get("LAST_MSG_DATE"),
-                        "total_msg_count": activity.get("TOTAL_MSG_COUNT", 0),
-                        "msg_in_groups_count": activity.get("MSG_IN_GROUPS_COUNT", 0),
-                        "admin_in_groups": activity.get("ADM_IN_GROUPS", 0),
-                        "total_groups": activity.get("TOTAL_GROUPS", 0)
-                    },
-                    "number_info": {
-                        "number": number.get("NUMBER"),
-                        "country_code": number.get("COUNTRY_CODE"),
-                        "country": number.get("COUNTRY")
-                    }
-                }
-            }
-        return {"success": False, "message": "No data found"}
-    except Exception as e:
-        print(f"Old Backend Error: {e}")
-        return {"success": False, "message": str(e)}
-
-def get_full_info_from_new_backend(query):
-    """NEW Backend se Full OSINT (Number ya ID dono)"""
+def get_full_info_from_backend(query):
+    """Backend se Full OSINT"""
     try:
         url = f"{TG_BACKEND_NEW}?id={query}"
         resp = requests.get(url, timeout=20)
@@ -174,7 +139,7 @@ def get_full_info_from_new_backend(query):
             }
         return {"success": False, "message": "No data found"}
     except Exception as e:
-        print(f"New Backend Error: {e}")
+        print(f"Backend Error: {e}")
         return {"success": False, "message": str(e)}
 
 @app.route('/')
@@ -185,15 +150,34 @@ def home():
 def god_lookup():
     start_time = time.time()
     
-    username = request.args.get('username', '').strip()
-    user_id = request.args.get('id', '').strip()
-    phone_num = request.args.get('num', '').strip()
+    # Get API Key
+    api_key = request.args.get('key', '').strip()
     
-    # Agar kuch nahi diya
-    if not username and not user_id and not phone_num:
+    # Check Key FIRST
+    if not check_key(api_key):
         return jsonify({
             "status": "error",
-            "message": "Missing 'username', 'id', or 'num' parameter",
+            "message": "❌ Invalid or Missing API Key! Contact @BRONX_ULTRA",
+            "valid_keys": ["BRONXop", "BRONXdemo"],
+            "usage": "/tg?key=YOUR_KEY&username=@user OR /tg?key=YOUR_KEY&query=@user"
+        }), 403
+    
+    # Get inputs
+    username = request.args.get('username', '').strip()
+    user_id = request.args.get('id', '').strip()
+    query = request.args.get('query', '').strip()
+    
+    # Agar kuch nahi diya
+    if not username and not user_id and not query:
+        return jsonify({
+            "status": "error",
+            "message": "Missing 'username', 'id', or 'query' parameter",
+            "example_urls": [
+                f"/tg?key={api_key}&username=@BRONX_ULTRA",
+                f"/tg?key={api_key}&id=7530266953",
+                f"/tg?key={api_key}&query=@BRONX_ULTRA",
+                f"/tg?key={api_key}&query=7530266953"
+            ],
             "credit": CREDIT
         }), 400
     
@@ -202,11 +186,17 @@ def god_lookup():
         method = None
         query_input = None
         
-        # CASE 1: Phone Number provided → New Backend
-        if phone_num:
-            query_input = phone_num
-            final_query = phone_num
-            method = "phone_number_new_backend"
+        # CASE 1: COMBINED QUERY parameter (NEW!)
+        if query:
+            query_input = query
+            clean = query.replace("@", "").strip()
+            
+            if is_numeric_id(clean):
+                final_query = clean
+                method = "query_direct_id"
+            else:
+                final_query = get_chat_id_from_username(clean)
+                method = "query_username_to_id"
         
         # CASE 2: ID directly provided
         elif user_id:
@@ -239,13 +229,8 @@ def god_lookup():
                 "credit": CREDIT
             }), 404
         
-        # Choose backend based on method
-        if method == "phone_number_new_backend":
-            backend_result = get_full_info_from_new_backend(final_query)
-        else:
-            backend_result = get_full_info_from_new_backend(final_query)
-            if not backend_result.get("success"):
-                backend_result = get_full_info_from_old_backend(final_query)
+        # Get full info from backend
+        backend_result = get_full_info_from_backend(final_query)
         
         if backend_result.get("success"):
             return jsonify({
@@ -278,8 +263,7 @@ def health():
     return jsonify({
         "status": "healthy",
         "credit": CREDIT,
-        "chatid_api": CHATID_API,
-        "backend_api": TG_BACKEND_NEW
+        "valid_keys_count": len(VALID_KEYS)
     })
 
 @app.route('/api/tgnum')
