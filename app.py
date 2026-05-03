@@ -17,10 +17,9 @@ VALID_KEYS = [
 ]
 
 # APIs
-ULTRA_API = "https://god-bronx.onrender.com/ultra"  # NEW Ultra API (Chat ID + Number)
-TG_BACKEND = "https://num-tg-info-api.vercel.app/"  # OLD TG Backend
-TG_BACKEND_2 = "https://api.subhxcosmo.in/api"  # NEW TG Backend
-NUMBER_API = "https://ft-osint-api.duckdns.org/api/number"  # Number Details API
+ULTRA_API = "https://god-bronx.onrender.com/ultra"
+TG_BACKEND_2 = "https://api.subhxcosmo.in/api"
+NUMBER_API = "https://ft-osint-api.duckdns.org/api/number"
 
 # --- DASHBOARD HTML ---
 DASHBOARD_HTML = """
@@ -70,14 +69,6 @@ def check_key(api_key):
         return False
     return api_key in VALID_KEYS
 
-def is_numeric_id(value):
-    clean = value.replace("@", "").strip()
-    try:
-        int(clean)
-        return True
-    except:
-        return False
-
 def get_ultra_info(query):
     """STEP 1: Ultra API se ID aur Number nikalo"""
     try:
@@ -87,68 +78,48 @@ def get_ultra_info(query):
         data = resp.json()
         
         if data.get("status") == "success":
-            user_id = data.get("id")
-            phone = data.get("phone")
-            username = data.get("username")
-            first_name = data.get("first_name", "")
-            last_name = data.get("last_name", "")
-            premium = data.get("premium", False)
-            verified = data.get("verified", False)
-            bio = data.get("bio", "")
-            online_status = data.get("online_status", "")
-            account_age = data.get("account_age")
-            profile_photo = data.get("profile_photo")
-            language = data.get("language")
-            restricted = data.get("restricted", False)
-            scam = data.get("scam", False)
-            fake = data.get("fake", False)
-            stories_count = data.get("stories_count", 0)
-            premium_since = data.get("premium_since")
-            common_chats = data.get("common_chats_count", 0)
-            
             return {
                 "success": True,
-                "user_id": user_id,
-                "phone_number": phone,
+                "phone_number": data.get("phone"),
+                "user_id": data.get("id"),
                 "tg_data": {
                     "basic_info": {
-                        "id": user_id,
-                        "first_name": first_name,
-                        "last_name": last_name,
-                        "username": username,
-                        "bio": bio,
-                        "premium": premium,
-                        "verified": verified,
-                        "scam": scam,
-                        "fake": fake,
-                        "restricted": restricted,
-                        "language": language
+                        "id": data.get("id"),
+                        "first_name": data.get("first_name", ""),
+                        "last_name": data.get("last_name", ""),
+                        "username": data.get("username"),
+                        "bio": data.get("bio", ""),
+                        "premium": data.get("premium", False),
+                        "verified": data.get("verified", False),
+                        "scam": data.get("scam", False),
+                        "fake": data.get("fake", False),
+                        "restricted": data.get("restricted", False),
+                        "language": data.get("language")
                     },
                     "status_info": {
-                        "online_status": online_status,
+                        "online_status": data.get("online_status", ""),
                         "is_active": True
                     },
                     "activity_info": {
-                        "account_age": account_age,
-                        "stories_count": stories_count,
-                        "premium_since": premium_since,
-                        "common_chats": common_chats,
-                        "profile_photo": profile_photo
+                        "account_age": data.get("account_age"),
+                        "stories_count": data.get("stories_count", 0),
+                        "premium_since": data.get("premium_since"),
+                        "common_chats": data.get("common_chats_count", 0),
+                        "profile_photo": data.get("profile_photo")
                     },
                     "number_info": {
-                        "number": phone,
-                        "country_code": "+91" if phone and len(phone) == 10 else None,
-                        "country": "India" if phone and len(phone) == 10 else None
+                        "number": data.get("phone"),
+                        "country_code": "+91" if data.get("phone") and len(str(data.get("phone"))) == 10 else None,
+                        "country": "India" if data.get("phone") and len(str(data.get("phone"))) == 10 else None
                     }
                 }
             }
         return {"success": False, "message": "No data from Ultra API"}
     except Exception as e:
-        print(f"Ultra API Error: {e}")
         return {"success": False, "message": str(e)}
 
 def get_tg_info_new(query):
-    """STEP 1 FALLBACK: NEW TG Backend se Info"""
+    """FALLBACK: TG Backend 2 se Info"""
     try:
         url = f"{TG_BACKEND_2}?key=RACK2&type=tg&term={query}"
         resp = requests.get(url, timeout=20)
@@ -186,8 +157,7 @@ def get_tg_info_new(query):
 def get_number_details_new(phone_number):
     """STEP 2: Number se Full Details"""
     try:
-        # Remove country code if present
-        clean_num = phone_number.replace("+91", "").replace(" ", "").strip()
+        clean_num = str(phone_number).replace("+91", "").replace(" ", "").strip()
         url = f"{NUMBER_API}?key=bronx&num={clean_num}"
         resp = requests.get(url, timeout=20)
         data = resp.json()
@@ -249,25 +219,18 @@ def god_lookup():
         clean = query_input.replace("@", "").strip()
         
         # ============================================
-        # ✅ FIXED: Better detection
+        # ✅ FIXED: Proper detection
         # ============================================
         tg_result = None
         
-        # Always try Ultra API first for usernames
-        if not clean.isdigit():
-            # It's a username → Ultra API
-            tg_result = get_ultra_info(clean)
-        else:
-            # It's a numeric ID → Try Ultra API, then fallback
-            tg_result = get_ultra_info(clean)
-            if not tg_result.get("success"):
-                tg_result = get_tg_info_new(clean)
+        # Always try Ultra API first
+        tg_result = get_ultra_info(clean)
         
-        # If still no result, try TG Backend 2
-        if not tg_result or not tg_result.get("success"):
+        # If Ultra fails, try TG Backend 2
+        if not tg_result.get("success"):
             tg_result = get_tg_info_new(clean)
         
-        if not tg_result or not tg_result.get("success"):
+        if not tg_result.get("success"):
             return jsonify({
                 "status": "error",
                 "message": f"Could not fetch Telegram info for: @{clean}",
@@ -277,14 +240,14 @@ def god_lookup():
         phone_number = tg_result.get("phone_number", "")
         
         # ============================================
-        # CHAIN STEP 2: Get Number Details
+        # Get Number Details
         # ============================================
         number_result = None
         if phone_number and len(str(phone_number)) >= 10:
             number_result = get_number_details_new(phone_number)
         
         # ============================================
-        # BUILD FINAL RESPONSE
+        # BUILD RESPONSE
         # ============================================
         output = {
             "status": "success",
@@ -305,7 +268,7 @@ def god_lookup():
         elif phone_number:
             output["number_details"] = {
                 "success": False,
-                "message": "Phone number found but no additional details available",
+                "message": "Phone number found but no additional details",
                 "phone": phone_number
             }
         else:
@@ -327,7 +290,7 @@ def health():
         "chain": "Username → Ultra API → Number → Number Details",
         "services": {
             "ultra_api": ULTRA_API,
-            "tg_backend_2": TG_BACKEND_2,
+            "tg_backend": TG_BACKEND_2,
             "number_api": NUMBER_API
         }
     })
