@@ -12,7 +12,7 @@ VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
 # ✅ WORKING APIs ONLY
 ULTRA_API = "https://god-bronx.onrender.com/ultra"
-TG_API = "https://api.subhxcosmo.io/api"
+TG_API = "https://api.subhxcosmo.in/api"
 NUMBER_API = "https://ft-osint-api.duckdns.org/api/number"
 
 HTML = """
