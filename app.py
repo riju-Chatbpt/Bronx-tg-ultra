@@ -231,7 +231,7 @@ def god_lookup():
         return jsonify({
             "status": "error",
             "message": "❌ Invalid or Missing API Key! Contact @BRONX_ULTRA",
-            "usage": "/tg?key=key&query=@username"
+            "usage": "/tg?key=BRONXop&query=@username"
         }), 403
     
     username = request.args.get('username', '').strip()
@@ -249,20 +249,28 @@ def god_lookup():
         clean = query_input.replace("@", "").strip()
         
         # ============================================
-        # CHAIN STEP 1: Get TG Info + Phone Number
+        # ✅ FIXED: Better detection
         # ============================================
+        tg_result = None
         
-        # Try Ultra API first (best)
-        tg_result = get_ultra_info(clean) if not is_numeric_id(clean) or len(clean) > 12 else get_ultra_info(clean)
+        # Always try Ultra API first for usernames
+        if not clean.isdigit():
+            # It's a username → Ultra API
+            tg_result = get_ultra_info(clean)
+        else:
+            # It's a numeric ID → Try Ultra API, then fallback
+            tg_result = get_ultra_info(clean)
+            if not tg_result.get("success"):
+                tg_result = get_tg_info_new(clean)
         
-        # If Ultra API fails, try TG Backend 2
-        if not tg_result.get("success"):
+        # If still no result, try TG Backend 2
+        if not tg_result or not tg_result.get("success"):
             tg_result = get_tg_info_new(clean)
         
-        if not tg_result.get("success"):
+        if not tg_result or not tg_result.get("success"):
             return jsonify({
                 "status": "error",
-                "message": "Could not fetch Telegram info for: " + clean,
+                "message": f"Could not fetch Telegram info for: @{clean}",
                 "credit": CREDIT
             }), 404
         
