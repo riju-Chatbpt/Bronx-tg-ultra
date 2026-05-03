@@ -10,290 +10,225 @@ CREDIT = "BRONX_ULTRA"
 DEVELOPER = "BRONX_ULTRA"
 
 # Valid API Keys
-VALID_KEYS = [
-    "BRONXop",
-    "BRONXdemo",
-    "BRONX2026"
-]
+VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
 # APIs
-ULTRA_API = "https://god-bronx.onrender.com/ultra"
-TG_BACKEND_2 = "https://api.subhxcosmo.in/api"
-NUMBER_API = "https://ft-osint-api.duckdns.org/api/number"
+ULTRA_API = "https://god-bronx.onrender.com/ultra"  # For ID + Profile
+TG_NUMBER_API_1 = "https://api.subhxcosmo.in/api"  # For Phone Number
+TG_NUMBER_API_2 = "https://num-tg-info-api.vercel.app/"  # Backup Phone
+NUMBER_API = "https://ft-osint-api.duckdns.org/api/number"  # Full Details
 
-# --- DASHBOARD HTML ---
-DASHBOARD_HTML = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRONX ULTRA GOD API</title>
-    <style>
-        body { background: #050505; color: #bf00ff; font-family: 'Courier New', Courier, monospace; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { border: 2px solid #bf00ff; padding: 30px; border-radius: 20px; box-shadow: 0 0 30px #bf00ff66; text-align: center; max-width: 750px; background: #0a0a0a; }
-        h1 { font-size: 28px; margin-bottom: 10px; background: linear-gradient(135deg, #bf00ff, #ff0066); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .status { color: #fff; background: linear-gradient(135deg, #bf00ff, #ff0066); padding: 5px 15px; border-radius: 30px; font-weight: bold; display: inline-block; }
-        .url { background: #111; padding: 15px; border-radius: 10px; color: #00ff88; word-break: break-all; font-size: 13px; border: 1px solid #333; margin: 10px 0; }
-        .badge { display: inline-block; background: #333; padding: 3px 10px; border-radius: 20px; font-size: 11px; margin: 3px; color: #ffaa00; }
-        footer { margin-top: 20px; font-size: 12px; color: #555; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>👑 BRONX ULTRA GOD API</h1>
-        <span class="status">⚡ GOD MODE ACTIVE</span>
-        <p style="color: #ccc; margin: 20px 0;">
-            <span class="badge">🔥 TG Info</span>
-            <span class="badge">📱 Number Details</span>
-            <span class="badge">🎯 Combined Output</span>
-        </p>
-        
-        <div class="url">
-            📌 <b>Username → Full Chain:</b><br>
-            /tg?key=key&query=@username
-        </div>
-        <div class="url">
-            📌 <b>ID → Full Chain:</b><br>
-            /tg?key=key&query=7530266953
-        </div>
-        
-        <footer>Developed by {{ owner }} | GOD LEVEL API v4.0</footer>
-    </div>
-</body>
-</html>
+# --- HTML ---
+HTML = """
+<!DOCTYPE html><html><head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'>
+<title>BRONX ULTRA GOD API</title>
+<style>
+body{background:#000;color:#bf00ff;font-family:monospace;text-align:center;padding:30px}
+h1{font-size:2em;background:linear-gradient(135deg,#bf00ff,#f06);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.url{background:#111;padding:15px;border-radius:10px;color:#0f0;margin:10px 0;font-size:13px}
+</style></head><body>
+<h1>👑 BRONX ULTRA GOD API</h1>
+<p style='color:#ccc'>Username → ID → Number → Full Details</p>
+<div class='url'>/tg?key=KEY&query=@username</div>
+<div class='url'>/tg?key=KEY&query=ID</div>
+<p style='color:#555;margin-top:30px'>@BRONX_ULTRA | v5.0</p>
+</body></html>
 """
 
-def check_key(api_key):
-    if not api_key:
-        return False
-    return api_key in VALID_KEYS
-
-def get_ultra_info(query):
-    """STEP 1: Ultra API se ID aur Number nikalo"""
+# ============================================
+# STEP 1: Get ID from Ultra API
+# ============================================
+def get_user_id(username):
     try:
-        clean = query.replace("@", "").strip()
-        url = f"{ULTRA_API}?q={clean}"
-        resp = requests.get(url, timeout=20)
+        clean = username.replace("@", "").strip()
+        resp = requests.get(f"{ULTRA_API}?q={clean}", timeout=15)
         data = resp.json()
-        
-        if data.get("status") == "success":
+        if data.get("status") == "success" and data.get("id"):
             return {
                 "success": True,
-                "phone_number": data.get("phone"),
-                "user_id": data.get("id"),
-                "tg_data": {
-                    "basic_info": {
-                        "id": data.get("id"),
-                        "first_name": data.get("first_name", ""),
-                        "last_name": data.get("last_name", ""),
-                        "username": data.get("username"),
-                        "bio": data.get("bio", ""),
-                        "premium": data.get("premium", False),
-                        "verified": data.get("verified", False),
-                        "scam": data.get("scam", False),
-                        "fake": data.get("fake", False),
-                        "restricted": data.get("restricted", False),
-                        "language": data.get("language")
-                    },
-                    "status_info": {
-                        "online_status": data.get("online_status", ""),
-                        "is_active": True
-                    },
-                    "activity_info": {
-                        "account_age": data.get("account_age"),
-                        "stories_count": data.get("stories_count", 0),
-                        "premium_since": data.get("premium_since"),
-                        "common_chats": data.get("common_chats_count", 0),
-                        "profile_photo": data.get("profile_photo")
-                    },
-                    "number_info": {
-                        "number": data.get("phone"),
-                        "country_code": "+91" if data.get("phone") and len(str(data.get("phone"))) == 10 else None,
-                        "country": "India" if data.get("phone") and len(str(data.get("phone"))) == 10 else None
-                    }
-                }
+                "user_id": str(data["id"]),
+                "username": data.get("username"),
+                "first_name": data.get("first_name", ""),
+                "last_name": data.get("last_name", ""),
+                "bio": data.get("bio", ""),
+                "premium": data.get("premium", False),
+                "verified": data.get("verified", False),
+                "account_age": data.get("account_age"),
+                "online_status": data.get("online_status"),
+                "profile_photo": data.get("profile_photo"),
+                "phone": data.get("phone")  # May be null
             }
-        return {"success": False, "message": "No data from Ultra API"}
+        return {"success": False}
     except Exception as e:
-        return {"success": False, "message": str(e)}
+        return {"success": False, "error": str(e)}
 
-def get_tg_info_new(query):
-    """FALLBACK: TG Backend 2 se Info"""
+# ============================================
+# STEP 2: Get Phone Number from TG APIs
+# ============================================
+def get_phone_number(query):
+    """Try multiple APIs to get phone number"""
+    
+    # Try API 1: subhxcosmo
     try:
-        url = f"{TG_BACKEND_2}?key=RACK2&type=tg&term={query}"
-        resp = requests.get(url, timeout=20)
+        resp = requests.get(f"{TG_NUMBER_API_1}?key=RACK2&type=tg&term={query}", timeout=15)
         data = resp.json()
-        
-        if data.get("success") == True:
-            result = data.get("result", {})
-            phone_number = result.get("number", "")
-            
+        if data.get("success") and data.get("result", {}).get("number"):
             return {
                 "success": True,
-                "phone_number": phone_number,
-                "user_id": result.get("tg_id", query),
-                "tg_data": {
-                    "basic_info": {
-                        "id": result.get("tg_id", query),
-                        "first_name": None,
-                        "last_name": None,
-                        "username": None,
-                        "bio": None
-                    },
-                    "status_info": {"is_active": True},
-                    "activity_info": {},
-                    "number_info": {
-                        "number": phone_number,
-                        "country_code": result.get("country_code", "+91"),
-                        "country": result.get("country", "India")
-                    }
-                }
+                "number": data["result"]["number"],
+                "country_code": data["result"].get("country_code", "+91"),
+                "country": data["result"].get("country", "India"),
+                "source": "api1"
             }
-        return {"success": False, "message": "No TG data found"}
-    except Exception as e:
-        return {"success": False, "message": str(e)}
-
-def get_number_details_new(phone_number):
-    """STEP 2: Number se Full Details"""
+    except:
+        pass
+    
+    # Try API 2: num-tg-info
     try:
-        clean_num = str(phone_number).replace("+91", "").replace(" ", "").strip()
-        url = f"{NUMBER_API}?key=bronx&num={clean_num}"
-        resp = requests.get(url, timeout=20)
+        resp = requests.get(f"https://num-tg-info-api.vercel.app/?id={query}", timeout=15)
+        data = resp.json()
+        if data.get("SUCCESS") and data.get("RESULT", {}).get("NUMBER_INFO", {}).get("NUMBER"):
+            return {
+                "success": True,
+                "number": data["RESULT"]["NUMBER_INFO"]["NUMBER"],
+                "country_code": data["RESULT"]["NUMBER_INFO"].get("COUNTRY_CODE", "+91"),
+                "country": data["RESULT"]["NUMBER_INFO"].get("COUNTRY", "India"),
+                "source": "api2"
+            }
+    except:
+        pass
+    
+    return {"success": False, "message": "No phone number found"}
+
+# ============================================
+# STEP 3: Get Full Details from Number
+# ============================================
+def get_number_details(phone):
+    try:
+        clean = str(phone).replace("+91", "").replace(" ", "").strip()
+        resp = requests.get(f"{NUMBER_API}?key=bronx&num={clean}", timeout=20)
         data = resp.json()
         
-        if data.get("success") == True:
-            results = data.get("results", [])
-            cleaned_results = []
-            for r in results:
-                cleaned_results.append({
+        if data.get("success") and data.get("results"):
+            results = []
+            for r in data["results"]:
+                results.append({
                     "name": r.get("name", ""),
-                    "fname": r.get("father_name", ""),
+                    "father_name": r.get("father_name", ""),
                     "address": r.get("address", ""),
                     "circle": r.get("circle", ""),
                     "mobile": r.get("mobile", ""),
-                    "alt": r.get("alternate", ""),
+                    "alternate": r.get("alternate", ""),
                     "aadhar": r.get("aadhar", ""),
-                    "email": r.get("email", ""),
-                    "truecaller_name": r.get("truecaller_name")
+                    "email": r.get("email", "")
                 })
-            
-            return {
-                "success": True,
-                "count": data.get("total", len(cleaned_results)),
-                "results": cleaned_results
-            }
-        return {"success": False, "message": "No number data found"}
+            return {"success": True, "count": data.get("total", len(results)), "results": results}
+        return {"success": False, "message": "No details found"}
     except Exception as e:
         return {"success": False, "message": str(e)}
 
+# ============================================
+# ROUTES
+# ============================================
 @app.route('/')
 def home():
-    return render_template_string(DASHBOARD_HTML, host=request.host, owner=OWNER_TAG)
+    return HTML
 
 @app.route('/tg')
-def god_lookup():
-    start_time = time.time()
+def tg_lookup():
+    t0 = time.time()
     
-    api_key = request.args.get('key', '').strip()
+    # Check Key
+    key = request.args.get('key', '').strip()
+    if key not in VALID_KEYS:
+        return jsonify({"status": "error", "message": "Invalid API Key"}), 403
     
-    if not check_key(api_key):
-        return jsonify({
-            "status": "error",
-            "message": "❌ Invalid or Missing API Key! Contact @BRONX_ULTRA",
-            "usage": "/tg?key=BRONXop&query=@username"
-        }), 403
+    # Get Query
+    q = request.args.get('query', '') or request.args.get('username', '') or request.args.get('id', '')
+    q = q.strip().replace("@", "")
     
-    username = request.args.get('username', '').strip()
-    user_id = request.args.get('id', '').strip()
-    query = request.args.get('query', '').strip()
+    if not q:
+        return jsonify({"status": "error", "message": "Missing query"}), 400
     
-    if not username and not user_id and not query:
-        return jsonify({
-            "status": "error",
-            "message": "Missing 'username', 'id', or 'query' parameter"
-        }), 400
+    # ============================================
+    # CHAIN START
+    # ============================================
+    result = {
+        "status": "success",
+        "credit": CREDIT,
+        "developer": DEVELOPER,
+        "query": q
+    }
     
-    try:
-        query_input = username or user_id or query
-        clean = query_input.replace("@", "").strip()
-        
-        # ============================================
-        # ✅ FIXED: Proper detection
-        # ============================================
-        tg_result = None
-        
-        # Always try Ultra API first
-        tg_result = get_ultra_info(clean)
-        
-        # If Ultra fails, try TG Backend 2
-        if not tg_result.get("success"):
-            tg_result = get_tg_info_new(clean)
-        
-        if not tg_result.get("success"):
-            return jsonify({
-                "status": "error",
-                "message": f"Could not fetch Telegram info for: @{clean}",
-                "credit": CREDIT
-            }), 404
-        
-        phone_number = tg_result.get("phone_number", "")
-        
-        # ============================================
-        # Get Number Details
-        # ============================================
-        number_result = None
-        if phone_number and len(str(phone_number)) >= 10:
-            number_result = get_number_details_new(phone_number)
-        
-        # ============================================
-        # BUILD RESPONSE
-        # ============================================
-        output = {
-            "status": "success",
-            "credit": CREDIT,
-            "developer": DEVELOPER,
-            "query_input": query_input,
-            "query_time_ms": round((time.time() - start_time) * 1000, 2),
-            "telegram_info": tg_result.get("tg_data"),
-            "number_details": None
+    # STEP 1: Get User ID + Profile
+    ultra = get_user_id(q)
+    
+    if not ultra.get("success"):
+        return jsonify({"status": "error", "message": f"User not found: {q}"}), 404
+    
+    user_id = ultra["user_id"]
+    
+    result["user_info"] = {
+        "id": user_id,
+        "username": ultra.get("username"),
+        "first_name": ultra.get("first_name"),
+        "last_name": ultra.get("last_name"),
+        "bio": ultra.get("bio"),
+        "premium": ultra.get("premium"),
+        "verified": ultra.get("verified"),
+        "online_status": ultra.get("online_status"),
+        "account_age": ultra.get("account_age"),
+        "profile_photo": ultra.get("profile_photo")
+    }
+    
+    # STEP 2: Get Phone Number
+    phone = ultra.get("phone")
+    phone_result = None
+    
+    if not phone:
+        # Try with user ID
+        phone_result = get_phone_number(user_id)
+        # Also try with username
+        if not phone_result.get("success"):
+            phone_result = get_phone_number(q)
+    else:
+        phone_result = {"success": True, "number": phone, "source": "ultra_api"}
+    
+    if phone_result.get("success"):
+        phone_number = phone_result["number"]
+        result["phone_info"] = {
+            "number": phone_number,
+            "country_code": phone_result.get("country_code", "+91"),
+            "country": phone_result.get("country", "India"),
+            "source": phone_result.get("source", "unknown")
         }
         
-        if number_result and number_result.get("success"):
-            output["number_details"] = {
+        # STEP 3: Get Full Details
+        details = get_number_details(phone_number)
+        if details.get("success"):
+            result["number_details"] = {
                 "success": True,
-                "count": number_result.get("count", 0),
-                "results": number_result.get("results", [])
-            }
-        elif phone_number:
-            output["number_details"] = {
-                "success": False,
-                "message": "Phone number found but no additional details",
-                "phone": phone_number
+                "count": details["count"],
+                "results": details["results"]
             }
         else:
-            output["number_details"] = {
+            result["number_details"] = {
                 "success": False,
-                "message": "No phone number found in Telegram data"
+                "message": details.get("message", "No details found"),
+                "phone": phone_number
             }
-        
-        return jsonify(output)
-            
-    except Exception as e:
-        return jsonify({"status": "error", "message": f"Server error: {str(e)}", "credit": CREDIT}), 500
+    else:
+        result["phone_info"] = {"success": False, "message": "No phone number found"}
+        result["number_details"] = {"success": False, "message": "No phone number available"}
+    
+    result["query_time_ms"] = round((time.time() - t0) * 1000, 2)
+    
+    return jsonify(result)
 
 @app.route('/health')
 def health():
-    return jsonify({
-        "status": "healthy",
-        "credit": CREDIT,
-        "chain": "Username → Ultra API → Number → Number Details",
-        "services": {
-            "ultra_api": ULTRA_API,
-            "tg_backend": TG_BACKEND_2,
-            "number_api": NUMBER_API
-        }
-    })
+    return jsonify({"status": "ok", "credit": CREDIT})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
