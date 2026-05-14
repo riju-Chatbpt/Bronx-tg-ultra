@@ -9,7 +9,7 @@ DEVELOPER = "BRONX_ULTRA"
 VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
 # APIs
-ULTRA_API = "https://god-bronx.onrender.com/ultra"
+ULTRA_API = "https://bronx-god-id-info.onrender.com/chatid"
 TG_API = "https://api.subhxcosmo.in/api"
 NUMBER_API = "https://ft-osint-api.duckdns.org/api/number"
 
