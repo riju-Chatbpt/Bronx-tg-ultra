@@ -8,7 +8,7 @@ CREDIT = "BRONX_ULTRA"
 DEVELOPER = "BRONX_ULTRA"
 VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
-# APIs
+# ✅ NEW APIs
 ULTRA_API = "https://bronx-god-id-info.onrender.com/chatid"
 TG_API = "https://api.subhxcosmo.in/api"
 NUMBER_API = "https://ft-osint-api.duckdns.org/api/number"
@@ -42,7 +42,7 @@ def tg():
     
     try:
         # ============================================
-        # STEP 1: Get TG Info + User ID
+        # STEP 1: Get TG Info + User ID from NEW API
         # ============================================
         tg_info = None
         user_id = None
@@ -51,20 +51,16 @@ def tg():
             user_id = clean
         else:
             try:
-                resp = requests.get(f"{ULTRA_API}?q={clean}", timeout=60)
+                resp = requests.get(f"{ULTRA_API}?username={clean}", timeout=60)
                 data = resp.json()
                 if data.get("status") == "success":
-                    user_id = str(data.get("id"))
+                    user_id = str(data.get("chat_id"))
                     tg_info = {
-                        "username": data.get("username"),
+                        "username": f"@{data.get('username', clean)}",
                         "first_name": data.get("first_name", ""),
                         "last_name": data.get("last_name", ""),
-                        "bio": data.get("bio", ""),
-                        "premium": data.get("premium", False),
-                        "verified": data.get("verified", False),
-                        "online_status": data.get("online_status"),
-                        "account_age": data.get("account_age"),
-                        "profile_photo": data.get("profile_photo")
+                        "type": data.get("type", "user"),
+                        "credit": data.get("credit", "@BRONX_ULTRA")
                     }
             except:
                 pass
@@ -86,7 +82,6 @@ def tg():
             resp = requests.get(f"{TG_API}?key=RACK2&type=tg&term={user_id}", timeout=30)
             data = resp.json()
             
-            # ✅ TG API FULL INFO
             if data.get("success") and data.get("result"):
                 result = data["result"]
                 phone = result.get("number")
@@ -140,9 +135,9 @@ def tg():
                     })
                 number_details = {"success": True, "count": len(results), "results": results}
             else:
-                number_details = {"success": False, "message": "No Data Found - No details available"}
+                number_details = {"success": False, "message": "No Data Found"}
         except:
-            number_details = {"success": False, "message": "No Data Found - API error"}
+            number_details = {"success": False, "message": "API error"}
         
         # ============================================
         # FINAL RESPONSE
@@ -161,11 +156,7 @@ def tg():
         })
         
     except Exception as e:
-        return jsonify({
-            "status": "error",
-            "message": str(e),
-            "credit": CREDIT
-        }), 500
+        return jsonify({"status": "error", "message": str(e), "credit": CREDIT}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
