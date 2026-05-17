@@ -8,10 +8,11 @@ CREDIT = "BRONX_ULTRA"
 DEVELOPER = "BRONX_ULTRA"
 VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
-# ✅ NEW APIs
+# ✅ UPDATED APIs
 ULTRA_API = "https://bronx-god-id-info.onrender.com/chatid"
-TG_API = "https://api.subhxcosmo.in/api"
-NUMBER_API = "https://ft-osint-api.duckdns.org/api/number"
+TG_API = "https://username-usrid-to-num.onrender.com/userid="
+TG_KEY = "3c6834ccce16416e61c4682e42ec1366"
+NUMBER_API = "https://num-bala-api-ha-babujiiii.vercel.app/api/number"
 
 HTML = """
 <h1 style='color:#bf00ff;text-align:center;padding:50px;background:#000;font-family:monospace;'>
@@ -42,7 +43,7 @@ def tg():
     
     try:
         # ============================================
-        # STEP 1: Get TG Info + User ID from NEW API
+        # STEP 1: Get TG Info + User ID
         # ============================================
         tg_info = None
         user_id = None
@@ -59,8 +60,7 @@ def tg():
                         "username": f"@{data.get('username', clean)}",
                         "first_name": data.get("first_name", ""),
                         "last_name": data.get("last_name", ""),
-                        "type": data.get("type", "user"),
-                        "credit": data.get("credit", "@BRONX_ULTRA")
+                        "type": data.get("type", "user")
                     }
             except:
                 pass
@@ -73,26 +73,31 @@ def tg():
             }), 404
         
         # ============================================
-        # STEP 2: Get Phone Number from TG API
+        # STEP 2: Get Phone Number from NEW TG API
         # ============================================
         phone = None
         tg_api_info = None
         
         try:
-            resp = requests.get(f"{TG_API}?key=RACK2&type=tg&term={user_id}", timeout=30)
+            url = f"{TG_API}{user_id}?key={TG_KEY}"
+            resp = requests.get(url, timeout=30)
             data = resp.json()
             
-            if data.get("success") and data.get("result"):
-                result = data["result"]
-                phone = result.get("number")
-                tg_api_info = {
-                    "success": result.get("success", True),
-                    "msg": result.get("msg", "Details fetched"),
-                    "tg_id": result.get("tg_id", user_id),
-                    "country": result.get("country", "India"),
-                    "country_code": result.get("country_code", "+91"),
-                    "number": phone
-                }
+            if data.get("status") and data.get("data"):
+                source1 = data["data"].get("source1", {})
+                records = source1.get("records", [])
+                
+                if records and len(records) > 0:
+                    record = records[0]
+                    phone = record.get("number")
+                    # ✅ ONLY these fields
+                    tg_api_info = {
+                        "userid": record.get("userid", user_id),
+                        "msg": record.get("msg", "Details fetched"),
+                        "country": record.get("country", "India"),
+                        "country_code": record.get("country_code", "+91"),
+                        "number": phone
+                    }
         except:
             pass
         
@@ -111,29 +116,27 @@ def tg():
             })
         
         # ============================================
-        # STEP 3: Get Number Details
+        # STEP 3: Get Number Details from NEW API
         # ============================================
         number_details = None
         
         try:
             clean_phone = str(phone).replace("+91", "").replace(" ", "").strip()
-            resp = requests.get(f"{NUMBER_API}?key=bronx&num={clean_phone}", timeout=30)
+            resp = requests.get(f"{NUMBER_API}?num={clean_phone}", timeout=30)
             data = resp.json()
             
-            if data.get("success") and data.get("results"):
-                results = []
-                for r in data["results"]:
-                    results.append({
-                        "name": r.get("name", ""),
-                        "father": r.get("father_name", ""),
-                        "address": r.get("address", ""),
-                        "circle": r.get("circle", ""),
-                        "mobile": r.get("mobile", ""),
-                        "alternate": r.get("alternate", ""),
-                        "aadhar": r.get("aadhar", ""),
-                        "email": r.get("email", "")
-                    })
-                number_details = {"success": True, "count": len(results), "results": results}
+            # ✅ Direct response forward karo (clean)
+            if data:
+                # Remove unwanted fields
+                cleaned_data = {}
+                for key, value in data.items():
+                    if key not in ["by", "channel", "developer", "owner", "credit", "BUY", "DEVELOPER"]:
+                        cleaned_data[key] = value
+                
+                number_details = {
+                    "success": True,
+                    "data": cleaned_data
+                }
             else:
                 number_details = {"success": False, "message": "No Data Found"}
         except:
