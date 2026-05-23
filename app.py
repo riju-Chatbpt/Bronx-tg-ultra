@@ -10,8 +10,8 @@ VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
 # ✅ UPDATED APIs
 ULTRA_API = "https://bronx-god-id-info.onrender.com/chatid"
-TG_API = "https://username-usrid-to-num.onrender.com/userid="
-TG_KEY = "3c6834ccce16416e61c4682e42ec1366"
+TG_API = "https://tg-id-to-number-api-by-bad-boy.vercel.app/tg_num_api"
+TG_KEY = "BADXMAFIA3D"
 NUMBER_API = "https://num-bala-api-ha-babujiiii.vercel.app/api/number"
 
 HTML = """
@@ -29,12 +29,10 @@ def home():
 def tg():
     t0 = time.time()
     
-    # Check Key
     key = request.args.get('key', '').strip()
     if key not in VALID_KEYS:
         return jsonify({"status": "error", "message": "Invalid API Key", "credit": CREDIT}), 403
     
-    # Get Input
     q = request.args.get('query', '') or request.args.get('username', '') or request.args.get('id', '')
     clean = q.strip().replace("@", "")
     
@@ -42,9 +40,7 @@ def tg():
         return jsonify({"status": "error", "message": "Missing query", "credit": CREDIT}), 400
     
     try:
-        # ============================================
         # STEP 1: Get TG Info + User ID
-        # ============================================
         tg_info = None
         user_id = None
         
@@ -66,38 +62,25 @@ def tg():
                 pass
         
         if not user_id:
-            return jsonify({
-                "status": "error",
-                "message": "User not found",
-                "credit": CREDIT
-            }), 404
+            return jsonify({"status": "error", "message": "User not found", "credit": CREDIT}), 404
         
-        # ============================================
         # STEP 2: Get Phone Number from NEW TG API
-        # ============================================
         phone = None
         tg_api_info = None
         
         try:
-            url = f"{TG_API}{user_id}?key={TG_KEY}"
+            url = f"{TG_API}?key={TG_KEY}&userid={user_id}"
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
-            if data.get("status") and data.get("data"):
-                source1 = data["data"].get("source1", {})
-                records = source1.get("records", [])
-                
-                if records and len(records) > 0:
-                    record = records[0]
-                    phone = record.get("number")
-                    # ✅ ONLY these fields
-                    tg_api_info = {
-                        "userid": record.get("userid", user_id),
-                        "msg": record.get("msg", "Details fetched"),
-                        "country": record.get("country", "India"),
-                        "country_code": record.get("country_code", "+91"),
-                        "number": phone
-                    }
+            if data.get("success") and data.get("number"):
+                phone = data.get("number")
+                # ✅ ONLY these 3 fields
+                tg_api_info = {
+                    "country": data.get("country", "India"),
+                    "country_code": data.get("country_code", "+91"),
+                    "number": phone
+                }
         except:
             pass
         
@@ -110,14 +93,12 @@ def tg():
                 "user_id": user_id,
                 "tg_info": tg_info,
                 "tg_number_info": tg_api_info if tg_api_info else {"success": False, "message": "No Data Found"},
-                "phone_info": {"success": False, "message": "No Data Found - Phone number not available"},
-                "number_details": {"success": False, "message": "No Data Found - No phone number to lookup"},
+                "phone_info": {"success": False, "message": "No Data Found"},
+                "number_details": {"success": False, "message": "No Data Found"},
                 "query_time_ms": round((time.time() - t0) * 1000, 2)
             })
         
-        # ============================================
-        # STEP 3: Get Number Details from NEW API
-        # ============================================
+        # STEP 3: Get Number Details
         number_details = None
         
         try:
@@ -125,26 +106,18 @@ def tg():
             resp = requests.get(f"{NUMBER_API}?num={clean_phone}", timeout=30)
             data = resp.json()
             
-            # ✅ Direct response forward karo (clean)
             if data:
-                # Remove unwanted fields
                 cleaned_data = {}
                 for key, value in data.items():
                     if key not in ["by", "channel", "developer", "owner", "credit", "BUY", "DEVELOPER"]:
                         cleaned_data[key] = value
                 
-                number_details = {
-                    "success": True,
-                    "data": cleaned_data
-                }
+                number_details = {"success": True, "data": cleaned_data}
             else:
                 number_details = {"success": False, "message": "No Data Found"}
         except:
             number_details = {"success": False, "message": "API error"}
         
-        # ============================================
-        # FINAL RESPONSE
-        # ============================================
         return jsonify({
             "status": "success",
             "credit": CREDIT,
