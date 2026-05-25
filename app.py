@@ -10,7 +10,7 @@ VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
 # ✅ UPDATED APIs
 ULTRA_API = "https://bronx-god-id-info.onrender.com/chatid"
-TG_API = "https://shivam-ultra-api.vercel.app/tg"
+TG_API = "https://shivm-ultra-api.vercel.app/tg"
 TG_KEY = "Y"
 NUMBER_API = "https://num-bala-api-ha-babujiiii.vercel.app/api/number"
 
@@ -73,12 +73,13 @@ def tg():
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
-            if data.get("success") and data.get("number"):
-                phone = data.get("number")
-                # ✅ ONLY these 3 fields
+            if data.get("success") and data.get("data"):
+                inner = data["data"]
+                phone = inner.get("number")
+                # ✅ ONLY these 3 fields - Hide owner/powered_by
                 tg_api_info = {
-                    "country": data.get("country", "India"),
-                    "country_code": data.get("country_code", "+91"),
+                    "country": inner.get("country", "India"),
+                    "country_code": inner.get("country_code", "+91"),
                     "number": phone
                 }
         except:
@@ -108,9 +109,9 @@ def tg():
             
             if data:
                 cleaned_data = {}
-                for key, value in data.items():
-                    if key not in ["by", "channel", "developer", "owner", "credit", "BUY", "DEVELOPER"]:
-                        cleaned_data[key] = value
+                for k, v in data.items():
+                    if k not in ["by", "channel", "developer", "owner", "credit", "BUY", "DEVELOPER", "powered_by"]:
+                        cleaned_data[k] = v
                 
                 number_details = {"success": True, "data": cleaned_data}
             else:
