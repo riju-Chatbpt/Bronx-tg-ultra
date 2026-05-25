@@ -10,8 +10,8 @@ VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
 # ✅ UPDATED APIs
 ULTRA_API = "https://bronx-god-id-info.onrender.com/chatid"
-TG_API = "https://tg-id-to-number-api-by-bad-boy.vercel.app/tg_num_api"
-TG_KEY = "BADXMAFIA3D"
+TG_API = "https://shivam-ultra-api.vercel.app/tg"
+TG_KEY = "Y"
 NUMBER_API = "https://num-bala-api-ha-babujiiii.vercel.app/api/number"
 
 HTML = """
@@ -69,7 +69,7 @@ def tg():
         tg_api_info = None
         
         try:
-            url = f"{TG_API}?key={TG_KEY}&userid={user_id}"
+            url = f"{TG_API}?key={TG_KEY}&id={user_id}"
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
