@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import requests
 import time
+import json
 
 app = Flask(__name__)
 
@@ -9,9 +10,10 @@ DEVELOPER = "BRONX_ULTRA"
 VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
 # ✅ UPDATED APIs
-ULTRA_API = "https://cht-id-p-b5hs.onrender.com/chatid"  # New username to ID API
-TG_ID_TO_NUM_API = "https://tgid2num.suryajasoos.workers.dev/"  # New TG ID to Number API
-NUMBER_API = "https://num-bala-api-ha-babujiiii.vercel.app/api/number"
+USERNAME_TO_ID_API = "https://www.gettg.id/api/search"
+TG_ID_TO_NUM_API = "https://tgid2num.suryajasoos.workers.dev/"
+NUMBER_DETAILS_API = "https://bronx-web-api.onrender.com/api/key-bronx/number"
+NUMBER_API_KEY = "op"
 
 HTML = """
 <h1 style='color:#bf00ff;text-align:center;padding:50px;background:#000;font-family:monospace;'>
@@ -39,7 +41,7 @@ def tg():
         return jsonify({"status": "error", "message": "Missing query", "credit": CREDIT}), 400
     
     try:
-        # STEP 1: Get TG Info + User ID using new API
+        # STEP 1: Get User ID from username
         tg_info = None
         user_id = None
         
@@ -47,17 +49,25 @@ def tg():
             user_id = clean
         else:
             try:
-                # New API format: https://cht-id-p-b5hs.onrender.com/chatid?username=@BRONX_ULTRA
-                resp = requests.get(f"{ULTRA_API}?username={clean}", timeout=60)
+                resp = requests.get(f"{USERNAME_TO_ID_API}?username={clean}", timeout=60)
                 data = resp.json()
+                
                 if data.get("status") == "success":
-                    user_id = str(data.get("chat_id"))
-                    tg_info = {
-                        "username": f"@{data.get('username', clean)}",
-                        "first_name": data.get("first_name", ""),
-                        "last_name": data.get("last_name", ""),
-                        "type": data.get("type", "user")
-                    }
+                    user_data_str = data.get("data")
+                    if user_data_str:
+                        user_data = json.loads(user_data_str)
+                        user_id = str(user_data.get("id"))
+                        
+                        # ✅ CLEAN TG INFO - Sirf important fields
+                        tg_info = {
+                            "id": user_data.get("id"),
+                            "username": f"@{user_data.get('username', clean)}",
+                            "first_name": user_data.get("first_name", ""),
+                            "last_name": user_data.get("last_name", ""),
+                            "verified": user_data.get("verified", False),
+                            "premium": user_data.get("premium", False),
+                            "bot": user_data.get("bot", False)
+                        }
             except Exception as e:
                 print(f"Username to ID API error: {e}")
                 pass
@@ -65,19 +75,14 @@ def tg():
         if not user_id:
             return jsonify({"status": "error", "message": "User not found", "credit": CREDIT}), 404
         
-        # STEP 2: Get Phone Number from NEW TG ID to Number API
+        # STEP 2: Get Phone Number
         phone = None
         tg_api_info = None
         
         try:
-            # New API: https://tgid2num.suryajasoos.workers.dev/?q=8605320073
             url = f"{TG_ID_TO_NUM_API}?q={user_id}"
-            print(f"Requesting: {url}")  # Debug
-            
             resp = requests.get(url, timeout=30)
             data = resp.json()
-            
-            print(f"Response: {data}")  # Debug
             
             if data.get("status") == True and data.get("data"):
                 source1 = data["data"].get("source1", {})
@@ -86,7 +91,6 @@ def tg():
                 if records and len(records) > 0:
                     record = records[0]
                     phone = record.get("phone")
-                    # ✅ ONLY these 3 fields
                     tg_api_info = {
                         "country": record.get("country", "India"),
                         "country_code": record.get("country_code", "+91"),
@@ -115,23 +119,35 @@ def tg():
         
         try:
             clean_phone = str(phone).replace("+91", "").replace(" ", "").strip()
-            resp = requests.get(f"{NUMBER_API}?num={clean_phone}", timeout=30)
+            url = f"{NUMBER_DETAILS_API}?key={NUMBER_API_KEY}&num={clean_phone}"
+            
+            resp = requests.get(url, timeout=30)
             data = resp.json()
             
-            if data:
-                cleaned_data = {}
-                for k, v in data.items():
-                    if k not in ["by", "channel", "developer", "owner", "credit", "BUY", "DEVELOPER", "powered_by"]:
-                        cleaned_data[k] = v
+            if data.get("success") and data.get("results"):
+                # ✅ CLEAN RESULTS - Sirf important fields
+                cleaned_results = []
+                for result in data.get("results", [])[:5]:  # Sirf top 5
+                    cleaned_result = {}
+                    # Sirf yeh fields lo
+                    for k in ["mobile", "name", "address", "circle", "email", "truecaller_name"]:
+                        if k in result:
+                            cleaned_result[k] = result[k]
+                    cleaned_results.append(cleaned_result)
                 
-                number_details = {"success": True, "data": cleaned_data}
+                number_details = {
+                    "success": True,
+                    "total": data.get("total", 0),
+                    "results": cleaned_results
+                }
             else:
                 number_details = {"success": False, "message": "No Data Found"}
         except Exception as e:
             print(f"Number details API error: {e}")
             number_details = {"success": False, "message": "API error"}
         
-        return jsonify({
+        # ✅ FINAL RESPONSE - Clean aur organized
+        response = {
             "status": "success",
             "credit": CREDIT,
             "developer": DEVELOPER,
@@ -142,7 +158,9 @@ def tg():
             "phone_info": {"success": True, "number": phone},
             "number_details": number_details,
             "query_time_ms": round((time.time() - t0) * 1000, 2)
-        })
+        }
+        
+        return jsonify(response)
         
     except Exception as e:
         return jsonify({"status": "error", "message": str(e), "credit": CREDIT}), 500
