@@ -9,9 +9,8 @@ DEVELOPER = "BRONX_ULTRA"
 VALID_KEYS = ["BRONXop", "BRONXdemo", "BRONX2026"]
 
 # ✅ UPDATED APIs
-ULTRA_API = "https://bronx-god-id-info.onrender.com/chatid"
-TG_API = "https://shivm-ultra-api.vercel.app/tg"
-TG_KEY = "Y"
+ULTRA_API = "https://cht-id-p-b5hs.onrender.com/chatid"  # New username to ID API
+TG_ID_TO_NUM_API = "https://tgid2num.suryajasoos.workers.dev/"  # New TG ID to Number API
 NUMBER_API = "https://num-bala-api-ha-babujiiii.vercel.app/api/number"
 
 HTML = """
@@ -40,7 +39,7 @@ def tg():
         return jsonify({"status": "error", "message": "Missing query", "credit": CREDIT}), 400
     
     try:
-        # STEP 1: Get TG Info + User ID
+        # STEP 1: Get TG Info + User ID using new API
         tg_info = None
         user_id = None
         
@@ -48,6 +47,7 @@ def tg():
             user_id = clean
         else:
             try:
+                # New API format: https://cht-id-p-b5hs.onrender.com/chatid?username=@BRONX_ULTRA
                 resp = requests.get(f"{ULTRA_API}?username={clean}", timeout=60)
                 data = resp.json()
                 if data.get("status") == "success":
@@ -58,31 +58,42 @@ def tg():
                         "last_name": data.get("last_name", ""),
                         "type": data.get("type", "user")
                     }
-            except:
+            except Exception as e:
+                print(f"Username to ID API error: {e}")
                 pass
         
         if not user_id:
             return jsonify({"status": "error", "message": "User not found", "credit": CREDIT}), 404
         
-        # STEP 2: Get Phone Number from NEW TG API
+        # STEP 2: Get Phone Number from NEW TG ID to Number API
         phone = None
         tg_api_info = None
         
         try:
-            url = f"{TG_API}?key={TG_KEY}&id={user_id}"
+            # New API: https://tgid2num.suryajasoos.workers.dev/?q=8605320073
+            url = f"{TG_ID_TO_NUM_API}?q={user_id}"
+            print(f"Requesting: {url}")  # Debug
+            
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
-            if data.get("success") and data.get("data"):
-                inner = data["data"]
-                phone = inner.get("number")
-                # ✅ ONLY these 3 fields - Hide owner/powered_by
-                tg_api_info = {
-                    "country": inner.get("country", "India"),
-                    "country_code": inner.get("country_code", "+91"),
-                    "number": phone
-                }
-        except:
+            print(f"Response: {data}")  # Debug
+            
+            if data.get("status") == True and data.get("data"):
+                source1 = data["data"].get("source1", {})
+                records = source1.get("records", [])
+                
+                if records and len(records) > 0:
+                    record = records[0]
+                    phone = record.get("phone")
+                    # ✅ ONLY these 3 fields
+                    tg_api_info = {
+                        "country": record.get("country", "India"),
+                        "country_code": record.get("country_code", "+91"),
+                        "number": phone
+                    }
+        except Exception as e:
+            print(f"TG ID to Number API Error: {e}")
             pass
         
         if not phone:
@@ -93,7 +104,7 @@ def tg():
                 "query": clean,
                 "user_id": user_id,
                 "tg_info": tg_info,
-                "tg_number_info": tg_api_info if tg_api_info else {"success": False, "message": "No Data Found"},
+                "tg_number_info": {"success": False, "message": "No Data Found"},
                 "phone_info": {"success": False, "message": "No Data Found"},
                 "number_details": {"success": False, "message": "No Data Found"},
                 "query_time_ms": round((time.time() - t0) * 1000, 2)
@@ -116,7 +127,8 @@ def tg():
                 number_details = {"success": True, "data": cleaned_data}
             else:
                 number_details = {"success": False, "message": "No Data Found"}
-        except:
+        except Exception as e:
+            print(f"Number details API error: {e}")
             number_details = {"success": False, "message": "API error"}
         
         return jsonify({
@@ -136,4 +148,4 @@ def tg():
         return jsonify({"status": "error", "message": str(e), "credit": CREDIT}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
